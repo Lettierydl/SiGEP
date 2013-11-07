@@ -86,6 +86,7 @@ public class Telefone {
 	public static List<Telefone> recuperarLista(){
 		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
+				
 				.createNamedQuery("select telefone from Telefone telefone");
 		List<Telefone> telefones = consulta.getResultList();
 		Persistencia.em.getTransaction().commit();
