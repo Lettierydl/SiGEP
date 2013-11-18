@@ -8,7 +8,8 @@ import javax.persistence.*;
 import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findFuncionariosByCpfEquals", "findFuncionariosByCpfLike", "findFuncionariosByNomeEquals", "findFuncionariosByNomeLike", "findFuncionariosByTipoDeFuncionario" })
-@Entity(name="funcionario")
+@Table(name = "funcionario")
+@Entity()
 public class Funcionario {
 	
 	@Id

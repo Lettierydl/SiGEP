@@ -6,7 +6,8 @@ import javax.persistence.*;
 
 import com.twol.sigep.util.Persistencia;
 
-@Entity(name = "endereco")
+@Table(name = "endereco")
+@Entity
 public class Endereco {
 	
 	@Id

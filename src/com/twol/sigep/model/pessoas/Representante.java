@@ -13,11 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Query;
+import javax.persistence.Table;
 
 import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findRepresentantesByNomeEquals", "findRepresentantesByNomeLike", "findRepresentantesByRazaoSocialDaEmpresaEquals", "findRepresentantesByRazaoSocialDaEmpresaLike" })
-@Entity(name="representante")
+@Table(name = "representante")
+@Entity
 public class Representante {
 	
 	@Id

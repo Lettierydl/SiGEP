@@ -6,7 +6,8 @@ import javax.persistence.*;
 
 import com.twol.sigep.util.Persistencia;
 
-@Entity(name="telefone")
+@Table(name = "telefone")
+@Entity
 public class Telefone {
 	
 	
@@ -62,7 +63,6 @@ public class Telefone {
 		this.operadora = operadora;
 	}
     
-    
 	
 	public static void salvar(Telefone e){
     	Persistencia.em.getTransaction().begin();
@@ -92,5 +92,13 @@ public class Telefone {
 		Persistencia.em.getTransaction().commit();
 		return telefones;
     }
+
+	@Override
+	public String toString() {
+		return "("+ddd+") "+ telefone.substring(0, 4)+"-"+
+				telefone.substring(4);
+	}
+	
+	
     
 }

@@ -1,5 +1,6 @@
 package com.twol.sigep.model.pessoas;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -14,15 +15,22 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Query;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findClientesByCpfEquals", "findClientesByCpfLike", "findClientesByDataDeNascimentoBetween", "findClientesByNomeEquals", "findClientesByNomeLike" })
+@Table(name = "cliente")
 @Entity
-public class Cliente {
+public class Cliente implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
@@ -43,7 +51,7 @@ public class Cliente {
 
     /**
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Endereco endereco;
 
     /**
@@ -55,7 +63,7 @@ public class Cliente {
      */
     @Column(nullable = true,length = 11)
     private String cpf;
-
+    
     /**
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -63,7 +71,7 @@ public class Cliente {
 
     /**
      */
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
     private List<Dependente> dependentes = new ArrayList<Dependente>();
 
     /**
@@ -123,8 +131,16 @@ public class Cliente {
 		return telefones;
 	}
 
-	public void setTelefones(List<Telefone> telefones) {
-		this.telefones = telefones;
+	public void addTelefones(Telefone telefone) {
+		if(this.telefones == null){
+			this.telefones = new ArrayList<Telefone>();
+		}
+		this.telefones.add(telefone);
+	}
+	
+	@Override
+	public String toString(){
+		return nome;
 	}
 
 	public static void salvar(Cliente c){
@@ -145,14 +161,30 @@ public class Cliente {
     	Persistencia.em.getTransaction().commit();
     }
 	
+	
 	@SuppressWarnings("unchecked")
 	public static List<Cliente> recuperarLista(){
 		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
-				.createNamedQuery("select cliente from Cliente cliente");
+			.createQuery("select cliente from Cliente cliente");
 		List<Cliente> clientes = consulta.getResultList();
 		Persistencia.em.getTransaction().commit();
 		return clientes;
     }
+	
+	
+	public static Cliente recuperarCliente(int idCliente){
+		Persistencia.em.getTransaction().begin();
+		Query consulta = Persistencia.em
+			.createQuery("select c from Cliente as c where c.id = :idCliente ", Cliente.class);
+		consulta.setParameter("idCliente", idCliente);
+		Cliente c = (Cliente) consulta.getSingleResult();
+		Persistencia.em.getTransaction().commit();
+		return c;
+    }
+	
+	
+	
+	
     
 }
