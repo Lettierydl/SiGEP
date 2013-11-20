@@ -11,5 +11,11 @@ public class Persistencia {
 			.createEntityManagerFactory(UNIDADE_DE_PERSISTENCIA);
 	public static EntityManager em = emf.createEntityManager();
 
+	public static void restartConnection(){
+		 try{
+			 em.close();
+		 }catch(Exception e){}
+		 em = emf.createEntityManager();
+	}
 	
 }

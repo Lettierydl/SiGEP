@@ -18,6 +18,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+import org.hibernate.exception.ConstraintViolationException;
+
+import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
 import com.twol.sigep.model.pessoas.Representante;
 import com.twol.sigep.util.Persistencia;
 
@@ -71,7 +74,7 @@ public class Produto {
 	/**
      */
 	@ManyToOne
-	@JoinColumn(name ="fk_fabricante" )
+	@JoinColumn(name = "fk_fabricante")
 	private Representante fabricante;
 
 	/**
@@ -146,33 +149,40 @@ public class Produto {
 	public List<Promocao> getPromocoesValidas() {
 		return promocoesValidas;
 	}
-	
-	public void addPromocaoValida(Promocao p){
-		if(promocoesValidas == null){
+
+	public void addPromocaoValida(Promocao p) {
+		if (promocoesValidas == null) {
 			promocoesValidas = new ArrayList<Promocao>();
 		}
 		promocoesValidas.add(p);
 		p.setProduto(this);
 	}
-	
-	public void removerPromocaoValida(Promocao p){
-		if(promocoesValidas == null){
+
+	public void removerPromocaoValida(Promocao p) {
+		if (promocoesValidas == null) {
 			return;
 		}
-		if(promocoesValidas.remove(p) && p.getProduto().equals(this)){
+		if (promocoesValidas.remove(p) && p.getProduto().equals(this)) {
 			p.setProduto(this);
 		}
 	}
 
-	public static void salvar(Produto p) {
-		if(p.getPromocoesValidas() != null && !p.getPromocoesValidas().isEmpty()){
+	public static void salvar(Produto p) throws EntidadeJaPersistidaException {
+		if (p.getPromocoesValidas() != null
+				&& !p.getPromocoesValidas().isEmpty()) {
 			Persistencia.em.getTransaction().begin();
 			Persistencia.em.persist(p.getPromocoesValidas().get(0));
 			Persistencia.em.getTransaction().commit();
-		}else{
-			Persistencia.em.getTransaction().begin();
-			Persistencia.em.persist(p);
-			Persistencia.em.getTransaction().commit();
+		} else {
+			try {
+				Persistencia.em.getTransaction().begin();
+				Persistencia.em.merge(p);
+				Persistencia.em.getTransaction().commit();
+			} catch (ConstraintViolationException e) {
+				throw new EntidadeJaPersistidaException("Produto");
+			}finally{
+				Persistencia.restartConnection();
+			}
 		}
 	}
 
@@ -207,5 +217,12 @@ public class Produto {
 		Persistencia.em.getTransaction().commit();
 		return produto;
 	}
+
+	@Override
+	public String toString() {
+		return  descricao;
+	}
+	
+	
 
 }
