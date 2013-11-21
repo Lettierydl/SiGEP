@@ -26,7 +26,7 @@ public class MainTeste {
 		
 		System.out.println(FinderProduto
 				.produtosQueDescricaoOuCodigoDeBarrasIniciam(
-						"prod", null
+						null, "123"
 						));
 		
 	}

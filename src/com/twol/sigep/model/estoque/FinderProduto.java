@@ -112,7 +112,7 @@ public class FinderProduto {
 			}
 		} else if (codigoDeBarras != null) {
 			stringQuery += "where LOWER(p.codigoDeBarras) LIKE LOWER(:codigoDeBarras) ";
-			valores.put("codigoDeBarras", "%" + codigoDeBarras);
+			valores.put("codigoDeBarras", codigoDeBarras + "%");
 		}
 		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
 		for (Map.Entry<String, String> valor : valores.entrySet()) {

@@ -72,11 +72,11 @@ public class Funcionario {
 		this.endereco = endereco;
 	}
 
-	public String getSenha() {
+	String getSenha() {
 		return senha;
 	}
 
-	public void setSenha(String senha) {
+	void setSenha(String senha) {
 		this.senha = senha;
 	}
 
@@ -104,13 +104,13 @@ public class Funcionario {
 		this.telefones = telefones;
 	}
     
-	public static void salvar(Funcionario e){
+	static void salvar(Funcionario e){
     	Persistencia.em.getTransaction().begin();
     	Persistencia.em.persist(e);
     	Persistencia.em.getTransaction().commit();
     }
 	
-	public static void atualizar(Funcionario e){
+	static void atualizar(Funcionario e){
     	Persistencia.em.getTransaction().begin();
     	Persistencia.em.merge(e);
     	Persistencia.em.getTransaction().commit();

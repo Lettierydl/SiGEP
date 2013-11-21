@@ -2,5 +2,7 @@ eclipse.preferences.version=1
 encoding//src/com/twol/sigep/model/estoque/FinderProduto.java=UTF-8
 encoding//src/com/twol/sigep/model/estoque/Produto.java=UTF-8
 encoding//src/com/twol/sigep/model/estoque/Promocao.java=UTF-8
+encoding//src/com/twol/sigep/model/excepion/FuncionarioJaLogadoException.java=UTF-8
 encoding//src/com/twol/sigep/model/exception/EntidadeJaPersistidaException.java=UTF-8
+encoding//src/com/twol/sigep/model/exception/ParametrosInvalidosException.java=UTF-8
 encoding//src/com/twol/sigep/model/vendas/LinhaDaVenda.java=UTF-8
