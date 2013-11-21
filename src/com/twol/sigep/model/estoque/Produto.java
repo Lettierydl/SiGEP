@@ -47,6 +47,11 @@ public class Produto {
 
 	@Column(nullable = false)
 	private String descricao;
+	
+	
+	@Enumerated(EnumType.STRING)
+	private UnidadeProduto descricaoUnidade;
+	
 
 	@Column(nullable = false, precision = 2)
 	private double valorDeCompra;
@@ -138,6 +143,14 @@ public class Produto {
 		this.categoria = categoria;
 	}
 
+	public UnidadeProduto getDescricaoUnidade() {
+		return descricaoUnidade;
+	}
+
+	public void setDescricaoUnidade(UnidadeProduto descricaoUnidade) {
+		this.descricaoUnidade = descricaoUnidade;
+	}
+
 	public Representante getFabricante() {
 		return fabricante;
 	}
@@ -222,7 +235,7 @@ public class Produto {
 	public String toString() {
 		return  descricao;
 	}
-	
+
 	
 
 }

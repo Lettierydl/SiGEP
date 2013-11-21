@@ -1,4 +1,4 @@
-package com.twol.sigep.model.excepion;
+package com.twol.sigep.model.exception;
 
 public class FuncionarioJaLogadoException extends Exception {
 	

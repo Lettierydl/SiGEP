@@ -50,7 +50,9 @@ public class Funcionario {
      */
     @Column(nullable = false, length = 11)
     private String cpf;
-
+    
+    @Column(nullable = false)
+    private boolean logado;
     /**
      */
     @OneToMany(cascade = CascadeType.ALL)
@@ -70,6 +72,14 @@ public class Funcionario {
 
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
+	}
+	
+	boolean isLogado() {
+		return logado;
+	}
+
+	void setLogado(boolean logado) {
+		this.logado = logado;
 	}
 
 	String getSenha() {
@@ -100,8 +110,11 @@ public class Funcionario {
 		return telefones;
 	}
 
-	public void setTelefones(List<Telefone> telefones) {
-		this.telefones = telefones;
+	public void addTelefones(Telefone telefone) {
+		if(this.telefones == null){
+			this.telefones = new ArrayList<Telefone>();
+		}
+		this.telefones.add(telefone);
 	}
     
 	static void salvar(Funcionario e){

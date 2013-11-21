@@ -36,10 +36,15 @@ public class Promocao {
 	}
 	
 	
-    /**
+	/**
      */
     @Temporal(TemporalType.DATE)
     private Calendar dataDeInicio;
+    
+    /**
+     */
+    @Temporal(TemporalType.DATE)
+    private Calendar dataDeFim;
 
     /**
      */
@@ -66,6 +71,14 @@ public class Promocao {
 
 	public void setDataDeInicio(Calendar dataDeInicio) {
 		this.dataDeInicio = dataDeInicio;
+	}
+	
+	public Calendar getDataDeFim() {
+		return dataDeFim;
+	}
+
+	public void setDataDeFim(Calendar dataDeFim) {
+		this.dataDeFim = dataDeFim;
 	}
 
 	public double getValorDoDesconto() {
@@ -98,6 +111,11 @@ public class Promocao {
 
 	void setProduto(Produto produto) {
 		this.produto = produto;
+	}
+	
+	public boolean isValida() {
+		return this.quantidadeJaVendida >= this.quantidadeMaximaDeVendas
+				&& this.dataDeInicio.compareTo(dataDeFim) > 0;
 	}
 
 	/*
@@ -135,5 +153,13 @@ public class Promocao {
 		Persistencia.em.getTransaction().commit();
 		return promocoes;
     }
+
+	public double calcularValorDoDesconto(double quantidadeVendida) {
+		double quantidade = 
+				(quantidadeVendida > (quantidadeMaximaDeVendas - quantidadeJaVendida))
+				?(quantidadeMaximaDeVendas - quantidadeJaVendida):quantidadeVendida;
+		return valorDoDesconto * quantidade;
+	}
+
     
 }

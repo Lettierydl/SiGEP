@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 
 import com.twol.sigep.model.estoque.Produto;
+import com.twol.sigep.util.OperacaoStringUtil;
 import com.twol.sigep.util.Persistencia;
 
 @Table(name = "linha_da_venda")
@@ -68,7 +69,34 @@ public class LinhaDaVenda {
      */
     @Column(nullable = false, precision = 2)
     private double valorTotalDaLinhaComDesconto;
+    
 
+	public void calcularValores() {
+		valorTotalDaLinhaComDesconto = (quantidadeVendida * valorDoProdutoVendido) - valorDoDesconto;
+		valorTotalDaLinhaSemDesconto = (quantidadeVendida * valorDoProdutoVendido);
+	}
+	
+	double getValorTotalDaLinhaSemDesconto() {
+		return valorTotalDaLinhaSemDesconto;
+	}
+
+	double getValorTotalDaLinhaComDesconto() {
+		return valorTotalDaLinhaComDesconto;
+	}
+
+	@Override
+	public String toString(){
+		String toString = produto.getDescricao() + " X "+ 
+			OperacaoStringUtil.formatarStringQuantidade(quantidadeVendida) + " " +
+				produto.getDescricaoUnidade();
+		if(valorDoDesconto != 0){
+			toString+=" - "+ valorDoDesconto;
+		}
+		toString+=" = "+ OperacaoStringUtil
+				.formatarStringValorMoedaComDescricao(valorTotalDaLinhaComDesconto);
+		return toString;
+	}
+    
 	public Venda getVenda() {
 		return venda;
 	}
@@ -113,19 +141,19 @@ public class LinhaDaVenda {
 		this.valorDoProdutoVendido = valorDoProdutoVendido;
 	}
     
-	public static void salvar(Venda e){
+	public static void salvar(LinhaDaVenda e){
     	Persistencia.em.getTransaction().begin();
     	Persistencia.em.persist(e);
     	Persistencia.em.getTransaction().commit();
     }
 	
-	public static void atualizar(Venda e){
+	public static void atualizar(LinhaDaVenda e){
     	Persistencia.em.getTransaction().begin();
     	Persistencia.em.merge(e);
     	Persistencia.em.getTransaction().commit();
     }
 	
-	public static void remover(Venda e){
+	public static void remover(LinhaDaVenda e){
     	Persistencia.em.getTransaction().begin();
     	Persistencia.em.remove(e);
     	Persistencia.em.getTransaction().commit();

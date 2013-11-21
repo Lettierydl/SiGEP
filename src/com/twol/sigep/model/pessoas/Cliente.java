@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findClientesByCpfEquals", "findClientesByCpfLike", "findClientesByDataDeNascimentoBetween", "findClientesByNomeEquals", "findClientesByNomeLike" })
@@ -97,10 +98,6 @@ public class Cliente implements Serializable{
 
 	public double getDebito() {
 		return debito;
-	}
-
-	public void setDebito(double debito) {
-		this.debito = debito;
 	}
 
 	public String getCpf() {
@@ -182,6 +179,22 @@ public class Cliente implements Serializable{
 		Persistencia.em.getTransaction().commit();
 		return c;
     }
+
+	public void acrecentarDebito(double valor) throws ParametrosInvalidosException {
+		if(valor > 0){
+			debito += valor;
+		}else{
+			throw new ParametrosInvalidosException();
+		}
+	}
+	
+	public void diminuirDebito(double valor) throws ParametrosInvalidosException {
+		if(valor > 0){
+			debito -= valor;
+		}else{
+			throw new ParametrosInvalidosException();
+		}
+	}
 	
 	
 	

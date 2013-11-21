@@ -137,23 +137,36 @@ public class Venda {
 		return formaDePagamento;
 	}
 
+	void setFormaDePagamento(FormaDePagamento formaDePagamento) {
+		this.formaDePagamento = formaDePagamento;
+	}
+
 	public List<LinhaDaVenda> getLinhasDaVenda() {
 		return linhasDaVenda;
 	}
 	
-	public void addLinhaDaVenda(LinhaDaVenda lv){
+	/*
+	 * Atualiza altomaticamente os valores totais da venda
+	 */
+	void addLinhaDaVenda(LinhaDaVenda lv){
 		if(linhasDaVenda == null){
 			this.linhasDaVenda = new ArrayList<LinhaDaVenda>();
 		}
 		linhasDaVenda.add(lv);
 		lv.setVenda(this);
+		valorTotalDaVendaComDesconto +=lv.getValorTotalDaLinhaComDesconto();
+		valorTotalDaVendaSemDesconto +=lv.getValorTotalDaLinhaSemDesconto();
+		valorTotalDeDesconto +=lv.getValorDoDesconto();
 	}
 	
-	public void removeLinhaDaVenda(LinhaDaVenda lv){
+	void removeLinhaDaVenda(LinhaDaVenda lv){
 		if(linhasDaVenda == null){
 			return;
 		}
 		linhasDaVenda.remove(lv);
+		valorTotalDaVendaComDesconto -=lv.getValorTotalDaLinhaComDesconto();
+		valorTotalDaVendaSemDesconto -=lv.getValorTotalDaLinhaSemDesconto();
+		valorTotalDeDesconto -=lv.getValorDoDesconto();
 	}
 	
 	public static void salvar(Venda e){

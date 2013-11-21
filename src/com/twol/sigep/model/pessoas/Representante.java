@@ -83,8 +83,11 @@ public class Representante {
 		return telefones;
 	}
 
-	public void setTelefones(List<Telefone> telefones) {
-		this.telefones = telefones;
+	public void addTelefones(Telefone telefone) {
+		if(this.telefones == null){
+			this.telefones = new ArrayList<Telefone>();
+		}
+		this.telefones.add(telefone);
 	}
     
 	public static void salvar(Representante e){
