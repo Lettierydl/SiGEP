@@ -1,0 +1,53 @@
+package com.twol.sigep.model;
+import java.util.List;
+
+import com.twol.sigep.util.Persistencia;
+
+public abstract class Entidade {
+	
+	protected List<?> getListEntidadeRelacionada(){
+		return null;
+	}
+	
+	public static void salvar(Entidade e)  {
+		if (e.getListEntidadeRelacionada() != null
+				&& !e.getListEntidadeRelacionada().isEmpty()) {
+			Persistencia.iniciarTrascao();
+			try{
+				Persistencia.em.persist(e.getListEntidadeRelacionada().get(0));
+			}finally{
+				Persistencia.finalizarTrascao();
+			}
+		} else {
+			Persistencia.iniciarTrascao();
+			try{
+				Persistencia.em.persist(e);
+			}finally{
+				Persistencia.finalizarTrascao();
+			}
+		}
+	}
+
+	public static void atualizar(Entidade e) {
+		Persistencia.iniciarTrascao();
+		try{
+			Persistencia.em.merge(e);
+			Persistencia.em.getTransaction().commit();
+		}finally{
+			Persistencia.finalizarTrascao();
+		}
+	}
+
+	public static void remover(Entidade e) {
+		Persistencia.iniciarTrascao();
+		try{
+			Persistencia.em.remove(e);
+			Persistencia.em.getTransaction().commit();
+		}finally{
+			Persistencia.finalizarTrascao();
+		}
+	}
+	
+	
+	
+}

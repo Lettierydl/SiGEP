@@ -12,13 +12,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.util.OperacaoStringUtil;
 import com.twol.sigep.util.Persistencia;
 
 @Table(name = "linha_da_venda")
 @Entity
-public class LinhaDaVenda {
+public class LinhaDaVenda extends Entidade {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,5 @@
 package com.twol.sigep.model.pessoas;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -25,12 +24,8 @@ import com.twol.sigep.util.Persistencia;
 //@RooJpaActiveRecord(finders = { "findClientesByCpfEquals", "findClientesByCpfLike", "findClientesByDataDeNascimentoBetween", "findClientesByNomeEquals", "findClientesByNomeLike" })
 @Table(name = "cliente")
 @Entity
-public class Cliente implements Serializable {
+public class Cliente extends Pessoa {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -139,52 +134,26 @@ public class Cliente implements Serializable {
 	public String toString() {
 		return nome;
 	}
-
-	public static void salvar(Cliente c) {
-		Persistencia.iniciarTrascao();
-		try {
-			Persistencia.em.persist(c);
-		} finally {
-			Persistencia.finalizarTrascao();
-		}
-	}
-
-	public static void atualizar(Cliente c) {
-		Persistencia.iniciarTrascao();
-		try {
-			Persistencia.em.merge(c);
-		} finally {
-			Persistencia.finalizarTrascao();
-		}
-	}
-
-	public static void remover(Cliente c) {
-		Persistencia.iniciarTrascao();
-		try {
-			Persistencia.em.remove(c);
-		} finally {
-			Persistencia.finalizarTrascao();
-		}
+	
+	@Override
+	protected List<?> getListEntidadeRelacionada(){
+		return this.getDependentes();
 	}
 
 	@SuppressWarnings("unchecked")
 	public static List<Cliente> recuperarLista() {
-		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
 				.createQuery("select cliente from Cliente cliente");
 		List<Cliente> clientes = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
 		return clientes;
 	}
 
 	public static Cliente recuperarCliente(int idCliente) {
-		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em.createQuery(
 				"select c from Cliente as c where c.id = :idCliente ",
 				Cliente.class);
 		consulta.setParameter("idCliente", idCliente);
 		Cliente c = (Cliente) consulta.getSingleResult();
-		Persistencia.em.getTransaction().commit();
 		return c;
 	}
 

@@ -2,13 +2,21 @@ package com.twol.sigep.model.pessoas;
 
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Query;
+import javax.persistence.Table;
 
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.util.Persistencia;
 
 @Table(name = "telefone")
 @Entity
-public class Telefone {
+public class Telefone extends Entidade{
 	
 	
 	@Id
@@ -64,32 +72,11 @@ public class Telefone {
 	}
     
 	
-	public static void salvar(Telefone e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.persist(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void atualizar(Telefone e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.merge(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void remover(Telefone e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.remove(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
 	@SuppressWarnings("unchecked")
 	public static List<Telefone> recuperarLista(){
-		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
-				
 				.createNamedQuery("select telefone from Telefone telefone");
 		List<Telefone> telefones = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
 		return telefones;
     }
 

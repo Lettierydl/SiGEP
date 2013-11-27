@@ -17,11 +17,7 @@ public class Persistencia {
 	}
 	
 	public static void finalizarTrascao(){
-		try{
-			em.getTransaction().commit();
-		}finally{
-			em.close();
-		}
+		em.close();
 	}
 	
 	public static void restartConnection(){

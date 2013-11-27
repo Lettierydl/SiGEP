@@ -1,3 +1,6 @@
+import com.twol.sigep.model.estoque.Produto;
+import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
+
 
 
 
@@ -7,11 +10,14 @@ public class MainTeste {
 	/**
 	 * @param args
 	 * @throws EntidadeJaPersistidaException 
-	 *
-	public static void main(String[] args) throws EntidadeJaPersistidaException {
+	 */
+	public static void main(String[] args) throws EntidadeJaPersistidaException{
+		Produto p = new Produto();
+		p.setDescricao("teste23");
+		p.setCodigoDeBarras("12345632");
+		Produto.salvar(p);
 		
-		
-	}*/
+	}
 
 	/*Teste FinderProduto
 	 * Produto p = new Produto();

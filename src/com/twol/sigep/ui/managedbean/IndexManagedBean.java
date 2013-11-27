@@ -3,6 +3,7 @@ package com.twol.sigep.ui.managedbean;
 
 import javax.faces.bean.ManagedBean;
 
+import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
 import com.twol.sigep.model.pessoas.Cliente;
 
 @ManagedBean(name = "indexManagedBean")
@@ -14,7 +15,7 @@ public class IndexManagedBean {
 	}
 	
 	
-	public void listarClientes(){
+	public void listarClientes() throws EntidadeJaPersistidaException{
 		System.out.println("Chamou Metodo");
 		for(Cliente c : Cliente.recuperarLista()){
 			System.out.println(c);

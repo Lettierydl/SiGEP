@@ -13,13 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.util.Persistencia;
 
 
 //@RooJpaActiveRecord(finders = { "findDependentesByNomeEquals", "findDependentesByNomeLike" })
 @Table(name = "dependente")
 @Entity
-public class Dependente {
+public class Dependente extends Entidade{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,31 +58,11 @@ public class Dependente {
 		this.nome = nome;
 	}
 
-	public static void salvar(Dependente d) {
-		Persistencia.em.getTransaction().begin();
-		Persistencia.em.persist(d);
-		Persistencia.em.getTransaction().commit();
-	}
-
-	public static void atualizar(Dependente d) {
-		Persistencia.em.getTransaction().begin();
-		Persistencia.em.merge(d);
-		Persistencia.em.getTransaction().commit();
-	}
-
-	public static void remover(Dependente d) {
-		Persistencia.em.getTransaction().begin();
-		Persistencia.em.remove(d);
-		Persistencia.em.getTransaction().commit();
-	}
-
 	@SuppressWarnings("unchecked")
 	public static List<Dependente> recuperarLista() {
-		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
 				.createNamedQuery("select dependente from Dependente dependente");
 		List<Dependente> dependentes = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
 		return dependentes;
 	}
 }

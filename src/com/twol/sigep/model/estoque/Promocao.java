@@ -16,11 +16,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.util.Persistencia;
 
 @Table(name = "promocao")
 @Entity
-public class Promocao {
+public class Promocao extends Entidade {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -118,32 +119,7 @@ public class Promocao {
 				&& this.dataDeInicio.compareTo(dataDeFim) > 0;
 	}
 
-	/*
-	 * Não precisa salvar promocao,
-	 * apenas add na lista de promocoes validas do produto
-	 */
-	static void salvar(Promocao p){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.persist(p);
-    	Persistencia.em.getTransaction().commit();
-    }
 	
-	public static void atualizar(Promocao p){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.merge(p);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void remover(Promocao p){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.remove(p);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	
-	/*
-	 * Não precisa salvar Promocao, apenas adicionar na lista de Produto
-	 */
 	@SuppressWarnings("unchecked")
 	public static List<Promocao> recuperarLista(){
 		Persistencia.em.getTransaction().begin();

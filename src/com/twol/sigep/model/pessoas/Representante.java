@@ -20,7 +20,7 @@ import com.twol.sigep.util.Persistencia;
 //@RooJpaActiveRecord(finders = { "findRepresentantesByNomeEquals", "findRepresentantesByNomeLike", "findRepresentantesByRazaoSocialDaEmpresaEquals", "findRepresentantesByRazaoSocialDaEmpresaLike" })
 @Table(name = "representante")
 @Entity
-public class Representante {
+public class Representante extends Pessoa{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,32 +89,12 @@ public class Representante {
 		}
 		this.telefones.add(telefone);
 	}
-    
-	public static void salvar(Representante e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.persist(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void atualizar(Representante e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.merge(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void remover(Representante e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.remove(e);
-    	Persistencia.em.getTransaction().commit();
-    }
 	
 	@SuppressWarnings("unchecked")
 	public static List<Representante> recuperarLista(){
-		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
 				.createNamedQuery("select representante from Representante representante");
 		List<Representante> representantes = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
 		return representantes;
     }
     

@@ -2,13 +2,23 @@ package com.twol.sigep.model.pessoas;
 
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Query;
+import javax.persistence.Table;
 
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.util.Persistencia;
 
 @Table(name = "endereco")
 @Entity
-public class Endereco {
+public class Endereco extends Entidade{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,33 +110,12 @@ public class Endereco {
 	public void setUf(UF uf) {
 		this.uf = uf;
 	}
-    
-    
-	public static void salvar(Endereco e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.persist(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void atualizar(Endereco e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.merge(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void remover(Endereco e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.remove(e);
-    	Persistencia.em.getTransaction().commit();
-    }
 	
 	@SuppressWarnings("unchecked")
 	public static List<Endereco> recuperarLista(){
-		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
 				.createNamedQuery("select endereco from Endereco endereco");
 		List<Endereco> enderecos = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
 		return enderecos;
     }
 	

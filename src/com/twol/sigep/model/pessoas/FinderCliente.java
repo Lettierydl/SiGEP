@@ -23,14 +23,14 @@ public class FinderCliente {
 		if (nome.charAt(nome.length() - 1) != '%') {
 			nome += "%";
 		}
-		Persistencia.em.getTransaction().begin();
+		
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Cliente as o where LOWER(o.nome) LIKE LOWER(:nome)",
 						Cliente.class);
 		q.setParameter("nome", nome);
 		List<Cliente> clientes = q.getResultList();
-		Persistencia.em.getTransaction().commit();
+		
 		return clientes;
 	}
 
@@ -46,14 +46,14 @@ public class FinderCliente {
 		if (cpf.charAt(cpf.length() - 1) != '%') {
 			cpf += "%";
 		}
-		Persistencia.em.getTransaction().begin();
+		
 		Query q = Persistencia.em
 				.createQuery(
 						"SELECT o FROM Cliente AS o WHERE LOWER(o.cpf) LIKE LOWER(:cpf)",
 						Cliente.class);
 		q.setParameter("cpf", cpf);
 		List<Cliente> clientes = q.getResultList();
-		Persistencia.em.getTransaction().commit();
+		
 		return clientes;
 	}
 
@@ -67,14 +67,14 @@ public class FinderCliente {
 		if (nome.charAt(0) != '%') {
 			nome += "%";
 		}
-		Persistencia.em.getTransaction().begin();
+		
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Cliente as o where LOWER(o.nome) LIKE LOWER(:nome)",
 						Cliente.class);
 		q.setParameter("nome", nome);
 		List<Cliente> Clientes = q.getResultList();
-		Persistencia.em.getTransaction().commit();
+		
 		return Clientes;
 	}
 
@@ -87,14 +87,14 @@ public class FinderCliente {
 		if (cpf.charAt(0) != '%') {
 			cpf += "%";
 		}
-		Persistencia.em.getTransaction().begin();
+		
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Cliente as o where LOWER(o.cpf) LIKE LOWER(:cpf)",
 						Cliente.class);
 		q.setParameter("cpf", cpf);
 		List<Cliente> Clientes = q.getResultList();
-		Persistencia.em.getTransaction().commit();
+		
 		return Clientes;
 	}
 

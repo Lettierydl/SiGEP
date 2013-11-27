@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.model.pessoas.Funcionario;
@@ -27,7 +28,7 @@ import com.twol.sigep.util.Persistencia;
 //@RooJpaActiveRecord(finders = { "findVendasByCliente", "findVendasByDiaBetween", "findVendasByDiaGreaterThanEquals", "findVendasByFormaDePagamento", "findVendasByFuncionario" })
 @Table(name = "venda")
 @Entity
-public class Venda {
+public class Venda extends Entidade{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -169,29 +170,9 @@ public class Venda {
 		valorTotalDeDesconto -=lv.getValorDoDesconto();
 	}
 	
-	public static void salvar(Venda e){
-		if(e.getLinhasDaVenda()!=null && ! e.getLinhasDaVenda().isEmpty()){
-			Persistencia.em.getTransaction().begin();
-			Persistencia.em.persist(e.getLinhasDaVenda().get(0));
-			Persistencia.em.getTransaction().commit();
-		}else{
-			Persistencia.em.getTransaction().begin();
-			Persistencia.em.persist(e);
-			Persistencia.em.getTransaction().commit();
-		}
-    }
-	
-	public static void atualizar(Venda e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.merge(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void remover(Venda e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.remove(e);
-    	Persistencia.em.getTransaction().commit();
-    }
+	protected List<?> getListEntidadeRelacionada(){
+		return this.getLinhasDaVenda();
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static List<Venda> recuperarLista(){

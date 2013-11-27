@@ -23,14 +23,14 @@ public class FinderProduto {
 		if (codigoDeBarras.charAt(codigoDeBarras.length() - 1) != '%') {
 			codigoDeBarras = codigoDeBarras + "%";
 		}
-		Persistencia.em.getTransaction().begin();
+		
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Produto as o where LOWER(o.codigoDeBarras) LIKE LOWER(:codigoDeBarras)",
 						Produto.class);
 		q.setParameter("codigoDeBarras", codigoDeBarras);
 		List<Produto> produtos = q.getResultList();
-		Persistencia.em.getTransaction().commit();
+		
 		return produtos;
 	}
 
@@ -46,14 +46,14 @@ public class FinderProduto {
 		if (descricao.charAt(descricao.length() - 1) != '%') {
 			descricao = descricao + "%";
 		}
-		Persistencia.em.getTransaction().begin();
+		
 		Query q = Persistencia.em
 				.createQuery(
 						"SELECT o FROM Produto AS o WHERE LOWER(o.descricao) LIKE LOWER(:descricao)",
 						Produto.class);
 		q.setParameter("descricao", descricao);
 		List<Produto> produtos = q.getResultList();
-		Persistencia.em.getTransaction().commit();
+		
 		return produtos;
 	}
 
@@ -67,14 +67,14 @@ public class FinderProduto {
 		if (codigoDeBarras.charAt(0) != '%') {
 			codigoDeBarras += "%";
 		}
-		Persistencia.em.getTransaction().begin();
+		
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Produto as o where LOWER(o.codigoDeBarras) LIKE LOWER(:codigoDeBarras)",
 						Produto.class);
 		q.setParameter("codigoDeBarras", codigoDeBarras);
 		List<Produto> produtos = q.getResultList();
-		Persistencia.em.getTransaction().commit();
+		
 		return produtos;
 	}
 
@@ -87,14 +87,14 @@ public class FinderProduto {
 		if (descricao.charAt(0) != '%') {
 			descricao += "%";
 		}
-		Persistencia.em.getTransaction().begin();
+		
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Produto as o where LOWER(o.descricao) LIKE LOWER(:descricao)",
 						Produto.class);
 		q.setParameter("descricao", descricao);
 		List<Produto> produtos = q.getResultList();
-		Persistencia.em.getTransaction().commit();
+		
 		return produtos;
 	}
 

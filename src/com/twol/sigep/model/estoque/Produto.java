@@ -18,16 +18,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
-import org.hibernate.exception.ConstraintViolationException;
-
-import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.pessoas.Representante;
 import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findProdutoesByDescricaoLike", "findProdutoesByCategoria", "findProdutoesByCodigoDeBarrasLike", "findProdutoesByFabricante" })
 @Table(name = "produto")
 @Entity
-public class Produto {
+public class Produto extends Entidade{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -179,36 +177,10 @@ public class Produto {
 			p.setProduto(this);
 		}
 	}
-
-	public static void salvar(Produto p) throws EntidadeJaPersistidaException {
-		if (p.getPromocoesValidas() != null
-				&& !p.getPromocoesValidas().isEmpty()) {
-			Persistencia.em.getTransaction().begin();
-			Persistencia.em.persist(p.getPromocoesValidas().get(0));
-			Persistencia.em.getTransaction().commit();
-		} else {
-			try {
-				Persistencia.em.getTransaction().begin();
-				Persistencia.em.merge(p);
-				Persistencia.em.getTransaction().commit();
-			} catch (ConstraintViolationException e) {
-				throw new EntidadeJaPersistidaException("Produto");
-			}finally{
-				Persistencia.restartConnection();
-			}
-		}
-	}
-
-	public static void atualizar(Produto p) {
-		Persistencia.em.getTransaction().begin();
-		Persistencia.em.merge(p);
-		Persistencia.em.getTransaction().commit();
-	}
-
-	public static void remover(Produto p) {
-		Persistencia.em.getTransaction().begin();
-		Persistencia.em.remove(p);
-		Persistencia.em.getTransaction().commit();
+	
+	@Override
+	protected List<?> getListEntidadeRelacionada(){
+		return this.getListEntidadeRelacionada();
 	}
 
 	@SuppressWarnings("unchecked")
