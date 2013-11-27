@@ -1,7 +1,3 @@
-import com.twol.sigep.model.estoque.CategoriaProduto;
-import com.twol.sigep.model.estoque.FinderProduto;
-import com.twol.sigep.model.estoque.Produto;
-import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
 
 
 
@@ -11,9 +7,14 @@ public class MainTeste {
 	/**
 	 * @param args
 	 * @throws EntidadeJaPersistidaException 
-	 */
+	 *
 	public static void main(String[] args) throws EntidadeJaPersistidaException {
-		Produto p = new Produto();
+		
+		
+	}*/
+
+	/*Teste FinderProduto
+	 * Produto p = new Produto();
 		p.setCategoria(CategoriaProduto.Produtos_de_Higiene);
 		p.setCodigoDeBarras("1234567890");
 		p.setDescricao("Produto Teste de Descricao");
@@ -28,9 +29,8 @@ public class MainTeste {
 				.produtosQueDescricaoOuCodigoDeBarrasIniciam(
 						null, "123"
 						));
-		
-	}
-
+	 */
+	
 	
 	/*Teste Relacionamento Venda e produto
 	Venda v = new Venda();

@@ -25,8 +25,8 @@ import com.twol.sigep.util.Persistencia;
 //@RooJpaActiveRecord(finders = { "findClientesByCpfEquals", "findClientesByCpfLike", "findClientesByDataDeNascimentoBetween", "findClientesByNomeEquals", "findClientesByNomeLike" })
 @Table(name = "cliente")
 @Entity
-public class Cliente implements Serializable{
-	
+public class Cliente implements Serializable {
+
 	/**
 	 * 
 	 */
@@ -44,43 +44,43 @@ public class Cliente implements Serializable{
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-    /**
-     */
-    @Column(nullable = false, precision = 2)
-    private String nome;
 
-    /**
+	/**
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    private Endereco endereco;
+	@Column(nullable = false, precision = 2)
+	private String nome;
 
-    /**
+	/**
      */
-    @Column(nullable = false, precision = 2)
-    private double debito;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Endereco endereco;
 
-    /**
+	/**
      */
-    @Column(nullable = true,length = 11)
-    private String cpf;
-    
-    /**
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-    private Calendar dataDeNascimento;
+	@Column(nullable = false, precision = 2)
+	private double debito;
 
-    /**
+	/**
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
-    private List<Dependente> dependentes = new ArrayList<Dependente>();
+	@Column(nullable = true, length = 11)
+	private String cpf;
 
-    /**
+	/**
      */
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Telefone> telefones = new ArrayList<Telefone>();
-    
-    public String getNome() {
+	@Temporal(TemporalType.TIMESTAMP)
+	private Calendar dataDeNascimento;
+
+	/**
+     */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
+	private List<Dependente> dependentes = new ArrayList<Dependente>();
+
+	/**
+     */
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Telefone> telefones = new ArrayList<Telefone>();
+
+	public String getNome() {
 		return nome;
 	}
 
@@ -129,75 +129,81 @@ public class Cliente implements Serializable{
 	}
 
 	public void addTelefones(Telefone telefone) {
-		if(this.telefones == null){
+		if (this.telefones == null) {
 			this.telefones = new ArrayList<Telefone>();
 		}
 		this.telefones.add(telefone);
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return nome;
 	}
 
-	public static void salvar(Cliente c){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.persist(c);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void atualizar(Cliente c){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.merge(c);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void remover(Cliente c){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.remove(c);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	
+	public static void salvar(Cliente c) {
+		Persistencia.iniciarTrascao();
+		try {
+			Persistencia.em.persist(c);
+		} finally {
+			Persistencia.finalizarTrascao();
+		}
+	}
+
+	public static void atualizar(Cliente c) {
+		Persistencia.iniciarTrascao();
+		try {
+			Persistencia.em.merge(c);
+		} finally {
+			Persistencia.finalizarTrascao();
+		}
+	}
+
+	public static void remover(Cliente c) {
+		Persistencia.iniciarTrascao();
+		try {
+			Persistencia.em.remove(c);
+		} finally {
+			Persistencia.finalizarTrascao();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
-	public static List<Cliente> recuperarLista(){
+	public static List<Cliente> recuperarLista() {
 		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
-			.createQuery("select cliente from Cliente cliente");
+				.createQuery("select cliente from Cliente cliente");
 		List<Cliente> clientes = consulta.getResultList();
 		Persistencia.em.getTransaction().commit();
 		return clientes;
-    }
-	
-	
-	public static Cliente recuperarCliente(int idCliente){
+	}
+
+	public static Cliente recuperarCliente(int idCliente) {
 		Persistencia.em.getTransaction().begin();
-		Query consulta = Persistencia.em
-			.createQuery("select c from Cliente as c where c.id = :idCliente ", Cliente.class);
+		Query consulta = Persistencia.em.createQuery(
+				"select c from Cliente as c where c.id = :idCliente ",
+				Cliente.class);
 		consulta.setParameter("idCliente", idCliente);
 		Cliente c = (Cliente) consulta.getSingleResult();
 		Persistencia.em.getTransaction().commit();
 		return c;
-    }
+	}
 
-	public void acrecentarDebito(double valor) throws ParametrosInvalidosException {
-		if(valor > 0){
+	public void acrecentarDebito(double valor)
+			throws ParametrosInvalidosException {
+		if (valor > 0) {
 			debito += valor;
-		}else{
+		} else {
 			throw new ParametrosInvalidosException();
 		}
 	}
-	
-	public void diminuirDebito(double valor) throws ParametrosInvalidosException {
-		if(valor > 0){
+
+	public void diminuirDebito(double valor)
+			throws ParametrosInvalidosException {
+		if (valor > 0) {
 			debito -= valor;
-		}else{
+		} else {
 			throw new ParametrosInvalidosException();
 		}
 	}
-	
-	
-	
-	
-    
+
 }

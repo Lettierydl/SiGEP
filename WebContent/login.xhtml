@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>SiGEP</title>
+	<link href="dist/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+	<link href="dist/css/signin.css" rel="stylesheet" />
+
+</h:head>
+<h:body>
+	<div class="container">
+		<form class="form-signin">
+			<h2 class="form-signin-heading">Entrar no Sistema</h2>
+			
+			<h:outputLabel value="Login:"/>
+			<h:inputText id="loginText" type="text" class="form-control"
+				required="true" maxlength="50"/>
+			<h:outputLabel value="Senha:"/>
+			
+			<h:inputSecret id="senhaText" class="form-control" required="true"/>
+			<h:commandButton id="recuperarSenhaBtn" class="btn btn-link"
+			 value="Recuperar Senha" />
+			
+			
+			<h:commandButton action="#{loginManagedBeam.logar}" value="Logar"
+				class="btn btn-lg btn-primary btn-block" />
+
+		</form>
+	</div>
+
+</h:body>
+</html>
