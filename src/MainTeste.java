@@ -1,5 +1,10 @@
-import com.twol.sigep.model.estoque.Produto;
+import java.util.Calendar;
+
+import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
+import com.twol.sigep.model.pessoas.Cliente;
+import com.twol.sigep.model.pessoas.FinderCliente;
+import com.twol.sigep.model.pessoas.Telefone;
 
 
 
@@ -12,11 +17,35 @@ public class MainTeste {
 	 * @throws EntidadeJaPersistidaException 
 	 */
 	public static void main(String[] args) throws EntidadeJaPersistidaException{
-		Produto p = new Produto();
-		p.setDescricao("teste23");
-		p.setCodigoDeBarras("12345632");
-		Produto.salvar(p);
+		Facede f = new  Facede();
+		f.limparBancoDeDados();
 		
+		Cliente c = new Cliente();
+		c.setCpf("000000");
+		c.setDataDeNascimento(Calendar.getInstance());
+		c.setNome("clienteTeste");
+		Telefone t = new Telefone();
+		t.setDdd("83");
+		t.setOperadora("TIM");
+		t.setTelefone("99676531");
+		c.addTelefones(t);
+		
+		Telefone t2 = new Telefone();
+		t2.setDdd("83");
+		t2.setOperadora("TIM");
+		t2.setTelefone("99676532");
+		c.addTelefones(t2);
+		
+		Telefone t3 = new Telefone();
+		t3.setDdd("83");
+		t3.setOperadora("TIM");
+		t3.setTelefone("9969992");
+		c.addTelefones(t3);
+		
+		
+		Cliente.salvar(c);
+		
+		System.out.println(FinderCliente.clientesQueCPFInicia(c.getCpf()).get(0).getTelefones());
 	}
 
 	/*Teste FinderProduto

@@ -36,7 +36,7 @@ public class Produto extends Entidade{
 		return id;
 	}
 
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
 
@@ -185,21 +185,19 @@ public class Produto extends Entidade{
 
 	@SuppressWarnings("unchecked")
 	public static List<Produto> recuperarLista() {
-		Persistencia.em.getTransaction().begin();
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
-				.createNamedQuery("select produto from Produto produto");
+				.createQuery("select produto from Produto produto");
 		List<Produto> produtos = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
 		return produtos;
 	}
 
 	public static Produto recuperarProduto(int idProduto) {
-		Persistencia.em.getTransaction().begin();
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
 				.createQuery("select o from Produto as o WHERE o.id = :idProduto");
 		consulta.setParameter("idProduto", idProduto);
 		Produto produto = (Produto) consulta.getSingleResult();
-		Persistencia.em.getTransaction().commit();
 		return produto;
 	}
 

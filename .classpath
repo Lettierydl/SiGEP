@@ -47,5 +47,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/stax2-api-3.1.1.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/staxmapper-1.1.0.Final.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/woodstox-core-asl-4.1.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

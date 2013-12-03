@@ -23,7 +23,7 @@ public class FinderProduto {
 		if (codigoDeBarras.charAt(codigoDeBarras.length() - 1) != '%') {
 			codigoDeBarras = codigoDeBarras + "%";
 		}
-		
+		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Produto as o where LOWER(o.codigoDeBarras) LIKE LOWER(:codigoDeBarras)",
@@ -46,7 +46,7 @@ public class FinderProduto {
 		if (descricao.charAt(descricao.length() - 1) != '%') {
 			descricao = descricao + "%";
 		}
-		
+		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
 						"SELECT o FROM Produto AS o WHERE LOWER(o.descricao) LIKE LOWER(:descricao)",
@@ -67,7 +67,7 @@ public class FinderProduto {
 		if (codigoDeBarras.charAt(0) != '%') {
 			codigoDeBarras += "%";
 		}
-		
+		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Produto as o where LOWER(o.codigoDeBarras) LIKE LOWER(:codigoDeBarras)",
@@ -87,7 +87,7 @@ public class FinderProduto {
 		if (descricao.charAt(0) != '%') {
 			descricao += "%";
 		}
-		
+		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Produto as o where LOWER(o.descricao) LIKE LOWER(:descricao)",
@@ -114,6 +114,7 @@ public class FinderProduto {
 			stringQuery += "where LOWER(p.codigoDeBarras) LIKE LOWER(:codigoDeBarras) ";
 			valores.put("codigoDeBarras", codigoDeBarras + "%");
 		}
+		Persistencia.restartConnection();
 		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
 		for (Map.Entry<String, String> valor : valores.entrySet()) {
 			query.setParameter(valor.getKey(), valor.getValue());

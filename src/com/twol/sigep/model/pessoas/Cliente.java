@@ -18,15 +18,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findClientesByCpfEquals", "findClientesByCpfLike", "findClientesByDataDeNascimentoBetween", "findClientesByNomeEquals", "findClientesByNomeLike" })
 @Table(name = "cliente")
 @Entity
-public class Cliente extends Pessoa {
-
-
+public class Cliente extends Entidade {
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
@@ -36,10 +37,10 @@ public class Cliente extends Pessoa {
 		return id;
 	}
 
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
-
+	
 	/**
      */
 	@Column(nullable = false, precision = 2)
@@ -142,6 +143,7 @@ public class Cliente extends Pessoa {
 
 	@SuppressWarnings("unchecked")
 	public static List<Cliente> recuperarLista() {
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
 				.createQuery("select cliente from Cliente cliente");
 		List<Cliente> clientes = consulta.getResultList();
@@ -149,6 +151,7 @@ public class Cliente extends Pessoa {
 	}
 
 	public static Cliente recuperarCliente(int idCliente) {
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em.createQuery(
 				"select c from Cliente as c where c.id = :idCliente ",
 				Cliente.class);

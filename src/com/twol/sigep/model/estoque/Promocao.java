@@ -32,7 +32,7 @@ public class Promocao extends Entidade {
 		return id;
 	}
 
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
 	
@@ -122,11 +122,10 @@ public class Promocao extends Entidade {
 	
 	@SuppressWarnings("unchecked")
 	public static List<Promocao> recuperarLista(){
-		Persistencia.em.getTransaction().begin();
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
 				.createNamedQuery("select promocao from Promocao promocao");
 		List<Promocao> promocoes = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
 		return promocoes;
     }
 

@@ -29,7 +29,7 @@ public class Endereco extends Entidade{
 		return id;
 	}
 
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
 	
@@ -113,6 +113,7 @@ public class Endereco extends Entidade{
 	
 	@SuppressWarnings("unchecked")
 	public static List<Endereco> recuperarLista(){
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
 				.createNamedQuery("select endereco from Endereco endereco");
 		List<Endereco> enderecos = consulta.getResultList();

@@ -15,12 +15,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+import com.twol.sigep.model.Entidade;
 import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findRepresentantesByNomeEquals", "findRepresentantesByNomeLike", "findRepresentantesByRazaoSocialDaEmpresaEquals", "findRepresentantesByRazaoSocialDaEmpresaLike" })
 @Table(name = "representante")
 @Entity
-public class Representante extends Pessoa{
+public class Representante extends Entidade{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +32,7 @@ public class Representante extends Pessoa{
 		return id;
 	}
 
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
 	
@@ -92,6 +93,7 @@ public class Representante extends Pessoa{
 	
 	@SuppressWarnings("unchecked")
 	public static List<Representante> recuperarLista(){
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
 				.createNamedQuery("select representante from Representante representante");
 		List<Representante> representantes = consulta.getResultList();

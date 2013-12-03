@@ -28,7 +28,7 @@ public class Telefone extends Entidade{
 		return id;
 	}
 
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
 	
@@ -74,6 +74,7 @@ public class Telefone extends Entidade{
 	
 	@SuppressWarnings("unchecked")
 	public static List<Telefone> recuperarLista(){
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
 				.createNamedQuery("select telefone from Telefone telefone");
 		List<Telefone> telefones = consulta.getResultList();

@@ -23,7 +23,7 @@ public class FinderCliente {
 		if (nome.charAt(nome.length() - 1) != '%') {
 			nome += "%";
 		}
-		
+		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Cliente as o where LOWER(o.nome) LIKE LOWER(:nome)",
@@ -46,7 +46,7 @@ public class FinderCliente {
 		if (cpf.charAt(cpf.length() - 1) != '%') {
 			cpf += "%";
 		}
-		
+		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
 						"SELECT o FROM Cliente AS o WHERE LOWER(o.cpf) LIKE LOWER(:cpf)",
@@ -67,7 +67,7 @@ public class FinderCliente {
 		if (nome.charAt(0) != '%') {
 			nome += "%";
 		}
-		
+		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Cliente as o where LOWER(o.nome) LIKE LOWER(:nome)",
@@ -79,7 +79,7 @@ public class FinderCliente {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Cliente> ClientesQueCPFInicia(String cpf) {
+	public static List<Cliente> clientesQueCPFInicia(String cpf) {
 		if (cpf == null || cpf.length() == 0)
 			throw new IllegalArgumentException(
 					"É necessário uma CPF válida");
@@ -87,7 +87,7 @@ public class FinderCliente {
 		if (cpf.charAt(0) != '%') {
 			cpf += "%";
 		}
-		
+		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
 						"select o from Cliente as o where LOWER(o.cpf) LIKE LOWER(:cpf)",
@@ -99,7 +99,7 @@ public class FinderCliente {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Cliente> ClientesQueDescricaoOuCodigoDeBarrasIniciam(
+	public static List<Cliente> clientesQueDescricaoOuCodigoDeBarrasIniciam(
 			String descricao, String codigoDeBarras) {
 		String stringQuery = "select p FROM Cliente as p ";
 		Map<String, String> valores = new HashMap<String, String>();
@@ -114,6 +114,7 @@ public class FinderCliente {
 			stringQuery += "where LOWER(p.codigoDeBarras) LIKE LOWER(:codigoDeBarras) ";
 			valores.put("codigoDeBarras", codigoDeBarras + "%");
 		}
+		Persistencia.restartConnection();
 		Query query = Persistencia.em.createQuery(stringQuery, Cliente.class);
 		for (Map.Entry<String, String> valor : valores.entrySet()) {
 			query.setParameter(valor.getKey(), valor.getValue());

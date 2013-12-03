@@ -21,7 +21,7 @@ public class Funcionario {
 		return id;
 	}
 
-	public void setId(int id) {
+	protected void setId(int id) {
 		this.id = id;
 	}
 	
@@ -137,11 +137,10 @@ public class Funcionario {
 	
 	@SuppressWarnings("unchecked")
 	public static List<Funcionario> recuperarLista(){
-		Persistencia.em.getTransaction().begin();
+		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
-				.createNamedQuery("select funcionario from Funcionario funcionario");
+				.createQuery("select funcionario from Funcionario funcionario");
 		List<Funcionario> fucionarios = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
 		return fucionarios;
     }
     

@@ -32,7 +32,6 @@ public abstract class Entidade {
 		Persistencia.iniciarTrascao();
 		try{
 			Persistencia.em.merge(e);
-			Persistencia.em.getTransaction().commit();
 		}finally{
 			Persistencia.finalizarTrascao();
 		}
@@ -42,7 +41,6 @@ public abstract class Entidade {
 		Persistencia.iniciarTrascao();
 		try{
 			Persistencia.em.remove(e);
-			Persistencia.em.getTransaction().commit();
 		}finally{
 			Persistencia.finalizarTrascao();
 		}
