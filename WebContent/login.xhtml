@@ -12,23 +12,27 @@
 </h:head>
 <h:body>
 	<div class="container">
-		<form class="form-signin">
+		<h:form class="form-signin">
 			<h2 class="form-signin-heading">Entrar no Sistema</h2>
 			
 			<h:outputLabel value="Login:"/>
 			<h:inputText id="loginText" type="text" class="form-control"
-				required="true" maxlength="50"/>
+				required="true" maxlength="50" value="#{loginBean.login}"
+				requiredMessage="Login inválido"/>
+				
 			<h:outputLabel value="Senha:"/>
+			<h:inputSecret id="senhaText" class="form-control" required="true"
+			value="#{loginBean.senha}" requiredMessage="Senha inválida"/>
 			
-			<h:inputSecret id="senhaText" class="form-control" required="true"/>
+			
 			<h:commandButton id="recuperarSenhaBtn" class="btn btn-link"
 			 value="Recuperar Senha" />
 			
 			
-			<h:commandButton action="#{loginManagedBeam.logar}" value="Logar"
+			<h:commandButton actionListener="#{loginBean.logar()}" value="Logar"
 				class="btn btn-lg btn-primary btn-block" />
 
-		</form>
+		</h:form>
 	</div>
 
 </h:body>

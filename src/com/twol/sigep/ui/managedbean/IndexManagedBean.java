@@ -6,7 +6,7 @@ import javax.faces.bean.ManagedBean;
 import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
 import com.twol.sigep.model.pessoas.Cliente;
 
-@ManagedBean(name = "indexManagedBean")
+@ManagedBean(name = "indexBean")
 public class IndexManagedBean {
 	
 	

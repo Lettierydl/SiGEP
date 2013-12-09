@@ -3,7 +3,19 @@ package com.twol.sigep.model.pessoas;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
 
 import com.twol.sigep.util.Persistencia;
 
@@ -29,6 +41,9 @@ public class Funcionario {
      */
     @Column(nullable = false)
     private String nome;
+    
+    @Column(nullable = false, unique = true, length = 50)
+    private String login;
 
     /**
      */
@@ -64,6 +79,14 @@ public class Funcionario {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
 	public Endereco getEndereco() {
@@ -117,23 +140,32 @@ public class Funcionario {
 		this.telefones.add(telefone);
 	}
     
-	static void salvar(Funcionario e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.persist(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	static void atualizar(Funcionario e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.merge(e);
-    	Persistencia.em.getTransaction().commit();
-    }
-	
-	public static void remover(Funcionario e){
-    	Persistencia.em.getTransaction().begin();
-    	Persistencia.em.remove(e);
-    	Persistencia.em.getTransaction().commit();
-    }
+	static void salvar(Funcionario f)  {
+			Persistencia.iniciarTrascao();
+			try{
+				Persistencia.em.persist(f);
+			}finally{
+				Persistencia.finalizarTrascao();
+			}
+	}
+
+	static void atualizar(Funcionario e) {
+		Persistencia.iniciarTrascao();
+		try{
+			Persistencia.em.merge(e);
+		}finally{
+			Persistencia.finalizarTrascao();
+		}
+	}
+
+	public static void remover(Funcionario e) {
+		Persistencia.iniciarTrascao();
+		try{
+			Persistencia.em.remove(e);
+		}finally{
+			Persistencia.finalizarTrascao();
+		}
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static List<Funcionario> recuperarLista(){
@@ -142,6 +174,18 @@ public class Funcionario {
 				.createQuery("select funcionario from Funcionario funcionario");
 		List<Funcionario> fucionarios = consulta.getResultList();
 		return fucionarios;
+    }
+	
+	public static Funcionario recuperarFuncionarioPorLoginESenha
+	(String login, String senha){
+		Persistencia.restartConnection();
+		Query consulta = Persistencia.em
+				.createQuery("select f from Funcionario as f where f.login = :lo " +
+						"and f.senha = :se");
+		consulta.setParameter("lo", login);
+		consulta.setParameter("se", senha);
+		Funcionario fuc= (Funcionario) consulta.getSingleResult();
+		return fuc;
     }
     
     

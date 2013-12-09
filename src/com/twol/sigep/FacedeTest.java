@@ -6,8 +6,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.pessoas.Cliente;
+import com.twol.sigep.model.pessoas.ControllerFuncionario;
 import com.twol.sigep.model.pessoas.Endereco;
+import com.twol.sigep.model.pessoas.Funcionario;
+import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 import com.twol.sigep.model.pessoas.UF;
 
 public class FacedeTest {
@@ -75,9 +79,17 @@ public class FacedeTest {
 		for (Cliente c : clientes) {
 			fac.adicionarCliente(c);
 		}
-
-		// Assert.assertEquals(fac.getListaClientes().size(), MAX_CLIENTES);
-
+		 Assert.assertEquals(fac.getListaClientes().size(), MAX_CLIENTES);
+	}
+	
+	@Test
+	public void adicionarFuncionario() throws ParametrosInvalidosException{
+		Funcionario f = new Funcionario();
+		f.setCpf("09699482478");
+		f.setLogin("leo");
+		f.setNome("Lettiery");
+		f.setTipoDeFuncionario(TipoDeFuncionario.Supervisor);
+		new ControllerFuncionario().salvarFuncionario(f, "123456");
 	}
 
 }

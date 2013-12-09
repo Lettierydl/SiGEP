@@ -9,10 +9,10 @@ public class ControllerFuncionario {
 
 	private Funcionario logado = null;
 
-	public void logar(Funcionario f, String senha)
+	public void logar(String login, String senha)
 			throws SenhaIncorretaException, FuncionarioJaLogadoException,
 			ParametrosInvalidosException {
-		validarSenha(f, senha);
+		Funcionario f = validarSenha(login, senha);
 		if (logado == null || !f.isLogado()) {
 			f.setLogado(true);
 			Funcionario.atualizar(f);
@@ -33,17 +33,17 @@ public class ControllerFuncionario {
 	}
 	
 	public void salvarFuncionario(Funcionario f, String senha) throws ParametrosInvalidosException{
-		Funcionario.salvar(f);
 		setSenhaFuncionarioPrimeiraVes(f, senha);
+		Funcionario.salvar(f);
 	}
 	
 	public void atualizarFuncionario(Funcionario f){
 		Funcionario.atualizar(f);
 	}
 
-	public void modificarSenhaFuncionario(Funcionario f, String senhaAntiga,
+	public void modificarSenhaFuncionario(String login, String senhaAntiga,
 			String novaSenha) throws ParametrosInvalidosException, SenhaIncorretaException {
-		validarSenha(f, senhaAntiga);
+		Funcionario f = validarSenha(login, senhaAntiga);
 		setSenhaFuncionario(f, novaSenha);
 	}
 
@@ -51,17 +51,14 @@ public class ControllerFuncionario {
 		return string;
 	}
 	
-	private void validarSenha(Funcionario f, String senha)
+	private Funcionario validarSenha(String login, String senha)
 			throws ParametrosInvalidosException, SenhaIncorretaException {
-		if (f == null || senha == null) {
-			throw new ParametrosInvalidosException();
-		}
-		if (f.getSenha() != null || f.getSenha().isEmpty()) {
-			throw new ParametrosInvalidosException();
-		}
-		if (!f.getSenha().equals(this.criptografar(senha))) {
-			throw new SenhaIncorretaException();
-		}
+		Funcionario f = null;
+		try{
+			f = Funcionario.recuperarFuncionarioPorLoginESenha(login,
+					criptografar(senha));
+		}catch(Exception e){throw new SenhaIncorretaException();}
+		return f;
 	}
 	
 	private void setSenhaFuncionario(Funcionario f, String senha)
@@ -75,9 +72,9 @@ public class ControllerFuncionario {
 	
 	private void setSenhaFuncionarioPrimeiraVes(Funcionario f, String senha)
 			throws ParametrosInvalidosException {
-		if(f.getSenha() != null || !f.getSenha().isEmpty()){
+		if(f.getSenha() != null && !f.getSenha().isEmpty()){
 			throw new ParametrosInvalidosException();
 		}
-		setSenhaFuncionario(f, senha);
+		f.setSenha(criptografar(senha));
 	}
 }
