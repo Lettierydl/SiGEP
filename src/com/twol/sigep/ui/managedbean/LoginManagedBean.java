@@ -40,11 +40,7 @@ public class LoginManagedBean {
 			return;
 		}
 		JSFUiUtil.info(OperacaoStringUtil.LOGIN_REALIZADO);
-		try {
-			SessionUtil.redirecionarParaPage(SessionUtil.PAGE_PRINCIPAL);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 	}
 
 	public boolean validarLogin() {

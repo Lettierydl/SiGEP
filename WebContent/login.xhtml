@@ -13,6 +13,8 @@
 <h:body>
 	<div class="container">
 		<h:form class="form-signin">
+			
+		<h:messages id="mensage"/>
 			<h2 class="form-signin-heading">Entrar no Sistema</h2>
 			
 			<h:outputLabel value="Login:"/>
@@ -30,8 +32,12 @@
 			
 			
 			<h:commandButton actionListener="#{loginBean.logar()}" value="Logar"
-				class="btn btn-lg btn-primary btn-block" />
-
+				class="btn btn-lg btn-primary btn-block" >
+			</h:commandButton>
+			
+			
+			<span class="label label-danger">Danger</span>
+			
 		</h:form>
 	</div>
 
