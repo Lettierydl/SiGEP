@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.util.SessionUtil;
@@ -20,12 +21,12 @@ import com.twol.sigep.util.SessionUtil;
 @WebFilter("/restrito/*")
 public class WebFiltro implements Filter {
 
-    /**
-     * Default constructor. 
-     */
-    public WebFiltro() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Default constructor.
+	 */
+	public WebFiltro() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see Filter#destroy()
@@ -37,14 +38,23 @@ public class WebFiltro implements Filter {
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest http = (HttpServletRequest)request;
-		System.out.println(http.getContextPath());
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		Funcionario funcionarioLogado = null;
+		try {
+			funcionarioLogado = (Funcionario) httpRequest.getSession()
+					.getAttribute(SessionUtil.KEY_USUARIO_LOGADO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(funcionarioLogado == null){
+			httpResponse.sendRedirect(SessionUtil.PAGE_INICIAL);
+			return;
+		}
 		
-		
-		chain.doFilter(http, response);
-		Funcionario funcionarioLogado = SessionUtil.getFuncionarioLogado();
-		System.out.println("logado: " +funcionarioLogado);
+		chain.doFilter(httpRequest, response);
 	}
 
 	/**

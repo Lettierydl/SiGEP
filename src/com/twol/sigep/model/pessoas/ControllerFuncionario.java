@@ -13,9 +13,7 @@ public class ControllerFuncionario {
 			throws SenhaIncorretaException, FuncionarioJaLogadoException,
 			ParametrosInvalidosException {
 		Funcionario f = validarSenha(login, senha);
-		if (logado == null || !f.isLogado()) {
-			f.setLogado(true);
-			Funcionario.atualizar(f);
+		if (logado == null) {
 			this.logado = f;
 			SessionUtil.putFuncionarioLogado(f);
 		} else {
@@ -26,8 +24,6 @@ public class ControllerFuncionario {
 	public void logoff() {
 		if (logado != null) {
 			SessionUtil.putFuncionarioLogado(null);
-			logado.setLogado(false);
-			Funcionario.atualizar(logado);
 			logado = null;
 		}
 	}

@@ -6,19 +6,81 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<title>SiGEP - Home</title>
-	<link href="../dist/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+	<link href="../dist/css/bootstrap.min.css" rel="stylesheet"
+		media="screen" />
 	<link href="../dist/css/bootstrap.css" rel="stylesheet" media="screen" />
 
 </h:head>
 <h:body>
-<span class="label label-danger">Danger</span>
-	<div class="container">
-		<h:form class="form-signin">
-		
-			<h:outputText  class="label label-danger" value="Teste" id="Teste" />
-		</h:form>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Nome do Sistema</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<h:form id="loginForm" class="navbar-form navbar-right">
+					<div class="form-group">
+						<h:inputText id="loginText" type="text" class="form-control"
+							required="true" maxlength="50" value="#{loginBean.login}"
+							requiredMessage="Login inválido" />
+						<p:watermark value="Login" for="loginText" />
+					</div>
+					<div class="form-group">
+						<h:inputSecret id="senhaText" required="true" class="form-control"
+							value="#{loginBean.senha}" requiredMessage="Senha inválida" />
+						<p:watermark value="Senha" for="senhaText" />
+					</div>
+					<div class="form-group">
+					<h:commandButton actionListener="#{loginBean.logar}" value="Logar"
+						class="btn btn-success" />
+					</div>
+				</h:form>
+			</div>
+			<!--/.navbar-collapse -->
+		</div>
 	</div>
-	<script type="text/javascript" src="../dist/js/bootstrap.js"/>
+
+
+	<div class="jumbotron">
+		<div class="container">
+			<h1>Nome do Sistema</h1>
+			<p>Aqui vc pode colocar um texto bonito de propaganda ou
+				tutoriais entre mais ou menos com 2 paragrafos</p>
+			<p>
+				<a class="btn btn-primary btn-lg">Ver Mais &raquo;</a>
+			</p>
+		</div>
+	</div>
+
+
+
+	 <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Texto Bonito</h2>
+          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type. </p>
+          <p><a class="btn btn-default" href="#" >View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Texto Lindo</h2>
+          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type. </p>
+          <p><a class="btn btn-default" href="#" >View details &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Texto Gato</h2>
+          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type.</p>
+          <p><a class="btn btn-default" href="#" >View details &raquo;</a></p>
+        </div>
+      </div>
+      
+    </div> <!-- /container -->
+	
+
+
+
+
+	<script type="text/javascript" src="../dist/js/bootstrap.js" />
 </h:body>
 
 </html>

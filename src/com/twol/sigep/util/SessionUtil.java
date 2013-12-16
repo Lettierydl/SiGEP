@@ -13,18 +13,17 @@ public class SessionUtil {
 
 	public static final String KEY_USUARIO_LOGADO = "USUARIO_LOGADO";
 	public static final String PAGE_PRINCIPAL = "restrito/principal.jsf";
+	public static final String PAGE_INICIAL = "/SiGEP/";
 	
 	
 
     public static HttpServletRequest obterRequest() {
-            obterContext();
-			return (HttpServletRequest) FacesContext.getCurrentInstance()
-                            .getExternalContext().getRequest();
+		return (HttpServletRequest) obterContext()
+                .getExternalContext().getRequest();
     }
 
     public static HttpServletResponse obterResponse() {
-            obterContext();
-			return (HttpServletResponse) FacesContext.getCurrentInstance()
+			return (HttpServletResponse) obterContext()
                             .getExternalContext().getResponse();
     }
 
@@ -33,13 +32,12 @@ public class SessionUtil {
     }
 
     public static HttpSession obterSession() {
-            return (HttpSession) obterContext().getExternalContext().getSession(
-                            false);
-    }
+        return (HttpSession) obterContext().getExternalContext().getSession(
+                        false);
+}
     
-    @SuppressWarnings("deprecation")
 	public static void putFuncionarioLogado(Funcionario f){
-    	obterSession().putValue(KEY_USUARIO_LOGADO, f);
+    	obterSession().setAttribute(KEY_USUARIO_LOGADO, f);
     }
     
     public static Funcionario getFuncionarioLogado() {

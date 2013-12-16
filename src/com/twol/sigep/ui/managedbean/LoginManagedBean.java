@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 
 import com.twol.sigep.model.exception.FuncionarioJaLogadoException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
@@ -26,11 +27,11 @@ public class LoginManagedBean {
 		controller = new ControllerFuncionario();
 	}
 
-	public void logar() {
+	public void logar(ActionEvent ac) {
 		try {
 			controller.logar(login, senha);
 		} catch (SenhaIncorretaException e) {
-			JSFUiUtil.error(OperacaoStringUtil.MESSAGEM_SENHA_INVALIDA);
+			JSFUiUtil.error(OperacaoStringUtil.MESSAGEM_LOGIN_INVALIDO);
 			return;
 		} catch (FuncionarioJaLogadoException e) {
 			JSFUiUtil.error(OperacaoStringUtil.FUNCIONARIO_JA_LOGADO);
@@ -39,7 +40,11 @@ public class LoginManagedBean {
 			JSFUiUtil.error(OperacaoStringUtil.PARAMETROS_INVALIDOS);
 			return;
 		}
-		JSFUiUtil.info(OperacaoStringUtil.LOGIN_REALIZADO);
+		//JSFUiUtil.info(OperacaoStringUtil.LOGIN_REALIZADO);
+		try{
+		 
+			SessionUtil.redirecionarParaPage(SessionUtil.PAGE_PRINCIPAL);
+		}catch(IOException io){io.printStackTrace();}
 		
 	}
 

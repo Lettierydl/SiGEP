@@ -66,8 +66,6 @@ public class Funcionario {
     @Column(nullable = false, length = 11)
     private String cpf;
     
-    @Column(nullable = false)
-    private boolean logado;
     /**
      */
     @OneToMany(cascade = CascadeType.ALL)
@@ -95,14 +93,6 @@ public class Funcionario {
 
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
-	}
-	
-	boolean isLogado() {
-		return logado;
-	}
-
-	void setLogado(boolean logado) {
-		this.logado = logado;
 	}
 
 	String getSenha() {

@@ -6,7 +6,8 @@ import javax.faces.context.FacesContext;
 
 
 public class JSFUiUtil {
-
+	
+	
 	public static void info(String componente, String msgResumida, String msgDetalhada) {
 		JSFUiUtil.informar(componente, msgResumida, msgDetalhada, FacesMessage.SEVERITY_INFO);
 	}
