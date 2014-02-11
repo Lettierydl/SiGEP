@@ -1,8 +1,6 @@
 package com.twol.sigep.model.pessoas;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Query;
 
@@ -15,7 +13,7 @@ public class FinderCliente {
 			String nome) {
 		if (nome == null || nome.length() == 0)
 			throw new IllegalArgumentException(
-					"É necessário um nome válido");
+					"������ necess������rio um nome v������lido");
 		nome = nome.replace('*', '%');
 		if (nome.charAt(0) != '%') {
 			nome = "%" + nome;
@@ -28,7 +26,7 @@ public class FinderCliente {
 				.createQuery(
 						"select o from Cliente as o where LOWER(o.nome) LIKE LOWER(:nome)",
 						Cliente.class);
-		q.setParameter("nome", nome);
+		q.setParameter("nome", nome.replace(" ", "%"));
 		List<Cliente> clientes = q.getResultList();
 		
 		return clientes;
@@ -38,7 +36,7 @@ public class FinderCliente {
 	public static List<Cliente> clientesQueCPFLike(String cpf) {
 		if (cpf == null || cpf.length() == 0)
 			throw new IllegalArgumentException(
-					"É necessário uma CPF válido");
+					"������ necess������rio uma CPF v������lido");
 		cpf = cpf.replace('*', '%');
 		if (cpf.charAt(0) != '%') {
 			cpf = "%" + cpf;
@@ -51,7 +49,7 @@ public class FinderCliente {
 				.createQuery(
 						"SELECT o FROM Cliente AS o WHERE LOWER(o.cpf) LIKE LOWER(:cpf)",
 						Cliente.class);
-		q.setParameter("cpf", cpf);
+		q.setParameter("cpf", cpf.replace(" ", "%"));
 		List<Cliente> clientes = q.getResultList();
 		
 		return clientes;
@@ -62,7 +60,7 @@ public class FinderCliente {
 			String nome) {
 		if (nome == null || nome.length() == 0)
 			throw new IllegalArgumentException(
-					"É necessário um nome válido");
+					"������ necess������rio um nome v������lido");
 		nome = nome.replace('*', '%');
 		if (nome.charAt(0) != '%') {
 			nome += "%";
@@ -82,7 +80,7 @@ public class FinderCliente {
 	public static List<Cliente> clientesQueCPFInicia(String cpf) {
 		if (cpf == null || cpf.length() == 0)
 			throw new IllegalArgumentException(
-					"É necessário uma CPF válida");
+					"������ necess������rio uma CPF v������lida");
 		cpf = cpf.replace('*', '%');
 		if (cpf.charAt(0) != '%') {
 			cpf += "%";
@@ -99,28 +97,34 @@ public class FinderCliente {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Cliente> clientesQueDescricaoOuCodigoDeBarrasIniciam(
-			String descricao, String codigoDeBarras) {
-		String stringQuery = "select p FROM Cliente as p ";
-		Map<String, String> valores = new HashMap<String, String>();
-		if (descricao != null) {
-			stringQuery += "where LOWER(p.descricao) LIKE LOWER(:descricao) ";
-			valores.put("descricao", descricao + "%");
-			if (codigoDeBarras != null) {
-				stringQuery += "and LOWER(p.codigoDeBarras) LIKE LOWER(:codigoDeBarras) ";
-				valores.put("codigoDeBarras",codigoDeBarras + "%");
-			}
-		} else if (codigoDeBarras != null) {
-			stringQuery += "where LOWER(p.codigoDeBarras) LIKE LOWER(:codigoDeBarras) ";
-			valores.put("codigoDeBarras", codigoDeBarras + "%");
-		}
+	public static List<Cliente> clientesQueNomeOuCPFIniciam(
+			String nomeOuCpf) {
+		String stringQuery = "select c FROM Cliente as c ";
+		stringQuery += "where LOWER(c.nome) LIKE LOWER(:nome) or " +
+							 "LOWER(c.cpf) LIKE LOWER(:cpf)";
+		
 		Persistencia.restartConnection();
 		Query query = Persistencia.em.createQuery(stringQuery, Cliente.class);
-		for (Map.Entry<String, String> valor : valores.entrySet()) {
-			query.setParameter(valor.getKey(), valor.getValue());
-		}
+		
+		query.setParameter("nome", nomeOuCpf.replace(" ", "%")+"%");
+		query.setParameter("cpf", nomeOuCpf.replace(" ", "%")+"%");
+		
 		List<Cliente> Clientes = (List<Cliente>) query.getResultList();
 		return Clientes;
+	}
+
+	public static List<String> nomeClientesQueNomeInicia(String nome) {
+		String stringQuery = "select c.nome FROM Cliente as c ";
+		stringQuery += "where LOWER(c.nome) LIKE LOWER(:nome) ";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, String.class);
+		
+		query.setParameter("nome", nome.replace(" ", "%")+"%");
+		
+		@SuppressWarnings("unchecked")
+		List<String> nomes = (List<String>) query.getResultList();
+		return nomes;
 	}
 
 }

@@ -14,6 +14,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 
 import com.twol.sigep.model.Entidade;
+import com.twol.sigep.util.OperacaoStringUtil;
 import com.twol.sigep.util.Persistencia;
 
 @Table(name = "endereco")
@@ -36,7 +37,7 @@ public class Endereco extends Entidade{
     /**
      */
     @Column(nullable = false)
-    private String rua;
+    private String rua = "";
 
     /**
      */
@@ -61,7 +62,7 @@ public class Endereco extends Entidade{
     /**
      */
     @Enumerated(EnumType.STRING)
-    private UF uf;
+    private UF uf = UF.PB;
 
 	public String getRua() {
 		return rua;
@@ -111,6 +112,22 @@ public class Endereco extends Entidade{
 		this.uf = uf;
 	}
 	
+	private boolean isPreenchido(){
+		return rua != null && numero !=null && bairro != null && cidade != null && cep != null;
+	}
+	
+	@Override
+	public String toString() {
+		if(!isPreenchido()){
+			return "Não Preenchido";
+		}
+		String cep = "";
+		if(this.cep!=null && this.cep.length() >= 8){
+			cep = ", CEP: "+OperacaoStringUtil.formatarStringParaMascaraDeCep(this.cep);
+		}
+		return rua +", Nº "+numero+" - Bairro: "+bairro+", "+cidade+" " + uf + cep;
+	}
+
 	@SuppressWarnings("unchecked")
 	public static List<Endereco> recuperarLista(){
 		Persistencia.restartConnection();

@@ -15,7 +15,7 @@ public class FinderProduto {
 			String codigoDeBarras) {
 		if (codigoDeBarras == null || codigoDeBarras.length() == 0)
 			throw new IllegalArgumentException(
-					"É necessário um codigo de barras válido");
+					"�� necess��rio um codigo de barras v��lido");
 		codigoDeBarras = codigoDeBarras.replace('*', '%');
 		if (codigoDeBarras.charAt(0) != '%') {
 			codigoDeBarras = "%" + codigoDeBarras;
@@ -39,17 +39,13 @@ public class FinderProduto {
 		if (descricao == null || descricao.length() == 0)
 			throw new IllegalArgumentException(
 					"É necessário uma descrição válida");
-		descricao = descricao.replace('*', '%');
-		if (descricao.charAt(0) != '%') {
-			descricao = "%" + descricao;
-		}
-		if (descricao.charAt(descricao.length() - 1) != '%') {
-			descricao = descricao + "%";
-		}
+		descricao = descricao.replace("%", "");
+		descricao = descricao + "%";
+		
 		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
-						"SELECT o FROM Produto AS o WHERE LOWER(o.descricao) LIKE LOWER(:descricao)",
+						"SELECT o FROM Produto AS o WHERE LOWER(o.descricao) LIKE LOWER(:descricao) order by descricao",
 						Produto.class);
 		q.setParameter("descricao", descricao);
 		List<Produto> produtos = q.getResultList();
@@ -62,7 +58,7 @@ public class FinderProduto {
 			String codigoDeBarras) {
 		if (codigoDeBarras == null || codigoDeBarras.length() == 0)
 			throw new IllegalArgumentException(
-					"É necessário um codigo de barras válido");
+					"�� necess��rio um codigo de barras v��lido");
 		codigoDeBarras = codigoDeBarras.replace('*', '%');
 		if (codigoDeBarras.charAt(0) != '%') {
 			codigoDeBarras += "%";
@@ -82,7 +78,7 @@ public class FinderProduto {
 	public static List<Produto> produtosQueDescricaoInicia(String descricao) {
 		if (descricao == null || descricao.length() == 0)
 			throw new IllegalArgumentException(
-					"É necessário uma descrição válida");
+					"�� necess��rio uma descri����o v��lida");
 		descricao = descricao.replace('*', '%');
 		if (descricao.charAt(0) != '%') {
 			descricao += "%";

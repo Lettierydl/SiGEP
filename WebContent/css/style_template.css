@@ -1,0 +1,64 @@
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0%;
+}
+
+#cssmenu {
+	position:fixed;
+	background: #333;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 12%;
+	height: 1000px
+}
+
+#cssmenu li {
+	font: 87.5% 'Lucida Sans Unicode', 'Bitstream Vera Sans',
+		'Trebuchet Unicode MS', 'Lucida Grande', Verdana, Helvetica,
+		sans-serif;
+	margin: 0%;
+	padding: 0%;
+	list-style: none;
+}
+
+#cssmenu a {
+	background: #333;
+	border-bottom: 1% solid #393939;
+	color: #ccc;
+	display: block;
+	margin: 0%;
+	padding: 8% 12%;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+#cssmenu a:hover {
+	background: #333 url('../imagens/hover_menu_principal.png') right center no-repeat;
+	color: #fff;
+	padding-bottom: 8%;
+}
+#cssmenu a.ativo {
+	background: #333 url('../imagens/hover_menu_principal.png') right center no-repeat;
+	color: #fff;
+	padding-bottom: 8%;
+}
+
+.logo {
+	position: relative;
+	margin-left:19%;
+	margin-top: 12%;
+	margin-bottom:20%;
+	width: 60%;
+	height: 8%	
+}
+
+.corpo {
+	position:relative;
+	margin-left:12%;
+	margin-top: 0%;
+	width: 88%;
+}
+
+
+

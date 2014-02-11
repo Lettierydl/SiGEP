@@ -2,6 +2,7 @@ package com.twol.sigep.model.pessoas;
 
 import com.twol.sigep.model.exception.FuncionarioJaLogadoException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
+import com.twol.sigep.model.exception.PermissaoInvalidaException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.util.SessionUtil;
 
@@ -17,7 +18,7 @@ public class ControllerFuncionario {
 			this.logado = f;
 			SessionUtil.putFuncionarioLogado(f);
 		} else {
-			throw new FuncionarioJaLogadoException();
+			//throw new FuncionarioJaLogadoException();
 		}
 	}
 
@@ -28,11 +29,20 @@ public class ControllerFuncionario {
 		}
 	}
 	
-	public void salvarFuncionario(Funcionario f, String senha) throws ParametrosInvalidosException{
+	public void salvarFuncionario(Funcionario f, String senha, TipoDeFuncionario tipoDoFuncionario) throws ParametrosInvalidosException, PermissaoInvalidaException{
 		setSenhaFuncionarioPrimeiraVes(f, senha);
+		setTipoDeFuncionario(f, tipoDoFuncionario);
 		Funcionario.salvar(f);
 	}
 	
+	//validar TipoDeFuncionario pode ou n��o criar um funcionario com esse tipo
+	private void setTipoDeFuncionario(Funcionario f, TipoDeFuncionario tipoDoFuncionario) throws PermissaoInvalidaException {
+			if(f.getTipoDeFuncionario() != null){
+				throw new PermissaoInvalidaException();
+			}
+			f.setTipoDeFuncionario(tipoDoFuncionario);
+	}
+
 	public void atualizarFuncionario(Funcionario f){
 		Funcionario.atualizar(f);
 	}

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>SiGEP</title>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Blueprint: Slide and Push Menus</title>
+	<meta name="description" content="Blueprint: Slide and Push Menus" />
+	<meta name="keywords"
+		content="sliding menu, pushing menu, navigation, responsive, menu, css, jquery" />
+	<meta name="author" content="Codrops" />
+
+	<link rel="stylesheet" type="text/css" href="../css/default.css" />
+	<link rel="stylesheet" type="text/css" href="../css/component.css" />
+	<link rel="stylesheet" media="screen"  href="../dist/css/bootstrap.min.css" />
+	<script src="../js/modernizr.custom.js"></script>
+	
+
+
+</h:head>
+<h:body class="cbp-spmenu-push">
+		
+	<ui:insert name="meio">
+			<h3>Meio</h3>
+	</ui:insert>
+		
+		
+		<div class="navbar-fixed-top" align="center">
+			<span id="botaoAdicionar" class="glyphicon glyphicon-plus-sign"/>
+			<span id="botaoPesquisar" class="glyphicon glyphicon-search"/>
+		</div>
+		
+	<nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="spmenuAdicionar">
+		<ui:insert name="formAdicionar">
+			<h3>Adicionar</h3>
+		</ui:insert>
+	</nav>
+
+	<nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="spmenuPesquisar">
+		<ui:insert name="formPesquisar">
+			<h3>Pesquisar</h3>
+		</ui:insert>
+	</nav>
+
+	<script src="../js/classie.js"></script>
+	<script>
+		var menuAdicionar = document.getElementById('spmenuAdicionar'), menuPesquisar = document
+				.getElementById('spmenuPesquisar'), botaoAdicionar = document
+				.getElementById('botaoAdicionar'), botaoPesquisar = document
+				.getElementById('botaoPesquisar');
+
+		botaoPesquisar.onclick = function() {
+			classie.toggle(this, 'active');
+			classie.toggle(menuPesquisar, 'cbp-spmenu-open');
+			fecharOutroMenu(botaoPesquisar);
+		};
+		botaoAdicionar.onclick = function() {
+			classie.toggle(this, 'active');
+			classie.toggle(menuAdicionar, 'cbp-spmenu-open');
+			fecharOutroMenu(botaoAdicionar);
+		};
+		function fecharOutroMenu(botao){
+			if(menu == 'botaoAdicionar'){
+				botaoPesquisar.disabled=false
+			}else if(menu == 'botaoPesquisar'){
+				botaoAdicionar.disabled=false
+			}
+		}
+		
+	</script>
+</h:body>
+
+</html>

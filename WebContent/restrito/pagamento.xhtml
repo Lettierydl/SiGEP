@@ -1,0 +1,137 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<link href="../dist/css/bootstrap.min.css" rel="stylesheet"
+		media="screen" />
+</h:head>
+
+<ui:composition template="template/template_menu_principal.xhtml">
+
+	<ui:define name="pagamento">
+		<a href='pagamento.jsf' class="ativo"><span>Pagamento</span></a>
+	</ui:define>
+
+	<ui:define name="corpo">
+
+		<div class="tabbable">
+			<ul class="nav nav-tabs navbarsuperior">
+				<li class="active"><a href="#aRealizar" data-toggle="tab">Pagamentos
+						a Realizar</a></li>
+				<li><a href="#historico" data-toggle="tab">Pagamentos
+						Realizados</a></li>
+			</ul>
+
+
+			<div class="tab-content">
+			
+				<div class="tab-pane active" id="aRealizar">
+						<div class="container" align="center">
+						<div class="subtabela">
+						
+							<h:panelGrid columns="2">
+
+								<h:outputLabel value="Nome do Cliente:" />
+								
+								
+								
+							</h:panelGrid>
+
+
+							<h:dataTable id="tabelaVendas"
+								styleClass="table table-hover table-bordered tabela"
+								value="#{pagamentoBean.listAtualDeVenda}" var="venda">
+								<f:facet name="header">
+									<h4 align="center">Registro de Pagamentos</h4>
+								</f:facet>
+								<h:column>
+									<f:facet name="header">Data</f:facet>
+									<h:outputLabel value="#{venda.dia.time}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+											timeZone="GMT-03:00" />
+									</h:outputLabel>
+								</h:column>
+								<h:column>
+									<f:facet name="header">Valor</f:facet> 
+																#{venda.total}
+															</h:column>
+								<h:column>
+									<f:facet name="header">Cliente</f:facet> 
+																#{venda.cliente.nome}
+															</h:column>
+								<h:column>
+									<f:facet name="header">Funcionário</f:facet>
+																#{pagamento.funcionario.nome}
+															</h:column>
+							</h:dataTable>
+
+						</div>
+					</div>
+					
+					
+				</div>
+				
+				<div class="tab-pane" id="historico">
+				
+					<div class="container" align="center">
+						<div class="subtabela">
+						
+							<h:panelGrid columns="2">
+
+								<h:outputLabel value="Nome do Cliente:" />
+								
+								
+								
+							</h:panelGrid>
+
+
+							<h:dataTable id="tabelaPagamentos"
+								styleClass="table table-hover table-bordered tabela"
+								value="#{pagamentoBean.listAtualDePagamentos}" var="pagamento">
+								<f:facet name="header">
+									<h4 align="center">Registro de Pagamentos</h4>
+								</f:facet>
+								<h:column>
+									<f:facet name="header">Data</f:facet>
+									<h:outputLabel value="#{pagamento.data.time}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+											timeZone="GMT-03:00" />
+									</h:outputLabel>
+								</h:column>
+								<h:column>
+									<f:facet name="header">Valor</f:facet> 
+																#{pagamento.valor}
+															</h:column>
+								<h:column>
+									<f:facet name="header">Cliente</f:facet> 
+																#{pagamento.cliente.nome}
+															</h:column>
+								<h:column>
+									<f:facet name="header">Funcionário</f:facet>
+																#{pagamento.funcionario.nome}
+															</h:column>
+							</h:dataTable>
+
+						</div>
+					</div>
+				
+				</div>
+			</div>
+
+		</div>
+
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="../dist/js/bootstrap.min.js"></script>
+
+	</ui:define>
+
+
+</ui:composition>
+
+
+
+</html>

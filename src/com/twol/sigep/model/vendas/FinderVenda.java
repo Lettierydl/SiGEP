@@ -14,12 +14,14 @@ import com.twol.sigep.util.Persistencia;
 
 public class FinderVenda {
 
+	private static final int LIMITE_DA_LISTA_DE_VENDAS_DE_HOJE = 20;
+
 	@SuppressWarnings("unchecked")
 	public static List<Venda> vendasDoFuncionarioEntreDias(Funcionario f, Cliente c, Dependente d, Calendar dataInicio,
 			Calendar dataFim, FormaDePagamento fpag) {
 		if (f == null) {
 			throw new IllegalArgumentException(
-					"É necessário uma Funcionario válida");
+					"�� necess��rio uma Funcionario v��lida");
 		}
 		String consulta = "select v from Venda v where v.funcionario = :func";
 		Map<String, Object> parametros = new TreeMap<String, Object>();
@@ -59,7 +61,7 @@ public class FinderVenda {
 	public static List<Venda> vendasDoFuncionario(Funcionario f) {
 		if (f == null)
 			throw new IllegalArgumentException(
-					"É necessário uma Funcionario válida");
+					"�� necess��rio uma Funcionario v��lida");
 		Query query = Persistencia.em.createQuery(
 				"select v from Venda as v where v.funcionario = :func"
 				,Venda.class);
@@ -93,6 +95,19 @@ public class FinderVenda {
 		Query query = Persistencia.em.createQuery("select v from Venda as v " +
 				"where v.formaDePagamento is NULL and v.funcionario = :func", Venda.class);
 		query.setParameter("func", f);
+		List<Venda> vendas = (List<Venda>) query.getResultList();
+		return vendas;
+	}
+
+	public static List<Venda> vendasNaoPagaDeHoje() {
+		String stringQuery = "select v FROM Venda as v ";
+		stringQuery += "WHERE v.paga = false and day(v.dia) = day(curdate()) and v.dia >= curdate()"
+					+ " order by v.dia DESC ";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Venda.class);
+		
+		@SuppressWarnings("unchecked")
 		List<Venda> vendas = (List<Venda>) query.getResultList();
 		return vendas;
 	}

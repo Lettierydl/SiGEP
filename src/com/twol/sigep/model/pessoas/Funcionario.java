@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,7 +48,7 @@ public class Funcionario {
 
     /**
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Endereco endereco;
 
     /**
@@ -70,6 +71,9 @@ public class Funcionario {
      */
     @OneToMany(cascade = CascadeType.ALL)
     private List<Telefone> telefones = new ArrayList<Telefone>();
+    
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "funcionario")
+    private List<Pagamento> pagamentos = new ArrayList<Pagamento>();
 
 	public String getNome() {
 		return nome;
@@ -107,7 +111,7 @@ public class Funcionario {
 		return tipoDeFuncionario;
 	}
 
-	public void setTipoDeFuncionario(TipoDeFuncionario tipoDeFuncionario) {
+	void setTipoDeFuncionario(TipoDeFuncionario tipoDeFuncionario) {
 		this.tipoDeFuncionario = tipoDeFuncionario;
 	}
 
@@ -122,12 +126,23 @@ public class Funcionario {
 	public List<Telefone> getTelefones() {
 		return telefones;
 	}
+	
+	public List<Pagamento> getPagamentos(){
+		return this.pagamentos;
+	}
 
-	public void addTelefones(Telefone telefone) {
+	public void addTelefone(Telefone telefone) {
 		if(this.telefones == null){
 			this.telefones = new ArrayList<Telefone>();
 		}
 		this.telefones.add(telefone);
+	}
+	
+	public void removerTelefone(Telefone telefone) {
+		if(this.telefones == null){
+			return;
+		}
+		this.telefones.remove(telefone);
 	}
     
 	static void salvar(Funcionario f)  {
@@ -161,7 +176,7 @@ public class Funcionario {
 	public static List<Funcionario> recuperarLista(){
 		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
-				.createQuery("select funcionario from Funcionario funcionario");
+				.createQuery("select funcionario from Funcionario funcionario order by nome");
 		List<Funcionario> fucionarios = consulta.getResultList();
 		return fucionarios;
     }
@@ -177,6 +192,19 @@ public class Funcionario {
 		Funcionario fuc= (Funcionario) consulta.getSingleResult();
 		return fuc;
     }
+
+	@SuppressWarnings("unchecked")
+	public static List<Funcionario> recuperarFuncionarioPorNomeQueInicia(String nome) {
+		Persistencia.restartConnection();
+		nome = nome +"%";
+		Query q = Persistencia.em
+				.createQuery(
+						"select f from Funcionario as f where LOWER(f.nome) LIKE LOWER(:nome) order by nome",
+						Funcionario.class);
+		q.setParameter("nome", nome);
+		List<Funcionario> fucionarios = q.getResultList();
+		return fucionarios;
+	}
     
     
 }

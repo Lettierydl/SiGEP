@@ -83,6 +83,9 @@ public class Venda extends Entidade{
      */
     @Enumerated(EnumType.STRING)
     private FormaDePagamento formaDePagamento;
+    
+    @Column(nullable = false)
+    private boolean paga = false;
 
     /**
      */
@@ -132,6 +135,22 @@ public class Venda extends Entidade{
 
 	public double getValorTotalDaVendaSemDesconto() {
 		return valorTotalDaVendaSemDesconto;
+	}
+	
+	public double getTotal(){
+		double total = valorTotalDaVendaSemDesconto;
+		if(true){//fazer logica de existir desconto ou não
+			total = valorTotalDaVendaComDesconto;
+		}
+		return total;
+	}
+	
+	public boolean isPaga() {
+		return paga;
+	}
+
+	public void setPaga(boolean paga) {
+		this.paga = paga;
 	}
 
 	public FormaDePagamento getFormaDePagamento() {

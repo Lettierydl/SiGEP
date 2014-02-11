@@ -1,9 +1,9 @@
-import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
-import com.twol.sigep.model.pessoas.ControllerFuncionario;
+import com.twol.sigep.model.exception.PermissaoInvalidaException;
+import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Funcionario;
-import com.twol.sigep.model.pessoas.TipoDeFuncionario;
+import com.twol.sigep.model.pessoas.Pagamento;
 
 
 
@@ -15,11 +15,69 @@ public class MainTeste {
 	 * @param args
 	 * @throws EntidadeJaPersistidaException 
 	 * @throws ParametrosInvalidosException 
+	 * @throws PermissaoInvalidaException 
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) throws EntidadeJaPersistidaException, ParametrosInvalidosException{
-		Funcionario.recuperarFuncionarioPorLoginESenha("Leo", "123456");
+	public static void main(String[] args) throws EntidadeJaPersistidaException, ParametrosInvalidosException, PermissaoInvalidaException, InterruptedException{
+		/*Funcionario f = new Funcionario();
+		f.setCpf("0j988ihj");
+		f.setNome("zéDoido");
+		f.setLogin("zeDoido");
+		
+		new ControllerFuncionario().salvarFuncionario(f, "123456", TipoDeFuncionario.Caixa);
+		
+		Cliente c = new Cliente();
+		c.setCpf("9nk232323");
+		c.setNome("Cliente Teste");
+		c.setDataDeNascimento(Calendar.getInstance());
+		Cliente.salvar(c);*/
+		
+		//Pagamento p = new Pagamento(100, c, f);
+		Cliente c = Cliente.recuperarCliente(1);
+		Funcionario f = Funcionario.recuperarFuncionarioPorLoginESenha("leo", "123456");
+		Pagamento p = new Pagamento(230.00, c, f);
+		Pagamento.salvar(p);
+		//System.out.println(p.getData().get(Calendar.SECOND)+ " id:" + p.getId());
+		
+		//System.out.println(Pagamento.recuperarPagamentoPorID(p.getId()).getData().get(Calendar.SECOND));
+		
+		//System.out.println(f.getPagamentos());
+		
+		
+		
+		//System.out.println(Pagamento.recuperarPagamentoPorID(p.getId()));
+		
+		
 	}
-
+	
+	/*
+	 * Funcionario f = new Funcionario();
+		f.setCpf("000000000");
+		f.setNome("zé");
+		f.setLogin("ze");
+		
+		Endereco e = new Endereco();
+		e.setBairro("Bairro");
+		e.setCep("88888999");
+		e.setCidade("João Pessoa");
+		e.setNumero("numero");
+		e.setRua("rua");
+		e.setUf(UF.PB);
+		f.setEndereco(e);
+		
+		Telefone t = new Telefone();
+		t.setDdd("00");
+		t.setTelefone("00000000");
+		t.setOperadora("OPERADORA");
+		
+		f.addTelefone(t);
+		new ControllerFuncionario().salvarFuncionario(f, "123456", TipoDeFuncionario.Caixa);
+		
+	 * */
+	
+	
+	
+	
 	/*Teste FinderProduto
 	 * Produto p = new Produto();
 		p.setCategoria(CategoriaProduto.Produtos_de_Higiene);

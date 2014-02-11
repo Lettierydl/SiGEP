@@ -1,0 +1,204 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<ui:composition template="template/template_menus.xhtml">
+	<ui:define name="funcionario">
+		<a href='funcionario.jsf' class="ativo"><span>Funcionários</span></a>
+	</ui:define>
+
+	<ui:define name="corpo">
+		<div class="container" align="center">
+			<h:dataTable id="tabelaFuncionarios" styleClass="table table-hover table-bordered tabela"
+				value="#{funcionarioBean.listAtualDeFuncionarios}" var="funcionario">
+				<f:facet name="header">
+					<h4 align="center">Funcionários</h4>
+				</f:facet>
+				<h:column>
+					<f:facet name="header">Nome</f:facet> 
+					#{funcionario.nome}
+				</h:column>
+				<h:column>
+					<f:facet name="header">CPF</f:facet>
+					#{funcionario.cpf}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Tipo</f:facet>
+					#{funcionario.tipoDeFuncionario}
+				</h:column>
+			</h:dataTable>
+		</div>
+	</ui:define>
+	<ui:define name="formAdicionar">
+		<h3>Adicionar</h3>
+		<div class="container">
+			<h:form id="formAdicionar">
+				<h:panelGrid columns="2">
+
+					<h:outputLabel value="Nome" for="inputNome" />
+					<h:inputText id="inputNome"
+						value="#{funcionarioBean.newFuncionario.nome}" />
+					<h:outputLabel value="CPF" for="inputCPF" />
+					<h:inputText id="inputCPF" maxlength="11"
+						value="#{funcionarioBean.newFuncionario.cpf}" />
+
+					<h:outputLabel value="Login:" for="inputLogin" />
+					<h:inputText id="inputLogin"
+						value="#{funcionarioBean.newFuncionario.login}" />
+
+					<h:outputLabel value="Senha:" for="inputSenha" />
+					<h:inputSecret id="inputSenha"
+						value="#{funcionarioBean.senha}" />
+				</h:panelGrid>
+				
+				<h:selectOneRadio value="#{funcionarioBean.tipoDoFuncionario}">
+						<f:selectItems value="#{funcionarioBean.getTiposFuncionario()}" var="tipos"
+						itemLabel="#{tipos.name}" itemValue="#{tipos}"/>
+				</h:selectOneRadio>
+				
+				 <a href="#modalTelefones">Telefones</a>
+				 <a href="#modalEndereco">Endereco</a>
+				
+				<h:commandButton value="Cadastrar"
+					actionListener="#{funcionarioBean.cadastrarFuncionario()}" />
+			</h:form>
+			
+			<ul class="lb-album">
+				<li>
+				
+					<div class="lb-overlay" id="modalEndereco" align="center">
+						<div class="panel">
+							<a href="#" class="">X</a>
+							<h:form id="formEndereco">
+								<h:panelGrid columns="2" id="formularioGup2">
+									<h:outputLabel value="Rua:" for="inputRua" />
+									<h:inputText id="inputRua"
+										value="#{funcionarioBean.newEndereco.rua}" />
+
+									<h:outputLabel value="Número:" for="inputNumero" />
+									<h:inputText id="inputNumero" maxlength="10"
+										value="#{funcionarioBean.newEndereco.numero}" />
+
+									<h:outputLabel value="Bairro:" for="inputBairro" />
+									<h:inputText id="inputBairro"
+										value="#{funcionarioBean.newEndereco.bairro}" />
+										
+									<h:outputLabel value="Cidade:" for="inputCidade" />
+									<h:inputText id="inputCidade"
+										value="#{funcionarioBean.newEndereco.cidade}" />
+									
+									
+									<h:outputLabel value="UF:" for="selectUF" />
+									<h:selectOneMenu id="selectUF" value="#{funcionarioBean.uf}" >
+										<f:selectItems value="#{funcionarioBean.ufs}" var="uf"
+										itemValue="#{uf}" itemLabel="#{uf.name}" />
+									</h:selectOneMenu>
+									
+										
+									<h:outputLabel value="CEP:" for="inputCep" />
+									<h:inputText id="inputCep"
+										value="#{funcionarioBean.newEndereco.cep}" />	
+									
+									
+									
+									<h:commandButton id="submeterFormEndereco" value="Adicionar">
+										<f:ajax listener="#{funcionarioBean.addEnderecoFuncionario}"
+											execute=":formEndereco" render=":formEndereco" event="click" />
+									</h:commandButton>
+								</h:panelGrid>
+									<h:outputLabel id="labelEndereco"
+									value="#{funcionarioBean.newEndereco}"/>
+							</h:form>
+							
+						</div>
+					</div>
+					
+					
+					<div class="lb-overlay" id="modalTelefones" align="center">
+						<div class="panel">
+							<a href="#" class="">X</a>
+							<h:form id="formTelefone">
+								<h:panelGrid columns="2" id="formularioGup">
+									<h:outputLabel value="DDD:" for="inputDdd" />
+									<h:inputText id="inputDdd" maxlength="2"
+										value="#{funcionarioBean.newTelefone.ddd}" />
+
+									<h:outputLabel value="Telefone:" for="inputTelefone" />
+									<h:inputText id="inputTelefone" maxlength="9"
+										value="#{funcionarioBean.newTelefone.telefone}" />
+
+									<h:outputLabel value="Operadora:" for="inputOperadora" />
+									<h:inputText id="inputOperadora"
+										value="#{funcionarioBean.newTelefone.operadora}" />
+
+									<h:commandButton id="submeterForm" value="Adicionar">
+										<f:ajax listener="#{funcionarioBean.addTelefoneFuncionario()}"
+											execute="@form" render="@form" event="click" />
+									</h:commandButton>
+								</h:panelGrid>
+							</h:form>
+
+							<h:dataTable id="tabelaTelefones"
+								styleClass="table table-hover table-bordered tabela"
+								value="#{funcionarioBean.newFuncionario.telefones}" var="telefone">
+								<f:facet name="header">
+									<h4 align="center">Telefones</h4>
+								</f:facet>
+								<h:column>
+									<f:facet name="header">DDD</f:facet> 
+																#{telefone.ddd}
+															</h:column>
+								<h:column>
+									<f:facet name="header">Telefone</f:facet> 
+																#{telefone.telefone}
+															</h:column>
+								<h:column>
+									<f:facet name="header">Operadora</f:facet> 
+																#{telefone.operadora}
+															</h:column>
+								<h:column>
+									<f:facet name="header">Remover</f:facet>
+									<h:commandButton value="Remover">
+										<f:ajax listener="#{funcionarioBean.removerTelefoneFuncionario(telefone)}"
+											execute=":tabelaTelefones" render=":tabelaTelefones"
+											event="click" />
+									</h:commandButton>
+								</h:column>
+							</h:dataTable>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			
+			
+			
+			
+			
+			
+		</div>
+	</ui:define>
+
+	<ui:define name="formPesquisar">
+		<div class="container">
+			<h3>Pesquisar</h3>
+			<h:form id="formPesquisar">
+				<h:panelGrid columns="2">
+
+					<h:outputLabel value="Nome:" for="inputNomePesquisar" />
+					<h:inputText value="#{funcionarioBean.nome}" id="inputNomePesquisar">
+     					<f:ajax event="keyup" listener="#{funcionarioBean.modificarListaAtualDeFuncionarioPeloNome()}"/>
+					</h:inputText>
+
+				</h:panelGrid>
+			</h:form>
+		</div>
+	</ui:define>
+
+
+</ui:composition>
+￼￼￼￼
+</html>

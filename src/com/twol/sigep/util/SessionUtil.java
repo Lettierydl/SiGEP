@@ -12,7 +12,7 @@ import com.twol.sigep.model.pessoas.Funcionario;
 public class SessionUtil {
 
 	public static final String KEY_USUARIO_LOGADO = "USUARIO_LOGADO";
-	public static final String PAGE_PRINCIPAL = "restrito/principal.jsf";
+	public static final String PAGE_PRINCIPAL = "restrito/home.jsf";
 	public static final String PAGE_INICIAL = "/SiGEP/";
 	
 	

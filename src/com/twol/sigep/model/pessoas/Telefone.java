@@ -39,7 +39,7 @@ public class Telefone extends Entidade{
 
     /**
      */
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false, length = 9)
     private String telefone;
 
     /**

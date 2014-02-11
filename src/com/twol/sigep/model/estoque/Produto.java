@@ -72,7 +72,7 @@ public class Produto extends Entidade{
 	/**
      */
 	@Enumerated(EnumType.STRING)
-	private CategoriaProduto categoria;
+	private CategoriaProduto categoria = CategoriaProduto.Outra;
 
 	/**
      */
@@ -180,14 +180,14 @@ public class Produto extends Entidade{
 	
 	@Override
 	protected List<?> getListEntidadeRelacionada(){
-		return this.getListEntidadeRelacionada();
+		return super.getListEntidadeRelacionada();
 	}
 
 	@SuppressWarnings("unchecked")
 	public static List<Produto> recuperarLista() {
 		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
-				.createQuery("select produto from Produto produto");
+				.createQuery("select p from Produto as p order by descricao");
 		List<Produto> produtos = consulta.getResultList();
 		return produtos;
 	}

@@ -2,12 +2,14 @@ package com.twol.sigep.model.pessoas;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,7 +50,7 @@ public class Cliente extends Entidade {
 
 	/**
      */
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	private Endereco endereco;
 
 	/**
@@ -68,13 +70,16 @@ public class Cliente extends Entidade {
 
 	/**
      */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "cliente")
 	private List<Dependente> dependentes = new ArrayList<Dependente>();
 
 	/**
      */
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Telefone> telefones = new ArrayList<Telefone>();
+	
+	 @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "cliente")
+	 private List<Pagamento> pagamentos = new ArrayList<Pagamento>();
 
 	public String getNome() {
 		return nome;
@@ -107,9 +112,21 @@ public class Cliente extends Entidade {
 	public Calendar getDataDeNascimento() {
 		return dataDeNascimento;
 	}
+	
+	public Date getDataDeNascimentoDate() {
+		if(dataDeNascimento != null){
+			return dataDeNascimento.getTime();
+		}
+		return null;
+	}
 
 	public void setDataDeNascimento(Calendar dataDeNascimento) {
 		this.dataDeNascimento = dataDeNascimento;
+	}
+	
+	public void setDataDeNascimentoDate(Date dataDeNascimento) {
+		this.dataDeNascimento = Calendar.getInstance();
+		this.dataDeNascimento.setTime(dataDeNascimento);
 	}
 
 	public List<Dependente> getDependentes() {
@@ -119,16 +136,39 @@ public class Cliente extends Entidade {
 	public void setDependentes(List<Dependente> dependentes) {
 		this.dependentes = dependentes;
 	}
+	
+	public void removerDependente(Dependente dependente){
+		if(this.dependentes !=null && !this.dependentes.isEmpty()){
+			this.dependentes.remove(dependente);
+		}
+	}
+	
+	public void adicionarDependente(Dependente dependente){
+		if(this.dependentes !=null){
+			this.dependentes.add(dependente);
+		}else{
+			this.dependentes = new ArrayList<Dependente>();
+			adicionarDependente(dependente);
+		}
+	}
 
 	public List<Telefone> getTelefones() {
 		return telefones;
 	}
 
-	public void addTelefones(Telefone telefone) {
+	public void addTelefone(Telefone telefone) {
 		if (this.telefones == null) {
 			this.telefones = new ArrayList<Telefone>();
 		}
 		this.telefones.add(telefone);
+	}
+	
+	public void removerTelefone(Telefone telefone){
+		if(this.telefones == null){
+			this.telefones = new ArrayList<Telefone>();
+			return;
+		}
+		this.telefones.remove(telefone);
 	}
 
 	@Override
@@ -145,7 +185,7 @@ public class Cliente extends Entidade {
 	public static List<Cliente> recuperarLista() {
 		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
-				.createQuery("select cliente from Cliente cliente");
+				.createQuery("select cliente from Cliente cliente order by nome");
 		List<Cliente> clientes = consulta.getResultList();
 		return clientes;
 	}
@@ -176,6 +216,10 @@ public class Cliente extends Entidade {
 		} else {
 			throw new ParametrosInvalidosException();
 		}
+	}
+
+	public List<Pagamento> getPagamentos() {
+		return this.pagamentos;
 	}
 
 }

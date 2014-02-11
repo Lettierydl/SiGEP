@@ -54,5 +54,10 @@ public class Persistencia {
 		em.createNativeQuery(sql).executeUpdate();
 		finalizarTrascao();
 	}
+
+	public static void flush() {
+		iniciarTrascao();
+		em.flush();
+	}
 	
 }
