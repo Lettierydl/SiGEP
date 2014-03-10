@@ -4,6 +4,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.twol.sigep.model.estoque.Produto;
+import com.twol.sigep.model.estoque.Promocao;
+import com.twol.sigep.model.pessoas.Cliente;
+import com.twol.sigep.model.pessoas.Endereco;
+import com.twol.sigep.model.pessoas.Funcionario;
+import com.twol.sigep.model.pessoas.Representante;
+import com.twol.sigep.model.pessoas.Telefone;
+import com.twol.sigep.model.vendas.LinhaDaVenda;
+import com.twol.sigep.model.vendas.Venda;
+
 public class Persistencia {
 	public static final String UNIDADE_DE_PERSISTENCIA = "SiGEPPU";
 
@@ -23,6 +33,10 @@ public class Persistencia {
 		em.close();
 	}
 	
+	public static void rollBackTrascao(){
+		em.getTransaction().rollback();
+	}
+	
 	public static void restartConnection(){
 		 try{
 			 em.close();
@@ -33,19 +47,33 @@ public class Persistencia {
 	
 	public static void limparBancoDeDados(){
 		restartConnection();
-		executeNativeQuery("DELETE FROM Cliente_telefone");
-		executeNativeQuery("DELETE FROM Funcionario_telefone");
-		executeNativeQuery("DELETE FROM Representante_telefone");
-		executeNativeQuery("DELETE FROM Cliente");
-		executeNativeQuery("DELETE FROM Dependente");
-		executeNativeQuery("DELETE FROM Endereco");
-		executeNativeQuery("DELETE FROM Funcionario");
-		executeNativeQuery("DELETE FROM Linha_da_venda");
-		executeNativeQuery("DELETE FROM Produto");
-		executeNativeQuery("DELETE FROM Promocao");
-		executeNativeQuery("DELETE FROM Representante");
-		executeNativeQuery("DELETE FROM Telefone");
-		executeNativeQuery("DELETE FROM Venda");
+			for(Cliente c : Cliente.recuperarLista()){
+				Cliente.remover(c);
+			}
+			for(Endereco c : Endereco.recuperarLista()){
+				Endereco.remover(c);
+			}
+			for(Funcionario c : Funcionario.recuperarLista()){
+				Funcionario.remover(c);
+			}
+			for(LinhaDaVenda c : LinhaDaVenda.recuperarLista()){
+				LinhaDaVenda.remover(c);
+			}
+			for(Promocao c : Promocao.recuperarLista()){
+				Promocao.remover(c);
+			}
+			for(Produto c : Produto.recuperarLista()){
+				Produto.remover(c);
+			}
+			for(Representante c : Representante.recuperarLista()){
+				Representante.remover(c);
+			}
+			for(Telefone c : Telefone.recuperarLista()){
+				Telefone.remover(c);
+			}
+			for(Venda c : Venda.recuperarLista()){
+				Venda.remover(c);
+			}
 		restartConnection();
 	}
 
@@ -53,6 +81,17 @@ public class Persistencia {
 		iniciarTrascao();
 		em.createNativeQuery(sql).executeUpdate();
 		finalizarTrascao();
+	}
+	
+	private static void executeQuery(String sql) {
+		iniciarTrascao();
+			try{
+				em.createNativeQuery(sql).executeUpdate();
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				finalizarTrascao();
+			}
 	}
 
 	public static void flush() {

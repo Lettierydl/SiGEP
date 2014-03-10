@@ -106,6 +106,49 @@ public class FinderVenda {
 		
 		Persistencia.restartConnection();
 		Query query = Persistencia.em.createQuery(stringQuery, Venda.class);
+		query.setMaxResults(LIMITE_DA_LISTA_DE_VENDAS_DE_HOJE);
+		
+		
+		@SuppressWarnings("unchecked")
+		List<Venda> vendas = (List<Venda>) query.getResultList();
+		return vendas;
+	}
+
+	public static List<Venda> vendasNaoPagasDosClientes(List<Cliente> clientes) {
+		String stringQuery = "select v FROM Venda as v ";
+		stringQuery += "WHERE v.paga = false ";
+		
+		for(int i = 0; i< clientes.size(); i++){
+			if(i>0){
+				stringQuery += "or v.cliente = :cli"+i+" ";
+			}else{
+				stringQuery += "and ( v.cliente = :cli"+i+" ";
+			}
+		}
+		
+		stringQuery += ") order by v.dia DESC ";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Venda.class);
+		
+		for(int i = 0; i< clientes.size(); i++){
+			query.setParameter("cli"+i, clientes.get(i));
+		}
+		
+		@SuppressWarnings("unchecked")
+		List<Venda> vendas = (List<Venda>) query.getResultList();
+		return vendas;
+	}
+
+	public static List<Venda> vendasNaoPagaDoCliente(Cliente cliente) {
+		String stringQuery = "select v FROM Venda as v ";
+		stringQuery += "WHERE v.paga = false and v.cliente = :cli"
+					+ " order by v.dia DESC ";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Venda.class);
+		query.setParameter("cli", cliente);
+		
 		
 		@SuppressWarnings("unchecked")
 		List<Venda> vendas = (List<Venda>) query.getResultList();

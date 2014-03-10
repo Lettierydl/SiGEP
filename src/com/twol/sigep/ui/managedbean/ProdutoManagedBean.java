@@ -1,5 +1,6 @@
 package com.twol.sigep.ui.managedbean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -24,6 +25,18 @@ public class ProdutoManagedBean {
 		listAtualDeProdutos = f.getListaProdutos();
 	}
 
+	public List<String> autoCompletNomeCliente(String nome){
+		System.out.println(nome);
+		try{
+			if(nome.isEmpty()){
+				return new ArrayList<String>();
+			}
+			return f.buscarNomeClientePorNomeQueInicia(nome);
+		}finally{
+			
+		}
+	}
+	
 	public void cadastrarProduto(){
 		try{
 			validarInformacoesCadastrais(newProduto);

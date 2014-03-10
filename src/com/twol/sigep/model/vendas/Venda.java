@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +20,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Dependente;
@@ -28,7 +32,7 @@ import com.twol.sigep.util.Persistencia;
 //@RooJpaActiveRecord(finders = { "findVendasByCliente", "findVendasByDiaBetween", "findVendasByDiaGreaterThanEquals", "findVendasByFormaDePagamento", "findVendasByFuncionario" })
 @Table(name = "venda")
 @Entity
-public class Venda extends Entidade{
+public class Venda extends Entidade implements Comparable<Venda>{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,17 +55,17 @@ public class Venda extends Entidade{
 
     /**
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Funcionario funcionario;
 
     /**
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Cliente cliente;
 
     /**
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Dependente dependente;
 
     /**
@@ -78,6 +82,9 @@ public class Venda extends Entidade{
      */
     @Column(nullable = false, precision = 2)
     private double valorTotalDaVendaSemDesconto;
+    
+    @Column(nullable = false, precision = 2)
+    private double partePagaDaVenda;
 
     /**
      */
@@ -89,7 +96,8 @@ public class Venda extends Entidade{
 
     /**
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venda")
+    @OneToMany(orphanRemoval = true, mappedBy = "venda" , fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private List<LinhaDaVenda> linhasDaVenda = new ArrayList<LinhaDaVenda>();
     
     
@@ -137,12 +145,9 @@ public class Venda extends Entidade{
 		return valorTotalDaVendaSemDesconto;
 	}
 	
-	public double getTotal(){
-		double total = valorTotalDaVendaSemDesconto;
-		if(true){//fazer logica de existir desconto ou não
-			total = valorTotalDaVendaComDesconto;
-		}
-		return total;
+	//restante da venda que não foi pago ainda
+	public double getValorNaoPagoDaVenda(){
+		return valorTotalDaVendaComDesconto - partePagaDaVenda;
 	}
 	
 	public boolean isPaga() {
@@ -159,6 +164,29 @@ public class Venda extends Entidade{
 
 	void setFormaDePagamento(FormaDePagamento formaDePagamento) {
 		this.formaDePagamento = formaDePagamento;
+	}
+	
+	public double getPartePagaDaVenda() {
+		return partePagaDaVenda;
+	}
+
+	public void acrescentarPartePagaDaVenda(double partePagaDaVenda) {
+		this.partePagaDaVenda += partePagaDaVenda;
+		if(partePagaDaVenda >= valorTotalDaVendaComDesconto){
+			setPaga(true);
+		}
+	}
+	
+	public int getQuantidadeDeItens(){
+		int resu = 0;
+		for(LinhaDaVenda lv : getLinhasDaVenda()){
+			if(Double.valueOf(lv.getQuantidadeVendida()).floatValue() == 0){
+				resu += lv.getQuantidadeVendida();
+			}else{// so conta um unidade pra 6,8 kg de alguma coisa por exempro
+				resu++;
+			}
+		}
+		return resu;
 	}
 
 	public List<LinhaDaVenda> getLinhasDaVenda() {
@@ -177,6 +205,7 @@ public class Venda extends Entidade{
 		valorTotalDaVendaComDesconto +=lv.getValorTotalDaLinhaComDesconto();
 		valorTotalDaVendaSemDesconto +=lv.getValorTotalDaLinhaSemDesconto();
 		valorTotalDeDesconto +=lv.getValorDoDesconto();
+		LinhaDaVenda.salvar(lv);
 	}
 	
 	void removeLinhaDaVenda(LinhaDaVenda lv){
@@ -187,6 +216,7 @@ public class Venda extends Entidade{
 		valorTotalDaVendaComDesconto -=lv.getValorTotalDaLinhaComDesconto();
 		valorTotalDaVendaSemDesconto -=lv.getValorTotalDaLinhaSemDesconto();
 		valorTotalDeDesconto -=lv.getValorDoDesconto();
+		LinhaDaVenda.remover(lv);
 	}
 	
 	protected List<?> getListEntidadeRelacionada(){
@@ -198,9 +228,17 @@ public class Venda extends Entidade{
 		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
 				
-				.createNamedQuery("select venda from Venda venda");
+				.createQuery("select venda from Venda venda");
 		List<Venda> vendas = consulta.getResultList();
 		Persistencia.em.getTransaction().commit();
 		return vendas;
     }
+
+	@Override//ordena do menor para o maior (valor da venda)
+	public int compareTo(Venda o) {
+		if(o.getValorTotalDaVendaComDesconto()==getValorTotalDaVendaComDesconto()){
+			return 0;
+		}
+		return o.getValorTotalDaVendaComDesconto() < getValorTotalDaVendaComDesconto() ? 1 : -1;
+	}
 }

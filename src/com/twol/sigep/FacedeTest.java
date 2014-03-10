@@ -68,6 +68,13 @@ public class FacedeTest {
 		}
 
 	}
+	
+	
+	@Test
+	public void limparbanco(){
+		fac.limparBancoDeDados();
+	}
+	
 
 	@Test//(expected = PersistenceException.class)
 	public void adicionarCliente() {

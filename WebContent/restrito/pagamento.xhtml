@@ -4,12 +4,6 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 
-
-<h:head>
-	<link href="../dist/css/bootstrap.min.css" rel="stylesheet"
-		media="screen" />
-</h:head>
-
 <ui:composition template="template/template_menu_principal.xhtml">
 
 	<ui:define name="pagamento">
@@ -19,113 +13,192 @@
 	<ui:define name="corpo">
 
 		<div class="tabbable">
-			<ul class="nav nav-tabs navbarsuperior">
+			<ul class="nav nav-tabs navbarsuperior" id="myTab">
 				<li class="active"><a href="#aRealizar" data-toggle="tab">Pagamentos
-						a Realizar</a></li>
+						a Realizar </a></li>
 				<li><a href="#historico" data-toggle="tab">Pagamentos
 						Realizados</a></li>
 			</ul>
+		</div>
 
+		<div class="tab-content">
 
-			<div class="tab-content">
-			
-				<div class="tab-pane active" id="aRealizar">
-						<div class="container" align="center">
-						<div class="subtabela">
-						
-							<h:panelGrid columns="2">
+			<div class="tab-pane active" id="aRealizar">
 
-								<h:outputLabel value="Nome do Cliente:" />
-								
-								
-								
-							</h:panelGrid>
+				<div class="container" align="center">
+					<div class="subtabela">
 
+						<h:form id="nomeClienteVendaForm">
+							<h:outputLabel value="Nome do Cliente:  " for="completCliente" />
+							<p:autoComplete id="completCliente"
+								completeMethod="#{pagamentoBean.autoCompletClienteVenda}"
+								value="#{pagamentoBean.nomeClienteParaVenda}" onkeydown="">
+								<f:ajax event="keyup"
+									listener="#{pagamentoBean.modificarListaAtualDeVendasPeloCliente}"
+									render=":pagamanetoForm :tabelaVendas" />
 
-							<h:dataTable id="tabelaVendas"
-								styleClass="table table-hover table-bordered tabela"
-								value="#{pagamentoBean.listAtualDeVenda}" var="venda">
-								<f:facet name="header">
-									<h4 align="center">Registro de Pagamentos</h4>
-								</f:facet>
-								<h:column>
-									<f:facet name="header">Data</f:facet>
-									<h:outputLabel value="#{venda.dia.time}">
-										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
-											timeZone="GMT-03:00" />
-									</h:outputLabel>
-								</h:column>
-								<h:column>
-									<f:facet name="header">Valor</f:facet> 
-																#{venda.total}
-															</h:column>
-								<h:column>
-									<f:facet name="header">Cliente</f:facet> 
+							</p:autoComplete>
+						</h:form>
+
+						<h:dataTable id="tabelaVendas"
+							styleClass="table table-hover table-bordered tabela"
+							value="#{pagamentoBean.listAtualDeVenda}" var="venda">
+							<f:facet name="header">
+								<h4 align="center">Registro de Pagamentos</h4>
+							</f:facet>
+							<h:column>
+								<f:facet name="header">Data</f:facet>
+								<h:outputLabel value="#{venda.dia.time}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+										timeZone="GMT-03:00" />
+								</h:outputLabel>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Cliente</f:facet> 
 																#{venda.cliente.nome}
-															</h:column>
-								<h:column>
-									<f:facet name="header">Funcionário</f:facet>
-																#{pagamento.funcionario.nome}
-															</h:column>
-							</h:dataTable>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Valor da Venda</f:facet> 
+																#{venda.valorTotalDaVendaComDesconto}
+								</h:column>
+							<h:column>
+								<f:facet name="header">Valor Restante</f:facet> 
+																#{venda.valorNaoPagoDaVenda}
+							</h:column>
+							<h:column>
+								<f:facet name="header">Pagar</f:facet>
+								<h:commandButton value="Pagar"
+									actionListener="#{pagamentoBean.setVendaASerPaga(venda)}">
+									<f:ajax execute="@this"
+										listener="#{pagamentoBean.setVendaASerPaga(venda)}"
+										render=":pagamanetoForm :nomeClienteVendaForm" event="click" />
+								</h:commandButton>
+							</h:column>
+						</h:dataTable>
 
-						</div>
-					</div>
-					
-					
-				</div>
-				
-				<div class="tab-pane" id="historico">
-				
-					<div class="container" align="center">
-						<div class="subtabela">
-						
-							<h:panelGrid columns="2">
+						<h:form id="pagamanetoForm">
 
-								<h:outputLabel value="Nome do Cliente:" />
-								
-								
+							<h:panelGrid
+								rendered="#{pagamentoBean.clienteSelecionado != null}"
+								columns="2">
+								<h:outputLabel id="clienteSelecionado"
+									value="Cliente Selecionado: #{pagamentoBean.clienteSelecionado.nome}, " />
+								<h:outputLabel
+									value="Saldo Devedor: #{pagamentoBean.clienteSelecionado.debito}" />
+							</h:panelGrid>
+							<h:panelGrid id="gridPag"
+								rendered="#{pagamentoBean.clienteSelecionado != null}"
+								columns="3">
+								<h:outputLabel value="Valor a ser Pago:  " />
+								<h:inputText id="valorPagamentoInput" value="#{pagamentoBean.newPagamento.valor}" immediate="true" >
+									<f:ajax event="keyup" execute="@this"/>
+									<f:ajax event="keyup" execute="troco" render="troco"/>
+								</h:inputText>
+								<a href="#modalObservacao" class="btn" data-toggle="modal">Obs</a>
 								
 							</h:panelGrid>
+							
+							<h4>
+								<h:outputLabel id="troco" rendered="#{pagamentoBean.newPagamento.valor > pagamentoBean.clienteSelecionado.debito}" value="Troco: #{pagamentoBean.newPagamento.valor - pagamentoBean.clienteSelecionado.debito}" />
+							</h4>
+							
+							<h:commandButton value="Realizar Pagamento"
+									rendered="#{pagamentoBean.clienteSelecionado != null}" actionListener="#{pagamentoBean.cadastrarPagamento}">
+								<f:ajax event="click" execute="@form"/>
+							</h:commandButton>
+							
 
+						</h:form>
 
-							<h:dataTable id="tabelaPagamentos"
-								styleClass="table table-hover table-bordered tabela"
-								value="#{pagamentoBean.listAtualDePagamentos}" var="pagamento">
-								<f:facet name="header">
-									<h4 align="center">Registro de Pagamentos</h4>
-								</f:facet>
-								<h:column>
-									<f:facet name="header">Data</f:facet>
-									<h:outputLabel value="#{pagamento.data.time}">
-										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
-											timeZone="GMT-03:00" />
-									</h:outputLabel>
-								</h:column>
-								<h:column>
-									<f:facet name="header">Valor</f:facet> 
+							<!-- modal -->
+						<div class="modal fade" id="modalObservacao"  >
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h:button id="sairButton" class="close" data-dismiss="modal" value="X">
+											<f:ajax event="click" listener="#{pagamentoBean.limparObsPagamento()}"/>
+										</h:button>
+										<h4 class="modal-title" id="myModalLabel">Observações sobre o Pagamento</h4>
+									</div>
+									<div class="modal-body">
+										<h:inputTextarea id="textareaOBS" class="form-control" rows="4" value="#{pagamentoBean.newPagamento.observacao}" immediate="true" />
+									</div>
+									<div class="modal-footer">
+										<h:commandButton class="btn btn-primary"  value="Salvar" onclick="$('#modalObservacao').modal('hide')"/>
+									</div>
+								</div>
+							</div>
+						</div>
+							<!-- fim modal -->
+							
+					</div>
+				</div>
+
+			</div>
+
+			<div class="tab-pane active" id="historico">
+
+				<div class="container" align="center">
+					<div class="subtabela">
+
+						<h:form>
+							<h:outputLabel value="Nome do Cliente:  " for="completCliente" />
+							<p:autoComplete id="completCliente"
+								completeMethod="#{pagamentoBean.autoCompletClienteVenda}"
+								value="#{pagamentoBean.nomeClienteParaHistorico}" />
+							<f:ajax event="keyup"
+								listener="#{pagamentoBean.modificarListaAtualDeHistoricoDoCliente}"
+								render=":tabelaHistorico" />
+
+						</h:form>
+
+						<h:dataTable id="tabelaHistorico"
+							styleClass="table table-hover table-bordered tabela"
+							value="#{pagamentoBean.listAtualDeHistoricos}" var="pagamento">
+							<f:facet name="header">
+								<h4 align="center">Histórico de Pagamentos</h4>
+							</f:facet>
+							<h:column>
+								<f:facet name="header">Data</f:facet>
+								<h:outputLabel value="#{pagamento.data.time}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+										timeZone="GMT-03:00" />
+								</h:outputLabel>
+							</h:column>
+							<h:column>
+								<f:facet name="header">Valor</f:facet> 
 																#{pagamento.valor}
 															</h:column>
-								<h:column>
-									<f:facet name="header">Cliente</f:facet> 
+							<h:column>
+								<f:facet name="header">Cliente</f:facet> 
 																#{pagamento.cliente.nome}
 															</h:column>
-								<h:column>
-									<f:facet name="header">Funcionário</f:facet>
+							<h:column>
+								<f:facet name="header">Funcionário</f:facet>
 																#{pagamento.funcionario.nome}
 															</h:column>
-							</h:dataTable>
+						</h:dataTable>
 
-						</div>
 					</div>
-				
 				</div>
+
 			</div>
+
+
+
 
 		</div>
 
-		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script src="../dist/js/bootstrap.min.js"></script>
+		<script>
+			$(function() {
+				$('#myTab a:last').tab('show');
+			})
+		</script>
+		<script>
+			$(function() {
+				$('#myTab a:first').tab('show');
+			})
+		</script>
 
 	</ui:define>
 

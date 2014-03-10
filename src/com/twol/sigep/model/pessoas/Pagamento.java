@@ -33,6 +33,9 @@ public class Pagamento {
 	@Column(nullable = false, precision = 2)
 	private double valor;
 	
+	@Column
+	private String observacao;
+	
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Cliente cliente;
 	
@@ -91,6 +94,15 @@ public class Pagamento {
 		this.funcionario = funcionario;
 	}
 	
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
+
 	
 	
 	public static void salvar(Pagamento p)  {

@@ -78,8 +78,9 @@ public class Cliente extends Entidade {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Telefone> telefones = new ArrayList<Telefone>();
 	
-	 @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "cliente")
-	 private List<Pagamento> pagamentos = new ArrayList<Pagamento>();
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "cliente")
+	private List<Pagamento> pagamentos = new ArrayList<Pagamento>();
+	 
 
 	public String getNome() {
 		return nome;
@@ -221,5 +222,8 @@ public class Cliente extends Entidade {
 	public List<Pagamento> getPagamentos() {
 		return this.pagamentos;
 	}
+
+
+	
 
 }

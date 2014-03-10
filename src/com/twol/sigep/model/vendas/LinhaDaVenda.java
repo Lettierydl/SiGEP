@@ -34,13 +34,13 @@ public class LinhaDaVenda extends Entidade {
 		this.id = id;
 	}
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	private Venda venda;
 	
 	
     /**
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Produto produto;
 
     /**
@@ -103,8 +103,8 @@ public class LinhaDaVenda extends Entidade {
 	}
 	
 	/*
-		Não precisa ser setdo pois o addLinhaDaVenda(lv)
-		já realiza este trabalho
+		N��o precisa ser setdo pois o addLinhaDaVenda(lv)
+		j�� realiza este trabalho
 	*/
 	void setVenda(Venda venda) {
 		this.venda = venda;
@@ -142,19 +142,19 @@ public class LinhaDaVenda extends Entidade {
 		this.valorDoProdutoVendido = valorDoProdutoVendido;
 	}
     
-	public static void salvar(LinhaDaVenda e){
+	private static void salvar(LinhaDaVenda e){
     	Persistencia.em.getTransaction().begin();
     	Persistencia.em.persist(e);
     	Persistencia.em.getTransaction().commit();
     }
 	
-	public static void atualizar(LinhaDaVenda e){
+	private static void atualizar(LinhaDaVenda e){
     	Persistencia.em.getTransaction().begin();
     	Persistencia.em.merge(e);
     	Persistencia.em.getTransaction().commit();
     }
 	
-	public static void remover(LinhaDaVenda e){
+	private static void remover(LinhaDaVenda e){
     	Persistencia.em.getTransaction().begin();
     	Persistencia.em.remove(e);
     	Persistencia.em.getTransaction().commit();

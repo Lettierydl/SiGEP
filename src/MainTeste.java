@@ -1,9 +1,14 @@
+import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
+import com.twol.sigep.model.exception.EstadoInvalidoDaVendaAtualException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.PermissaoInvalidaException;
+import com.twol.sigep.model.exception.ProdutoABaixoDoEstoqueException;
+import com.twol.sigep.model.exception.VendaPendenteException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Funcionario;
-import com.twol.sigep.model.pessoas.Pagamento;
+import com.twol.sigep.model.vendas.ControllerVenda;
+import com.twol.sigep.model.vendas.FormaDePagamento;
 
 
 
@@ -17,38 +22,51 @@ public class MainTeste {
 	 * @throws ParametrosInvalidosException 
 	 * @throws PermissaoInvalidaException 
 	 * @throws InterruptedException 
+	 * @throws VendaPendenteException 
+	 * @throws ProdutoABaixoDoEstoqueException 
+	 * @throws EstadoInvalidoDaVendaAtualException 
 	 */
-	public static void main(String[] args) throws EntidadeJaPersistidaException, ParametrosInvalidosException, PermissaoInvalidaException, InterruptedException{
-		/*Funcionario f = new Funcionario();
-		f.setCpf("0j988ihj");
-		f.setNome("zéDoido");
-		f.setLogin("zeDoido");
+	public static void main(String[] args) throws EntidadeJaPersistidaException, ParametrosInvalidosException, PermissaoInvalidaException, InterruptedException, VendaPendenteException, ProdutoABaixoDoEstoqueException, EstadoInvalidoDaVendaAtualException{
 		
-		new ControllerFuncionario().salvarFuncionario(f, "123456", TipoDeFuncionario.Caixa);
+		Cliente c = Cliente.recuperarCliente(2);
+		Funcionario logado = Funcionario.recuperarFuncionarioPorLoginESenha("leo", "123456");
+		Produto p1 = Produto.recuperarProduto(3);
+		Produto p2 = Produto.recuperarProduto(2);
+		Produto p3 = Produto.recuperarProduto(1);
 		
-		Cliente c = new Cliente();
-		c.setCpf("9nk232323");
-		c.setNome("Cliente Teste");
-		c.setDataDeNascimento(Calendar.getInstance());
-		Cliente.salvar(c);*/
 		
-		//Pagamento p = new Pagamento(100, c, f);
-		Cliente c = Cliente.recuperarCliente(1);
-		Funcionario f = Funcionario.recuperarFuncionarioPorLoginESenha("leo", "123456");
-		Pagamento p = new Pagamento(230.00, c, f);
-		Pagamento.salvar(p);
-		//System.out.println(p.getData().get(Calendar.SECOND)+ " id:" + p.getId());
+		ControllerVenda cv = new ControllerVenda(logado);
 		
-		//System.out.println(Pagamento.recuperarPagamentoPorID(p.getId()).getData().get(Calendar.SECOND));
+		cv.iniciarNovaVenda();
+		cv.addLinhaDaVenda(p1, 3);
+		cv.addLinhaDaVenda(p2, 7);
+		cv.addLinhaDaVenda(p3, 9.6);
 		
-		//System.out.println(f.getPagamentos());
+		cv.finalizarVenda(c, null, FormaDePagamento.A_Prazo);
+	
 		
 		
 		
 		//System.out.println(Pagamento.recuperarPagamentoPorID(p.getId()));
 		
+	}	
+		/*Venda v = new Venda();
+		Cliente c = Cliente.recuperarCliente(1);
+		Funcionario logado = Funcionario.recuperarFuncionarioPorLoginESenha("leo", "123456");
+		Produto p1 = Produto.recuperarProduto(3);
+		Produto p2 = Produto.recuperarProduto(2);
+		Produto p3 = Produto.recuperarProduto(1);
 		
-	}
+		
+		ControllerVenda cv = new ControllerVenda(logado);
+		
+		cv.iniciarNovaVenda();
+		cv.addLinhaDaVenda(p1, 3);
+		cv.addLinhaDaVenda(p2, 7);
+		cv.addLinhaDaVenda(p3, 9.6);
+		
+		cv.finalizarVenda(c, null, FormaDePagamento.A_Vista);
+	
 	
 	/*
 	 * Funcionario f = new Funcionario();
@@ -133,5 +151,33 @@ public class MainTeste {
 	*/
 	
 	
+	/*Pagamento
+	 * Funcionario f = new Funcionario();
+	f.setCpf("0j988ihj");
+	f.setNome("zéDoido");
+	f.setLogin("zeDoido");
 	
+	new ControllerFuncionario().salvarFuncionario(f, "123456", TipoDeFuncionario.Caixa);
+	
+	Cliente c = new Cliente();
+	c.setCpf("9nk232323");
+	c.setNome("Cliente Teste");
+	c.setDataDeNascimento(Calendar.getInstance());
+	Cliente.salvar(c);
+	
+	//Pagamento p = new Pagamento(100, c, f);
+	Cliente c = Cliente.recuperarCliente(1);
+	Funcionario f = Funcionario.recuperarFuncionarioPorLoginESenha("leo", "123456");
+	Pagamento p = new Pagamento(230.00, c, f);
+	Pagamento.salvar(p);
+	//System.out.println(p.getData().get(Calendar.SECOND)+ " id:" + p.getId());
+	
+	//System.out.println(Pagamento.recuperarPagamentoPorID(p.getId()).getData().get(Calendar.SECOND));
+	
+	//System.out.println(f.getPagamentos());
+	
+	
+	
+	//System.out.println(Pagamento.recuperarPagamentoPorID(p.getId()));
+	*/
 }

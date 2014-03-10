@@ -31,11 +31,12 @@ public class ControllerVenda {
 			throw new ParametrosInvalidosException();
 		}
 		this.logado = logado;
+		/* errado
 		vendaAtual = selecionarVendaPendente(logado);
 		try {
 			iniciarNovaVenda();
 		} catch (VendaPendenteException vpe) {
-		}
+		}*/
 	}
 
 	public void iniciarNovaVenda() throws VendaPendenteException {
@@ -99,7 +100,7 @@ public class ControllerVenda {
 		vendaAtual = null;
 		try {
 			iniciarNovaVenda();
-		} catch (VendaPendenteException e) {//Este erro não pode aconteser nesse senário por que acabei de sertar vendaAtul como null
+		} catch (VendaPendenteException e) {//Este erro n��o pode aconteser nesse sen��rio por que acabei de sertar vendaAtul como null
 			e.printStackTrace();
 			throw new EstadoInvalidoDaVendaAtualException();
 		}
@@ -108,6 +109,7 @@ public class ControllerVenda {
 	
 	private void finalizarVendaAVista(){
 		vendaAtual.setFormaDePagamento(FormaDePagamento.A_Vista);
+		vendaAtual.setPaga(true);
 		Venda.atualizar(vendaAtual);
 	}
 	
@@ -120,7 +122,9 @@ public class ControllerVenda {
 		if(d != null){
 			vendaAtual.setDependente(d);
 		}
+		vendaAtual.setCliente(c);
 		vendaAtual.setFormaDePagamento(fp);
+		vendaAtual.setPaga(false);
 		Venda.atualizar(vendaAtual);
 	}
 	

@@ -40,6 +40,9 @@ public abstract class Entidade {
 	public static void remover(Entidade e) {
 		Persistencia.iniciarTrascao();
 		try{
+			for(Object t :e.getListEntidadeRelacionada()){
+				Persistencia.em.remove(t);
+			}
 			Persistencia.em.remove(e);
 		}finally{
 			Persistencia.finalizarTrascao();

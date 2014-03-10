@@ -24,9 +24,16 @@ public class FinderPagamento {
 	
 	
 	public static List<Pagamento> pagamentosDoCliente(Cliente cliente) {
-		Cliente.atualizar(cliente);
-		Persistencia.flush();
-		return cliente.getPagamentos();
+		String stringQuery = "select p FROM Pagamento as p ";
+		stringQuery += "WHERE (p.cliente != :cli) ";
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
+		
+			query.setParameter("cli", cliente);
+		
+		@SuppressWarnings("unchecked")
+		List<Pagamento> pagamentos = (List<Pagamento>) query.getResultList();
+		return pagamentos;
 	}
 
 

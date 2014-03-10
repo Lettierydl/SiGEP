@@ -8,6 +8,7 @@ import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.PermissaoInvalidaException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.ControllerFuncionario;
+import com.twol.sigep.model.pessoas.ControllerPagamento;
 import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.model.pessoas.FinderCliente;
 import com.twol.sigep.model.pessoas.FinderPagamento;
@@ -22,11 +23,13 @@ import com.twol.sigep.util.Persistencia;
 public class Facede {
 
 	private ControllerFuncionario func;
+	private ControllerPagamento pagam;
 	/*--------------------
 	 * Metodos do cliente 
 	 ---------------------*/
 	public Facede(){
 		func = new ControllerFuncionario();
+		pagam = new ControllerPagamento();
 	}
 
 	public void adicionarCliente(Cliente c){
@@ -206,12 +209,21 @@ public class Facede {
 		return FinderPagamento.pagamentosDosClientes(clientes);
 	}
 
-	public void adicionarPagamento(Pagamento pagamento) {
-		Pagamento.salvar(pagamento);
+	public double adicionarPagamento(Pagamento pagamento) throws ParametrosInvalidosException {
+		return pagam.cadastrarPagamento(pagamento);
 	}
 
 	public List<Venda> getListaVendasNaoPagasDeHoje() {
 		return FinderVenda.vendasNaoPagaDeHoje();
+	}
+
+	public List<Venda> buscarVendasNaoPagasDosClientes(List<Cliente> clientes) {
+		return FinderVenda.vendasNaoPagasDosClientes(clientes);
+	}
+
+	public List<Venda> buscarVendaNaoPagaDoCliente(Cliente cliente) {
+		return FinderVenda.vendasNaoPagaDoCliente(cliente);
+	
 	}
 
 	
