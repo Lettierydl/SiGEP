@@ -8,9 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.estoque.Produto;
@@ -35,6 +40,9 @@ public class LinhaDaVenda extends Entidade {
 	}
 	
 	@ManyToOne(cascade = CascadeType.REMOVE)
+	@JoinColumn(updatable=true)
+	@ForeignKey(name = "linha_da_venda")
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Venda venda;
 	
 	
@@ -164,7 +172,7 @@ public class LinhaDaVenda extends Entidade {
 	public static List<LinhaDaVenda> recuperarLista(){
 		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
-				.createNamedQuery("select linha_da_venda from Linha_da_venda linha_da_venda");
+				.createQuery("select l from LinhaDaVenda l");
 		List<LinhaDaVenda> LinhasDaVenda = consulta.getResultList();
 		Persistencia.em.getTransaction().commit();
 		return LinhasDaVenda;
@@ -174,7 +182,7 @@ public class LinhaDaVenda extends Entidade {
 	public static List<LinhaDaVenda> recuperarListaDaVenda(Venda v){
 		Persistencia.em.getTransaction().begin();
 		Query consulta = Persistencia.em
-				.createNamedQuery("select linha_da_venda from Linha_da_venda as linha_da_venda where linha_da_venda.fk_venda = :idVenda");
+				.createQuery("select l from LinhaDaVenda as l where l.fk_venda = :idVenda");
 		consulta.setParameter("idVenda", v.getId());
 		List<LinhaDaVenda> LinhasDaVenda = consulta.getResultList();
 		Persistencia.em.getTransaction().commit();

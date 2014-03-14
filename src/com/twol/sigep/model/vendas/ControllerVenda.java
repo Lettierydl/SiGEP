@@ -132,12 +132,8 @@ public class ControllerVenda {
 	private double calcularValorDoDesconto(Produto p, double quantidadeVendida) {
 		double desconto = 0;
 		if(VariaveisDeConfiguracaoUtil.ATIVAR_DESCONTO_DE_PROMOCOES){
-			for(Promocao pro: p.getPromocoesValidas()){
-				if(pro.isValida()){
-					desconto += pro.calcularValorDoDesconto(quantidadeVendida);
-				}else{
-					Promocao.remover(pro);
-				}
+			if(p.getPromocaoValida() != null){
+				desconto += p.getPromocaoValida().calcularValorDoDesconto(quantidadeVendida);
 			}
 		}
 		return desconto;

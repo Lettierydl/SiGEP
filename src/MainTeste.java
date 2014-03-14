@@ -1,14 +1,13 @@
-import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeJaPersistidaException;
 import com.twol.sigep.model.exception.EstadoInvalidoDaVendaAtualException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.PermissaoInvalidaException;
 import com.twol.sigep.model.exception.ProdutoABaixoDoEstoqueException;
 import com.twol.sigep.model.exception.VendaPendenteException;
-import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Funcionario;
-import com.twol.sigep.model.vendas.ControllerVenda;
-import com.twol.sigep.model.vendas.FormaDePagamento;
+import com.twol.sigep.model.pessoas.Telefone;
+import com.twol.sigep.model.pessoas.TipoDeFuncionario;
+import com.twol.sigep.util.Persistencia;
 
 
 
@@ -27,7 +26,13 @@ public class MainTeste {
 	 * @throws EstadoInvalidoDaVendaAtualException 
 	 */
 	public static void main(String[] args) throws EntidadeJaPersistidaException, ParametrosInvalidosException, PermissaoInvalidaException, InterruptedException, VendaPendenteException, ProdutoABaixoDoEstoqueException, EstadoInvalidoDaVendaAtualException{
-		
+		Funcionario f = Funcionario.recuperarLista().get(0);
+		System.out.println(f);
+		Funcionario.remover(f);
+	}	
+	
+		/*
+		 * 
 		Cliente c = Cliente.recuperarCliente(2);
 		Funcionario logado = Funcionario.recuperarFuncionarioPorLoginESenha("leo", "123456");
 		Produto p1 = Produto.recuperarProduto(3);
@@ -44,12 +49,8 @@ public class MainTeste {
 		
 		cv.finalizarVenda(c, null, FormaDePagamento.A_Prazo);
 	
-		
-		
-		
-		//System.out.println(Pagamento.recuperarPagamentoPorID(p.getId()));
-		
-	}	
+		 */
+	
 		/*Venda v = new Venda();
 		Cliente c = Cliente.recuperarCliente(1);
 		Funcionario logado = Funcionario.recuperarFuncionarioPorLoginESenha("leo", "123456");

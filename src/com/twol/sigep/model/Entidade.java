@@ -5,6 +5,8 @@ import com.twol.sigep.util.Persistencia;
 
 public abstract class Entidade {
 	
+	public abstract int getId();
+	
 	protected List<?> getListEntidadeRelacionada(){
 		return null;
 	}
@@ -22,9 +24,12 @@ public abstract class Entidade {
 			Persistencia.iniciarTrascao();
 			try{
 				Persistencia.em.persist(e);
-			}finally{
-				Persistencia.finalizarTrascao();
+			}catch(Exception ex){
+				ex.printStackTrace();
+				Persistencia.restartConnection();
+				return;
 			}
+			Persistencia.finalizarTrascao();
 		}
 	}
 
@@ -40,10 +45,7 @@ public abstract class Entidade {
 	public static void remover(Entidade e) {
 		Persistencia.iniciarTrascao();
 		try{
-			for(Object t :e.getListEntidadeRelacionada()){
-				Persistencia.em.remove(t);
-			}
-			Persistencia.em.remove(e);
+			Persistencia.em.remove(Persistencia.em.getReference(e.getClass(), e.getId()));
 		}finally{
 			Persistencia.finalizarTrascao();
 		}

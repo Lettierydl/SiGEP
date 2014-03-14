@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,8 +20,11 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.ForeignKey;
 
 import com.twol.sigep.model.Entidade;
+import com.twol.sigep.model.exception.PromocaoInvalida;
+import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
 import com.twol.sigep.model.pessoas.Representante;
 import com.twol.sigep.util.Persistencia;
 
@@ -81,14 +83,15 @@ public class Produto extends Entidade{
 	/**
      */
 	@ManyToOne
-	@JoinColumn(name = "fk_fabricante")
+	@JoinColumn(updatable=true)
+	@ForeignKey(name = "representante_do_produto")
 	private Representante fabricante;
 
 	/**
      */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "produto", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "produto")
 	@Fetch(FetchMode.SUBSELECT)  
-	private List<Promocao> promocoesValidas = new ArrayList<Promocao>();
+	private List<Promocao> promocoes = new ArrayList<Promocao>();
 
 	public String getCodigoDeBarras() {
 		return codigoDeBarras;
@@ -162,24 +165,40 @@ public class Produto extends Entidade{
 		this.fabricante = fabricante;
 	}
 
-	public List<Promocao> getPromocoesValidas() {
-		return promocoesValidas;
+	public List<Promocao> getPromocoes() {
+		return promocoes;
+	}
+	public Promocao getPromocaoValida() {
+		for(Promocao pr : this.getPromocoes()){
+			if(pr.isValida()){
+				return pr;
+			}
+		}
+		return null;
 	}
 
-	public void addPromocaoValida(Promocao p) {
-		if (promocoesValidas == null) {
-			promocoesValidas = new ArrayList<Promocao>();
+	public void addPromocaoValida(Promocao p) throws PromocaoValidaJaExistente, PromocaoInvalida {
+		if (promocoes == null) {
+			promocoes = new ArrayList<Promocao>();
 		}
-		promocoesValidas.add(p);
+		if(!p.isValida()){
+			throw new PromocaoInvalida(p);
+		}
+		for(Promocao pr : this.getPromocoes()){
+			if(pr.isValida()){
+				throw new PromocaoValidaJaExistente(p);
+			}
+		}
+		promocoes.add(p);
 		p.setProduto(this);
 	}
 
-	public void removerPromocaoValida(Promocao p) {
-		if (promocoesValidas == null) {
+	public void removerPromocao(Promocao p) {
+		if (promocoes == null) {
 			return;
 		}
-		if (promocoesValidas.remove(p) && p.getProduto().equals(this)) {
-			p.setProduto(this);
+		if (promocoes.remove(p) && p.getProduto().equals(this)) {
+			Promocao.remover(p);
 		}
 	}
 	
@@ -210,6 +229,8 @@ public class Produto extends Entidade{
 	public String toString() {
 		return  descricao;
 	}
+
+	
 
 	
 

@@ -9,14 +9,18 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.util.Persistencia;
 
@@ -48,7 +52,10 @@ public class Funcionario {
 
     /**
      */
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(updatable=true)
+	@ForeignKey(name = "endereco_do_funcionario")
+	@OnDelete(action=OnDeleteAction.CASCADE)
     private Endereco endereco;
 
     /**
@@ -70,9 +77,10 @@ public class Funcionario {
     /**
      */
     @OneToMany(cascade = CascadeType.ALL)
+    @ForeignKey(name = "telefones_dos_funcionarios")
     private List<Telefone> telefones = new ArrayList<Telefone>();
     
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "funcionario")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "funcionario")
     private List<Pagamento> pagamentos = new ArrayList<Pagamento>();
 
 	public String getNome() {
@@ -149,6 +157,8 @@ public class Funcionario {
 			Persistencia.iniciarTrascao();
 			try{
 				Persistencia.em.persist(f);
+			}catch(Exception e){
+				e.printStackTrace();
 			}finally{
 				Persistencia.finalizarTrascao();
 			}
@@ -166,7 +176,9 @@ public class Funcionario {
 	public static void remover(Funcionario e) {
 		Persistencia.iniciarTrascao();
 		try{
-			Persistencia.em.remove(e);
+			Persistencia.em.remove(Persistencia.em.getReference(e.getClass(), e.getId()));
+		}catch(Exception j){
+			j.printStackTrace();
 		}finally{
 			Persistencia.finalizarTrascao();
 		}

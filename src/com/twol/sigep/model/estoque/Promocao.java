@@ -10,11 +10,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.model.Entidade;
 import com.twol.sigep.util.Persistencia;
@@ -63,8 +68,13 @@ public class Promocao extends Entidade {
     private double quantidadeJaVendida;
 
     @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(updatable=true)
+	@ForeignKey(name = "promocao_valida")
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Produto produto;
     
+    @Column(nullable = false)
+    private boolean ativa;
     
 	public Calendar getDataDeInicio() {
 		return dataDeInicio;
@@ -115,8 +125,16 @@ public class Promocao extends Entidade {
 	}
 	
 	public boolean isValida() {
-		return this.quantidadeJaVendida >= this.quantidadeMaximaDeVendas
-				&& this.dataDeInicio.compareTo(dataDeFim) > 0;
+		return (ativa) && (this.quantidadeJaVendida >= this.quantidadeMaximaDeVendas
+				|| Calendar.getInstance().compareTo(dataDeFim) > 0);
+	}
+	
+	public void desativar(){
+		this.ativa = false;
+	}
+	
+	public void ativar(){
+		this.ativa = true;
 	}
 
 	
@@ -124,7 +142,7 @@ public class Promocao extends Entidade {
 	public static List<Promocao> recuperarLista(){
 		Persistencia.restartConnection();
 		Query consulta = Persistencia.em
-				.createNamedQuery("select promocao from Promocao promocao");
+				.createQuery("select promocao from Promocao promocao");
 		List<Promocao> promocoes = consulta.getResultList();
 		return promocoes;
     }

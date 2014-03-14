@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Query;
@@ -22,6 +23,9 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.pessoas.Cliente;
@@ -56,16 +60,23 @@ public class Venda extends Entidade implements Comparable<Venda>{
     /**
      */
     @ManyToOne
+    @JoinColumn(updatable=true)
+    @ForeignKey(name = "funcionario_da_venda")
     private Funcionario funcionario;
 
     /**
      */
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(updatable=true)
+    @ForeignKey(name = "cliente_da_venda")
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Cliente cliente;
 
     /**
      */
     @ManyToOne
+    @JoinColumn(updatable=true)
+    @ForeignKey(name = "dependete_que_fez_a_venda")
     private Dependente dependente;
 
     /**

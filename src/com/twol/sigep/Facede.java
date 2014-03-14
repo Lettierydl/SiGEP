@@ -14,6 +14,7 @@ import com.twol.sigep.model.pessoas.FinderCliente;
 import com.twol.sigep.model.pessoas.FinderPagamento;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.Pagamento;
+import com.twol.sigep.model.pessoas.Representante;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 import com.twol.sigep.model.vendas.FinderVenda;
 import com.twol.sigep.model.vendas.Venda;
@@ -40,12 +41,12 @@ public class Facede {
 		Cliente.remover(c);
 	}
 	
-	public void modificarCliente (Cliente c){// (Cliente antes, Cliente depois){
+	public void atualizarCliente (Cliente c){
 		Cliente.atualizar(c);
 	}
 	
-	public Cliente buscarClientePorId(int idCliente){
-		return Cliente.recuperarCliente(idCliente);
+	public Cliente buscarClientePorId(int id){
+		return Cliente.recuperarCliente(id);
 		
 	}
 	
@@ -83,6 +84,10 @@ public class Facede {
 	 * Metodos do Usu������������������rio 
 	 --------------------------*/
 			
+	public List<Funcionario> getListaFuncionarios() {
+		return Funcionario.recuperarLista();
+	}
+	
 	public void adicionarFuncionario(Funcionario f, String senha , TipoDeFuncionario tipoDoFuncionario) throws ParametrosInvalidosException, PermissaoInvalidaException{
 		func.salvarFuncionario(f, senha, tipoDoFuncionario);
 	}
@@ -95,8 +100,12 @@ public class Facede {
 		Funcionario.remover(u);
 	}
 	
-	public void modificarFuncionario (Funcionario ant, Funcionario novo){
-		//TODO modificar funcionario
+	public Funcionario buscarFuncionarioPeloLoginESenha(String login, String senha) {
+		return Funcionario.recuperarFuncionarioPorLoginESenha(login, senha);
+	}
+	
+	public void atualizarFuncionario (Funcionario f){
+		func.atualizarFuncionario(f);
 	}
 	public Funcionario buscarUsuarioPorNome(String nome){
 		//TODO Buscar funcionario
@@ -119,7 +128,7 @@ public class Facede {
 		Produto.remover(p);
 	}
 	
-	public void modificarProduto (Produto p){
+	public void atualizarProduto (Produto p){
 		Produto.atualizar(p);
 	}
 	
@@ -131,13 +140,12 @@ public class Facede {
 		return FinderProduto.produtosQueDescricaoLike(descricao);
 	}
 	
-	public Produto buscarProdutoPorDescricao(int idProduto){
+	public Produto buscarProdutoPorId(int idProduto){
 		return Produto.recuperarProduto(idProduto);
 	}
 
-	public Funcionario buscarProdutoPorCodigo(String codigo){
-		//TODO
-		return null;
+	public Produto buscarProdutoPorCodigo(String codigo){
+		return FinderProduto.produtoComCodigoDeBarras(codigo);
 	}
 
 	/*
@@ -225,8 +233,28 @@ public class Facede {
 		return FinderVenda.vendasNaoPagaDoCliente(cliente);
 	
 	}
-
 	
+	//Representante
+
+	public List<Representante> getListaRepresentantes() {
+		return Representante.recuperarLista();
+	}
+
+	public void adicionarRepresentante(Representante r){
+		Representante.salvar(r);
+	}
+	
+	public void removerRepresentante(Representante r){
+		Representante.remover(r);
+	}
+	
+	public void atualizarRepresentante(Representante r){
+		Representante.atualizar(r);
+	}
+	
+	public Representante buscarRepresentantePeloId(int id){
+		return Representante.recuperarRepresentante(id);
+	}
 
 
 

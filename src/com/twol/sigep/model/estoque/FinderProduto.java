@@ -15,7 +15,7 @@ public class FinderProduto {
 			String codigoDeBarras) {
 		if (codigoDeBarras == null || codigoDeBarras.length() == 0)
 			throw new IllegalArgumentException(
-					"�� necess��rio um codigo de barras v��lido");
+					"������ necess������rio um codigo de barras v������lido");
 		codigoDeBarras = codigoDeBarras.replace('*', '%');
 		if (codigoDeBarras.charAt(0) != '%') {
 			codigoDeBarras = "%" + codigoDeBarras;
@@ -38,7 +38,7 @@ public class FinderProduto {
 	public static List<Produto> produtosQueDescricaoLike(String descricao) {
 		if (descricao == null || descricao.length() == 0)
 			throw new IllegalArgumentException(
-					"É necessário uma descrição válida");
+					"�� necess��rio uma descri����o v��lida");
 		descricao = descricao.replace("%", "");
 		descricao = descricao + "%";
 		
@@ -58,7 +58,7 @@ public class FinderProduto {
 			String codigoDeBarras) {
 		if (codigoDeBarras == null || codigoDeBarras.length() == 0)
 			throw new IllegalArgumentException(
-					"�� necess��rio um codigo de barras v��lido");
+					"������ necess������rio um codigo de barras v������lido");
 		codigoDeBarras = codigoDeBarras.replace('*', '%');
 		if (codigoDeBarras.charAt(0) != '%') {
 			codigoDeBarras += "%";
@@ -78,7 +78,7 @@ public class FinderProduto {
 	public static List<Produto> produtosQueDescricaoInicia(String descricao) {
 		if (descricao == null || descricao.length() == 0)
 			throw new IllegalArgumentException(
-					"�� necess��rio uma descri����o v��lida");
+					"������ necess������rio uma descri������������o v������lida");
 		descricao = descricao.replace('*', '%');
 		if (descricao.charAt(0) != '%') {
 			descricao += "%";
@@ -117,6 +117,16 @@ public class FinderProduto {
 		}
 		List<Produto> produtos = (List<Produto>) query.getResultList();
 		return produtos;
+	}
+
+	public static Produto produtoComCodigoDeBarras(String codigo) {
+		Persistencia.restartConnection();
+		String stringQuery = "select p FROM Produto as p where LOWER(p.codigo) LIKE LOWER(:codigo) ";
+		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
+		query.setParameter("codigo",codigo);
+		
+		Produto produto =  (Produto) query.getSingleResult();
+		return produto;
 	}
 
 }

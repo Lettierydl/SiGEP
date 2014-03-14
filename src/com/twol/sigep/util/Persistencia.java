@@ -7,10 +7,9 @@ import javax.persistence.Persistence;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.estoque.Promocao;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.model.pessoas.Endereco;
 import com.twol.sigep.model.pessoas.Funcionario;
+import com.twol.sigep.model.pessoas.Pagamento;
 import com.twol.sigep.model.pessoas.Representante;
-import com.twol.sigep.model.pessoas.Telefone;
 import com.twol.sigep.model.vendas.LinhaDaVenda;
 import com.twol.sigep.model.vendas.Venda;
 
@@ -47,33 +46,33 @@ public class Persistencia {
 	
 	public static void limparBancoDeDados(){
 		restartConnection();
-			for(Cliente c : Cliente.recuperarLista()){
-				Cliente.remover(c);
-			}
-			for(Endereco c : Endereco.recuperarLista()){
-				Endereco.remover(c);
-			}
-			for(Funcionario c : Funcionario.recuperarLista()){
-				Funcionario.remover(c);
-			}
-			for(LinhaDaVenda c : LinhaDaVenda.recuperarLista()){
-				LinhaDaVenda.remover(c);
-			}
-			for(Promocao c : Promocao.recuperarLista()){
-				Promocao.remover(c);
-			}
-			for(Produto c : Produto.recuperarLista()){
-				Produto.remover(c);
-			}
-			for(Representante c : Representante.recuperarLista()){
-				Representante.remover(c);
-			}
-			for(Telefone c : Telefone.recuperarLista()){
-				Telefone.remover(c);
-			}
-			for(Venda c : Venda.recuperarLista()){
-				Venda.remover(c);
-			}
+		for(Cliente c : Cliente.recuperarLista()){
+			Cliente.remover(c);
+		}
+		for(Funcionario c : Funcionario.recuperarLista()){
+			Funcionario.remover(c);
+		}
+		for(Pagamento c : Pagamento.recuperarLista()){
+			Pagamento.remover(c);
+		}
+		for(Representante c : Representante.recuperarLista()){
+			Representante.remover(c);
+		}
+		
+		for(Produto p : Produto.recuperarLista()){
+			Produto.remover(p);
+		}
+		for(Promocao p : Promocao.recuperarLista()){
+			Promocao.remover(p);
+		}
+		
+		for(Venda p : Venda.recuperarLista()){
+			Venda.remover(p);
+		}
+		for(LinhaDaVenda p : LinhaDaVenda.recuperarLista()){
+			LinhaDaVenda.remover(p);
+		}
+		
 		restartConnection();
 	}
 

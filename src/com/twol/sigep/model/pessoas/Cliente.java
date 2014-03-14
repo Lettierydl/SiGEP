@@ -9,16 +9,20 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
@@ -50,7 +54,10 @@ public class Cliente extends Entidade {
 
 	/**
      */
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(updatable=true)
+	@ForeignKey(name = "endereco_do_cliente")
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Endereco endereco;
 
 	/**
@@ -70,15 +77,16 @@ public class Cliente extends Entidade {
 
 	/**
      */
-	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "cliente")
+	@OneToMany(cascade = CascadeType.REMOVE , mappedBy = "cliente")
 	private List<Dependente> dependentes = new ArrayList<Dependente>();
 
 	/**
      */
 	@OneToMany(cascade = CascadeType.ALL)
+	@ForeignKey(name = "telefones_do_cliente")
 	private List<Telefone> telefones = new ArrayList<Telefone>();
 	
-	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "cliente")
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "cliente")
 	private List<Pagamento> pagamentos = new ArrayList<Pagamento>();
 	 
 
@@ -162,6 +170,7 @@ public class Cliente extends Entidade {
 			this.telefones = new ArrayList<Telefone>();
 		}
 		this.telefones.add(telefone);
+		//Telefone.salvar(telefone);
 	}
 	
 	public void removerTelefone(Telefone telefone){

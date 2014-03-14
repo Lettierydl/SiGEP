@@ -9,9 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.model.Entidade;
 import com.twol.sigep.util.Persistencia;
@@ -39,7 +44,10 @@ public class Dependente extends Entidade{
 	@Column(nullable = false)
     private String nome;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
+	@JoinColumn(updatable=true)
+	@ForeignKey(name = "dependentes_do_cliente")
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Cliente cliente;
 	
 	void setCliente(Cliente cliente){
