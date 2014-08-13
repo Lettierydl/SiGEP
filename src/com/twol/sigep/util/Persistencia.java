@@ -8,9 +8,9 @@ import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.estoque.Promocao;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Funcionario;
-import com.twol.sigep.model.pessoas.Pagamento;
 import com.twol.sigep.model.pessoas.Representante;
 import com.twol.sigep.model.vendas.LinhaDaVenda;
+import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
 
 public class Persistencia {

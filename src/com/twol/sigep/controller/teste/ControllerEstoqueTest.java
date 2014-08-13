@@ -1,4 +1,4 @@
-package com.twol.sigep.controller;
+package com.twol.sigep.controller.teste;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.twol.sigep.controller.ControllerEstoque;
 import com.twol.sigep.model.estoque.CategoriaProduto;
 import com.twol.sigep.model.estoque.FinderProduto;
 import com.twol.sigep.model.estoque.Produto;

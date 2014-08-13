@@ -143,7 +143,7 @@ public class FinderVenda {
 	public static List<Venda> vendasNaoPagaDoCliente(Cliente cliente) {
 		String stringQuery = "select v FROM Venda as v ";
 		stringQuery += "WHERE v.paga = false and v.cliente = :cli"
-					+ " order by v.dia DESC ";
+					+ " order by v.valorTotalDaVendaComDesconto , v.dia DESC ";
 		
 		Persistencia.restartConnection();
 		Query query = Persistencia.em.createQuery(stringQuery, Venda.class);

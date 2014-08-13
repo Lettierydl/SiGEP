@@ -1,9 +1,10 @@
-package com.twol.sigep.model.pessoas;
+package com.twol.sigep.model.vendas;
 
 import java.util.List;
 
 import javax.persistence.Query;
 
+import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.util.Persistencia;
 
 public class FinderPagamento {
@@ -63,6 +64,19 @@ public class FinderPagamento {
 				return pagamentos;
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	public static Pagamento pagamentoId(int id) {
+		
+		String stringQuery = "select p FROM Pagamento as p where p.id = :id";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
+		query.setParameter("id", id);
+		
+		Pagamento pagamento = (Pagamento) query.getSingleResult();
+		return pagamento;
+	}
 	
 	
 	

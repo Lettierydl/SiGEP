@@ -45,7 +45,7 @@ public class ControllerLogin {
 	}
 	
 	public void alterarSenhaDoFuncionario(Funcionario f,  String novaSenha) throws SenhaIncorretaException, LoginIncorretoException{
-		Funcionario fb = validarSenha(f.getLogin(), f.getSenha());
+		validarSenha(f.getLogin(), f.getSenha());
 		f.setSenha(this.criptografar(novaSenha));
 	}
 

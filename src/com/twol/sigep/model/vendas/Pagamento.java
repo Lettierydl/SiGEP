@@ -1,10 +1,9 @@
-package com.twol.sigep.model.pessoas;
+package com.twol.sigep.model.vendas;
 
 import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,9 +17,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
+import com.twol.sigep.model.pessoas.Cliente;
+import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.util.Persistencia;
 
 @Table(name = "pagamento")
@@ -41,13 +40,12 @@ public class Pagamento {
 	@Column
 	private String observacao;
 	
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(updatable=true)
 	@ForeignKey(name = "pagamentos_do_cliente")
-	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Cliente cliente;
 	
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(updatable = true)
 	@ForeignKey(name = "funcionario_que_registrou_pagamento")
 	private Funcionario funcionario;
@@ -169,6 +167,45 @@ public class Pagamento {
 		Pagamento pag= (Pagamento) consulta.getSingleResult();
 		return pag;
 	}
+
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((observacao == null) ? 0 : observacao.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(valor);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pagamento other = (Pagamento) obj;
+		if (id != other.id || (id == 0 || 0 == other.id  ) )
+			return false;
+		if (observacao == null) {
+			if (other.observacao != null)
+				return false;
+		} else if (!observacao.equals(other.observacao))
+			return false;
+		if (Double.doubleToLongBits(valor) != Double
+				.doubleToLongBits(other.valor))
+			return false;
+		return true;
+	}
+
 	
 	
 	

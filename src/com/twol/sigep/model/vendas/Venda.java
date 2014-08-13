@@ -180,6 +180,10 @@ public class Venda extends Entidade implements Comparable<Venda>{
 	public double getPartePagaDaVenda() {
 		return partePagaDaVenda;
 	}
+	
+	public void setPartePagaDaVenda(double partePagaDaVenda) {
+		this.partePagaDaVenda = partePagaDaVenda;
+	}
 
 	public void acrescentarPartePagaDaVenda(double partePagaDaVenda) {
 		this.partePagaDaVenda += partePagaDaVenda;

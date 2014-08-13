@@ -1,7 +1,5 @@
 package com.twol.sigep.controller;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
@@ -12,8 +10,6 @@ import javax.persistence.criteria.Root;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.estoque.Promocao;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
-import com.twol.sigep.model.exception.PromocaoInvalida;
-import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
 
 public class ControllerEstoque {
 

@@ -11,7 +11,7 @@ import org.primefaces.context.RequestContext;
 import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.model.pessoas.Pagamento;
+import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
 
 @ViewScoped

@@ -1,4 +1,4 @@
-package com.twol.sigep.controller;
+package com.twol.sigep.controller.teste;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.twol.sigep.controller.ControllerPessoa;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Endereco;
 import com.twol.sigep.model.pessoas.FinderFuncionario;

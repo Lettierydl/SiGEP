@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.twol.sigep.controller.ControllerEstoque;
 import com.twol.sigep.controller.ControllerLogin;
+import com.twol.sigep.controller.ControllerPagamento;
 import com.twol.sigep.controller.ControllerPessoa;
 import com.twol.sigep.model.estoque.FinderProduto;
 import com.twol.sigep.model.estoque.Produto;
@@ -13,16 +14,15 @@ import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.PermissaoInvalidaException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.model.pessoas.ControllerPagamento;
 import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.model.pessoas.FinderCliente;
 import com.twol.sigep.model.pessoas.FinderFuncionario;
-import com.twol.sigep.model.pessoas.FinderPagamento;
 import com.twol.sigep.model.pessoas.Funcionario;
-import com.twol.sigep.model.pessoas.Pagamento;
 import com.twol.sigep.model.pessoas.Representante;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
+import com.twol.sigep.model.vendas.FinderPagamento;
 import com.twol.sigep.model.vendas.FinderVenda;
+import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.Persistencia;
 
@@ -229,7 +229,7 @@ public class Facede {
 	}
 
 	public double adicionarPagamento(Pagamento pagamento) throws ParametrosInvalidosException {
-		return pagam.cadastrarPagamento(pagamento);
+		return pagam.create(pagamento);
 	}
 
 	public List<Venda> getListaVendasNaoPagasDeHoje() {
