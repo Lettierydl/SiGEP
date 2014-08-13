@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,20 +32,12 @@ import com.twol.sigep.util.Persistencia;
 //@RooJpaActiveRecord(finders = { "findProdutoesByDescricaoLike", "findProdutoesByCategoria", "findProdutoesByCodigoDeBarrasLike", "findProdutoesByFabricante" })
 @Table(name = "produto")
 @Entity
-public class Produto extends Entidade{
+public class Produto{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	private int id;
-
-	public int getId() {
-		return id;
-	}
-
-	protected void setId(int id) {
-		this.id = id;
-	}
 
 	@Column(nullable = false, unique = true, length = 13)
 	private String codigoDeBarras;
@@ -80,18 +73,31 @@ public class Produto extends Entidade{
 	@Enumerated(EnumType.STRING)
 	private CategoriaProduto categoria = CategoriaProduto.Outra;
 
+	
+	
+	
 	/**
-     */
+     
 	@ManyToOne
 	@JoinColumn(updatable=true)
 	@ForeignKey(name = "representante_do_produto")
 	private Representante fabricante;
 
+
 	/**
-     */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "produto")
+    */
+	@OneToMany(cascade = {CascadeType.REMOVE, CascadeType.REFRESH}, fetch = FetchType.EAGER,mappedBy = "produto")
 	@Fetch(FetchMode.SUBSELECT)  
 	private List<Promocao> promocoes = new ArrayList<Promocao>();
+	
+	
+	public int getId() {
+		return id;
+	}
+
+	protected void setId(int id) {
+		this.id = id;
+	}
 
 	public String getCodigoDeBarras() {
 		return codigoDeBarras;
@@ -157,6 +163,7 @@ public class Produto extends Entidade{
 		this.descricaoUnidade = descricaoUnidade;
 	}
 
+	/*
 	public Representante getFabricante() {
 		return fabricante;
 	}
@@ -164,6 +171,7 @@ public class Produto extends Entidade{
 	public void setFabricante(Representante fabricante) {
 		this.fabricante = fabricante;
 	}
+	*/
 
 	public List<Promocao> getPromocoes() {
 		return promocoes;
@@ -177,31 +185,30 @@ public class Produto extends Entidade{
 		return null;
 	}
 
-	public void addPromocaoValida(Promocao p) throws PromocaoValidaJaExistente, PromocaoInvalida {
+	//apenas quem deve usar esse metodo é o Promocao.setProduto(Produto)
+	void addPromocaoValida(Promocao p) throws PromocaoValidaJaExistente, PromocaoInvalida {
 		if (promocoes == null) {
 			promocoes = new ArrayList<Promocao>();
 		}
 		if(!p.isValida()){
 			throw new PromocaoInvalida(p);
 		}
-		for(Promocao pr : this.getPromocoes()){
-			if(pr.isValida()){
-				throw new PromocaoValidaJaExistente(p);
-			}
+		if(this.getPromocaoValida()!= null){
+			throw new PromocaoValidaJaExistente(p);
 		}
 		promocoes.add(p);
-		p.setProduto(this);
+		//p.setProduto(this);
 	}
 
+	//apenas quem deve usar esse metodo é o destry(promocao)
 	public void removerPromocao(Promocao p) {
-		if (promocoes == null) {
+		if (getPromocoes() == null) {
 			return;
 		}
-		if (promocoes.remove(p) && p.getProduto().equals(this)) {
-			Promocao.remover(p);
-		}
+		promocoes.get(0).equals(p);
+		promocoes.remove(p);
 	}
-	
+	/*
 	@Override
 	protected List<?> getListEntidadeRelacionada(){
 		return super.getListEntidadeRelacionada();
@@ -224,14 +231,40 @@ public class Produto extends Entidade{
 		Produto produto = (Produto) consulta.getSingleResult();
 		return produto;
 	}
-
+	*/
 	@Override
 	public String toString() {
 		return  descricao;
 	}
 
-	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((codigoDeBarras == null) ? 0 : codigoDeBarras.hashCode());
+		result = prime * result + id;
+		return result;
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Produto other = (Produto) obj;
+		if (codigoDeBarras == null) {
+			if (other.codigoDeBarras != null)
+				return false;
+		} else if (!codigoDeBarras.equals(other.codigoDeBarras))
+			return false;
+		if (id != other.id)
+			return false;
+		return true;
+	}
 	
 
 }

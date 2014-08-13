@@ -2,8 +2,10 @@ package com.twol.sigep;
 
 import java.util.List;
 
+import com.twol.sigep.controller.ControllerEstoque;
 import com.twol.sigep.model.estoque.FinderProduto;
 import com.twol.sigep.model.estoque.Produto;
+import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.PermissaoInvalidaException;
 import com.twol.sigep.model.pessoas.Cliente;
@@ -22,13 +24,15 @@ import com.twol.sigep.util.Persistencia;
 
 
 public class Facede {
-
+	
+	private ControllerEstoque est;
 	private ControllerFuncionario func;
 	private ControllerPagamento pagam;
 	/*--------------------
 	 * Metodos do cliente 
 	 ---------------------*/
 	public Facede(){
+		est= new ControllerEstoque(Persistencia.emf);
 		func = new ControllerFuncionario();
 		pagam = new ControllerPagamento();
 	}
@@ -121,19 +125,19 @@ public class Facede {
 	 * Metodos do produto
 	 */
 	public void adicionarProduto(Produto p){
-		Produto.salvar(p);
+		est.create(p);
 	}
 	
-	public void removerProduto (Produto p){
-		Produto.remover(p);
+	public void removerProduto (Produto p) throws EntidadeNaoExistenteException{
+		est.destroy(p);
 	}
 	
-	public void atualizarProduto (Produto p){
-		Produto.atualizar(p);
+	public void atualizarProduto (Produto p) throws EntidadeNaoExistenteException, Exception{
+		est.edit(p);
 	}
 	
 	public List<Produto> getListaProdutos(){
-		return Produto.recuperarLista();
+		return FinderProduto.todosProdutos();
 	}
 	
 	public List<Produto> buscarProdutoPorDescricaoQueInicia(String descricao){
@@ -141,7 +145,7 @@ public class Facede {
 	}
 	
 	public Produto buscarProdutoPorId(int idProduto){
-		return Produto.recuperarProduto(idProduto);
+		return FinderProduto.produtoComId(idProduto);
 	}
 
 	public Produto buscarProdutoPorCodigo(String codigo){

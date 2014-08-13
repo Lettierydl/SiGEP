@@ -121,12 +121,31 @@ public class FinderProduto {
 
 	public static Produto produtoComCodigoDeBarras(String codigo) {
 		Persistencia.restartConnection();
-		String stringQuery = "select p FROM Produto as p where LOWER(p.codigo) LIKE LOWER(:codigo) ";
+		String stringQuery = "select p FROM Produto as p where LOWER(p.codigoDeBarras) LIKE LOWER(:codigo) ";
 		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
 		query.setParameter("codigo",codigo);
 		
 		Produto produto =  (Produto) query.getSingleResult();
 		return produto;
+	}
+	
+	public static Produto produtoComId(int id) {
+		Persistencia.restartConnection();
+		String stringQuery = "select p FROM Produto as p where p.id = :id ";
+		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
+		query.setParameter("id",id);
+		
+		Produto produto =  (Produto) query.getSingleResult();
+		return produto;
+	}
+
+	public static List<Produto> todosProdutos() {
+		String stringQuery = "select p FROM Produto as p ";
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
+		@SuppressWarnings("unchecked")
+		List<Produto> produtos = (List<Produto>) query.getResultList();
+		return produtos;
 	}
 
 }

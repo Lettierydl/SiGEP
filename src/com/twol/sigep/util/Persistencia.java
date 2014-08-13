@@ -59,13 +59,6 @@ public class Persistencia {
 			Representante.remover(c);
 		}
 		
-		for(Produto p : Produto.recuperarLista()){
-			Produto.remover(p);
-		}
-		for(Promocao p : Promocao.recuperarLista()){
-			Promocao.remover(p);
-		}
-		
 		for(Venda p : Venda.recuperarLista()){
 			Venda.remover(p);
 		}
