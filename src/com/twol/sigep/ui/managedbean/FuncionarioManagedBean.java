@@ -11,6 +11,7 @@ import org.primefaces.context.RequestContext;
 import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.PermissaoInvalidaException;
+import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.model.pessoas.Endereco;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.Telefone;
@@ -47,10 +48,7 @@ public class FuncionarioManagedBean {
 		}
 		try {
 			f.adicionarFuncionario(newFuncionario, senha, tipoDoFuncionario);
-		} catch (ParametrosInvalidosException e) {
-			e.printStackTrace();//erro invalido
-		} catch (PermissaoInvalidaException e) {
-			//erro n��o pode cadastrar funcionario com esse tipo de funcionario "tipoDoFuncionario"
+		} catch (SenhaIncorretaException e) {
 			e.printStackTrace();
 		}
 		newFuncionario = new Funcionario();

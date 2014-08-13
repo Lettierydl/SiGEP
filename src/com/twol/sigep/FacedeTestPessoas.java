@@ -140,69 +140,6 @@ public class FacedeTestPessoas {
 	}
 	
 	
-	
-	//Funcionario
-	
-	@Test
-	public void adicionarFuncionario() throws ParametrosInvalidosException, PermissaoInvalidaException {
-		Assert.assertEquals(fac.getListaFuncionarios().size(), 0);
-		Funcionario f = iniciarFuncionarioeInformacoesAleatorias("teste");
-		fac.adicionarFuncionario(f, "123456", TipoDeFuncionario.Caixa);
-
-		Assert.assertEquals(fac.getListaFuncionarios().size(), 1);
-		Funcionario result = fac.buscarFuncionarioPeloLoginESenha("teste","123456");
-		Assert.assertEquals(result.getId(), f.getId());
-	}
-	
-	@Test
-	public void adicionarVariosFuncionarios() throws ParametrosInvalidosException, PermissaoInvalidaException {
-		Assert.assertEquals(fac.getListaFuncionarios().size(), 0);
-		int numCli = 5;
-		for(int i = 1 ; i <= numCli; i++){
-			Funcionario f = iniciarFuncionarioeInformacoesAleatorias("Teste: "+i);
-			fac.adicionarFuncionario(f, "123456", TipoDeFuncionario.Caixa);
-		}
-		Assert.assertEquals(fac.getListaFuncionarios().size(), numCli);
-	}
-	
-	@Test
-	public void removerFuncionario() throws ParametrosInvalidosException, PermissaoInvalidaException {
-		adicionarFuncionario();
-		Assert.assertEquals(fac.getListaFuncionarios().size(), 1);
-		Funcionario criado = fac.getListaFuncionarios().get(0);
-		fac.removerFuncionario(criado);
-		Assert.assertEquals(fac.getListaFuncionarios().size(), 0);
-	}
-	
-	
-	@Test
-	public void adicionarUmTelefoneAoFuncionario() throws ParametrosInvalidosException, PermissaoInvalidaException {
-		Assert.assertEquals(fac.getListaClientes().size(), 0);
-		Funcionario f = iniciarFuncionarioeInformacoesAleatorias("teste");
-		
-		f.addTelefone(criarTelefone());
-		fac.adicionarFuncionario(f, "123456", TipoDeFuncionario.Caixa);
-
-		Assert.assertEquals(fac.getListaFuncionarios().size(), 1);
-		Funcionario result = fac.buscarFuncionarioPeloLoginESenha("teste","123456");
-		Assert.assertEquals(result.getTelefones().size(), 1);
-		Assert.assertArrayEquals(result.getTelefones().toArray(), f.getTelefones().toArray());
-	}
-	
-	@Test
-	public void removerUmTelefoneDoFuncionario() throws ParametrosInvalidosException, PermissaoInvalidaException {
-		this.adicionarUmTelefoneAoFuncionario();
-		
-		Funcionario criado = fac.buscarFuncionarioPeloLoginESenha("teste","123456");
-		criado.removerTelefone(criado.getTelefones().get(0));
-		fac.atualizarFuncionario(criado);
-		
-		Funcionario result = fac.buscarFuncionarioPeloLoginESenha("teste","123456");
-		Assert.assertEquals(result.getTelefones().size(), 0);
-		Assert.assertEquals(result.getTelefones().size(), criado.getTelefones().size());
-	}
-	
-	
 	//Representante
 	@Test
 	public void adicionarRepresentante(){

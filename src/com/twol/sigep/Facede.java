@@ -3,17 +3,20 @@ package com.twol.sigep;
 import java.util.List;
 
 import com.twol.sigep.controller.ControllerEstoque;
+import com.twol.sigep.controller.ControllerLogin;
 import com.twol.sigep.controller.ControllerPessoa;
 import com.twol.sigep.model.estoque.FinderProduto;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.LoginIncorretoException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.PermissaoInvalidaException;
+import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.model.pessoas.ControllerFuncionario;
 import com.twol.sigep.model.pessoas.ControllerPagamento;
 import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.model.pessoas.FinderCliente;
+import com.twol.sigep.model.pessoas.FinderFuncionario;
 import com.twol.sigep.model.pessoas.FinderPagamento;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.Pagamento;
@@ -28,7 +31,7 @@ public class Facede {
 	
 	private ControllerEstoque est;
 	private ControllerPessoa pes;
-	private ControllerFuncionario func;
+	private ControllerLogin lg;
 	private ControllerPagamento pagam;
 	/*--------------------
 	 * Metodos do cliente 
@@ -36,7 +39,7 @@ public class Facede {
 	public Facede(){
 		est= new ControllerEstoque(Persistencia.emf);
 		pes= new ControllerPessoa(Persistencia.emf);
-		func = new ControllerFuncionario();
+		lg = new ControllerLogin();
 		pagam = new ControllerPagamento();
 	}
 
@@ -92,27 +95,28 @@ public class Facede {
 	 --------------------------*/
 			
 	public List<Funcionario> getListaFuncionarios() {
-		return Funcionario.recuperarLista();
+		return FinderFuncionario.listFuncionarios();
 	}
 	
-	public void adicionarFuncionario(Funcionario f, String senha , TipoDeFuncionario tipoDoFuncionario) throws ParametrosInvalidosException, PermissaoInvalidaException{
-		func.salvarFuncionario(f, senha, tipoDoFuncionario);
+	public void adicionarFuncionario(Funcionario f, String senha , TipoDeFuncionario tipoDeFuncionario) throws SenhaIncorretaException{
+		lg.atribuirSenhaETipoAoFuncionario(f, senha, tipoDeFuncionario);
+		pes.create(f);
 	}
 	
 	public List<Funcionario> buscarFuncionarioPorNomeQueInicia(String nome){
-		return Funcionario.recuperarFuncionarioPorNomeQueInicia(nome);
+		return FinderFuncionario.funcionariosQueNomeInicia(nome);
 	}
 	
-	public void removerFuncionario (Funcionario u){
-		Funcionario.remover(u);
+	public void removerFuncionario (Funcionario u) throws EntidadeNaoExistenteException{
+		pes.destroy(u);
 	}
 	
 	public Funcionario buscarFuncionarioPeloLoginESenha(String login, String senha) {
-		return Funcionario.recuperarFuncionarioPorLoginESenha(login, senha);
+		return FinderFuncionario.funcionarioComLoginESenha(login, senha);
 	}
 	
-	public void atualizarFuncionario (Funcionario f){
-		func.atualizarFuncionario(f);
+	public void atualizarFuncionario (Funcionario f) throws EntidadeNaoExistenteException, Exception{
+		pes.edit(f);
 	}
 	public Funcionario buscarUsuarioPorNome(String nome){
 		//TODO Buscar funcionario
@@ -167,8 +171,8 @@ public class Facede {
 	 * ������������������ um metodo necessario para efetuar boa parte das outras operacoes de negocio
 	 * 
 	 */
-	public boolean login (String login, String senha){
-		return false;
+	public void login (String login, String senha) throws SenhaIncorretaException, LoginIncorretoException{
+		lg.logar(login, senha);
 	}
 	
 	/*
@@ -195,7 +199,7 @@ public class Facede {
 	}
 	
 	public List<Funcionario> getFuncionarios(){
-		return Funcionario.recuperarLista();
+		return FinderFuncionario.listFuncionarios();
 	}
 	
 	/*

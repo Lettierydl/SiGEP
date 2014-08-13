@@ -24,7 +24,7 @@ import com.twol.sigep.model.pessoas.Telefone;
 import com.twol.sigep.model.pessoas.UF;
 import com.twol.sigep.util.Persistencia;
 
-public class ControllerPessoaTest {
+public class ControllerClienteTest {
 	
 	ControllerPessoa pe;
 	String nome = "Fulano de tal";
@@ -220,116 +220,5 @@ public class ControllerPessoaTest {
 		assertNull(Telefone.recuperarTelefoneId(e.getId()));	
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	 * Promocao
-	 
-	@Test
-	public void createPromocaoTest() {
-		Promocao p = this.iniciarPromocaoValidaInformacoesAleatorias(50);
-		ce.create(p);
-		assertEquals(Promocao.recuperarPromocao(p.getId()), p);
-	}
-	
-	@Test
-	public void editPromocaoTest() throws EntidadeNaoExistenteException, Exception {
-		createPromocaoTest();
-		Promocao p = Promocao.recuperarLista().get(0);
-		p.setValorDoDesconto(30);
-		ce.edit(p);
-		assertEquals(Promocao.recuperarLista().get(0).getValorDoDesconto(), p.getValorDoDesconto(), 0);
-	}
-	
-	@Test(expected=NoResultException.class )
-	public void destroyPromocaoTest() throws EntidadeNaoExistenteException  {
-		createPromocaoTest();
-		Promocao p = Promocao.recuperarLista().get(0);
-		ce.destroy(p);
-		Promocao.recuperarPromocao(p.getId());
-	}
-	
-	@Test
-	public void removeAllPromocaoTest() {
-		for(int i =0; i>5;i++){
-			Promocao p = this.iniciarPromocaoValidaInformacoesAleatorias(50);
-			ce.create(p);
-		}
-		ce.removeAllPromocoes();
-		assertEquals(ce.getQuantidadePromocoes() , 0);
-	}
-	
-	
-	/*
-	 * Relacionamento Produto e Promocao
-	 
-	
-	@Test
-	public void createUmaPromocaoValidaAoProduto() throws EntidadeNaoExistenteException, Exception {
-		createProdutoTest();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
-		
-		Promocao p = this.iniciarPromocaoValidaInformacoesAleatorias(c.getValorDeVenda()*0.25);
-		p.setProduto(c);
-		ce.create(p);
-		
-		Produto result = FinderProduto.produtoComCodigoDeBarras(codigo);
-		assertEquals(result.getPromocoes().size(), 1);
-		assertArrayEquals(result.getPromocoes().toArray(), c.getPromocoes().toArray());
-		assertEquals(result.getPromocaoValida(), c.getPromocaoValida());
-	}
-	
-	@Test(expected=NoResultException.class )
-	public void destroyUmProdutoComUmaPromocao() throws EntidadeNaoExistenteException, Exception {
-		createUmaPromocaoValidaAoProduto();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
-		ce.destroy(c);
-		
-		FinderProduto.produtoComCodigoDeBarras(codigo);
-	}
-	
-	@Test
-	public void destroyUmaPromocaoDeUmProduto() throws EntidadeNaoExistenteException, Exception {
-		createUmaPromocaoValidaAoProduto();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
-		
-		ce.destroy(c.getPromocaoValida());
-		c = FinderProduto.produtoComCodigoDeBarras(codigo);
-		assertNull(c.getPromocaoValida());
-	}
-	
-	
-	@Test(expected = PromocaoValidaJaExistente.class)
-	public void creatVariasPromocaosValidasAoProduto() throws PromocaoValidaJaExistente, PromocaoInvalida {
-		createProdutoTest();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
-		
-		Promocao p = this.iniciarPromocaoValidaInformacoesAleatorias(c.getValorDeVenda()*0.25);
-		p.setProduto(c);
-		ce.create(p);
-		
-		Promocao p2 = this.iniciarPromocaoValidaInformacoesAleatorias(c.getValorDeVenda()*0.25);
-		p2.setProduto(c);
-		ce.create(p2);
-	}
-	
-	@Test(expected = PromocaoInvalida.class)
-	public void creatUmaPromocaoInvalidaAoProduto() throws PromocaoValidaJaExistente, PromocaoInvalida {
-		createProdutoTest();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
-		
-		Promocao p = this.iniciarPromocaoInvalidaInformacoesAleatorias(c.getValorDeVenda()*0.25);
-		p.setProduto(c);
-		ce.create(p);
-	}
-	
-	
-	
-	*/
 
 }

@@ -8,10 +8,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import com.twol.sigep.model.estoque.Produto;
-import com.twol.sigep.model.estoque.Promocao;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Endereco;
+import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.Telefone;
 
 public class ControllerPessoa {
@@ -104,12 +104,12 @@ public class ControllerPessoa {
     /*
 	 * Funcionario
 	 */
-	public void create(Promocao promocao) {
+	public void create(Funcionario funcionario) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(promocao);
+            em.persist(funcionario);
             //realizar testes de dependencias e dar refreshe em objetos embutidos
             em.getTransaction().commit();
         } finally {
@@ -119,19 +119,30 @@ public class ControllerPessoa {
         }
     }
 
-    public void edit(Promocao promocao) throws EntidadeNaoExistenteException, Exception {
+    public void edit(Funcionario funcionario) throws EntidadeNaoExistenteException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             //atualiza entidades de relacionamento do produto incluindo listas
-            promocao = em.merge(promocao);
+            Funcionario funcionarioold = em.getReference(Funcionario.class, funcionario.getId());
+            if(funcionarioold.getEndereco()!=null && funcionario.getEndereco()==null){
+            	em.remove(funcionarioold.getEndereco());
+            }
+            if(funcionarioold.getTelefones().size() > funcionario.getTelefones().size()){
+            	for(Telefone t : funcionarioold.getTelefones()){
+            		if(!funcionario.getTelefones().contains(t)){
+            			em.remove(t);
+            		}
+            	}
+            }
+            funcionario = em.merge(funcionario);
             em.getTransaction().commit();
         } catch (Exception ex) {
         	try{
-        		em.find(Promocao.class, promocao.getId());
+        		em.find(Funcionario.class, funcionario.getId());
         	}catch(EntityNotFoundException enfe){
-        		throw new EntidadeNaoExistenteException("A promoção com código " + promocao.getId() + " não existe.");
+        		throw new EntidadeNaoExistenteException("O funcionário " + funcionario.getNome() + " não existe.");
         	}
             throw ex;
         } finally {
@@ -141,25 +152,21 @@ public class ControllerPessoa {
         }
     }
 
-    public void destroy(Promocao promocao) throws EntidadeNaoExistenteException {
+    public void destroy(Funcionario funcionario) throws EntidadeNaoExistenteException {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             try {
-            	promocao = em.find(Promocao.class, promocao.getId());
-            	promocao.getId();
+            	funcionario = em.find(Funcionario.class, funcionario.getId());
+            	funcionario.getId();
             } catch (EntityNotFoundException enfe) {
-            	throw new EntidadeNaoExistenteException("A promoção com código " + promocao.getId() + " não existe.");
+            	throw new EntidadeNaoExistenteException("A funcionário " + funcionario.getNome() + " não existe.");
             }
             
             //remove das listas e atualiza entidades relacionadas 
-            Produto prod = promocao.getProduto();
-            if(prod!=null){
-            	//prod = em.find(Produto.class, prod.getId());
-            	prod.removerPromocao(promocao);
-            }
-            em.remove(promocao);
+          
+            em.remove(funcionario);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -178,6 +185,8 @@ public class ControllerPessoa {
     
     
     
+    
+    
   //metodos para testes
     public void removeAllClientes(){
     	EntityManager em = null;
@@ -185,6 +194,20 @@ public class ControllerPessoa {
             em = getEntityManager();
             em.getTransaction().begin();
             em.createNativeQuery("DELETE FROM Cliente WHERE id > 0;", Cliente.class).executeUpdate();
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+    
+    public void removeAllFuncionarios(){
+    	EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            em.createNativeQuery("DELETE FROM Funcionario WHERE id > 0;", Cliente.class).executeUpdate();
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -213,6 +236,7 @@ public class ControllerPessoa {
             em = getEntityManager();
             em.getTransaction().begin();
             em.createNativeQuery("DELETE FROM cliente_telefone WHERE telefone_id > 0;").executeUpdate();
+            em.createNativeQuery("DELETE FROM funcionario_telefone WHERE telefone_id > 0;").executeUpdate();
             em.createNativeQuery("DELETE FROM Telefone WHERE id > 0;", Telefone.class).executeUpdate();
             em.getTransaction().commit();
         } finally {
@@ -234,27 +258,12 @@ public class ControllerPessoa {
             em.close();
         }
     }
-    
-    
-    public void removeAllPromocoes(){
-    	EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            em.createNativeQuery("DELETE FROM Promocao WHERE id > 0;", Promocao.class).executeUpdate();
-            em.getTransaction().commit();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-    }
-    
-    public int getQuantidadePromocoes() {
+   
+    public int getQuantidadeFuncionarios() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Produto> rt = cq.from(Promocao.class);
+            Root<Produto> rt = cq.from(Funcionario.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -262,7 +271,8 @@ public class ControllerPessoa {
             em.close();
         }
     }
-    
+   
+   
 	
 	
 }
