@@ -3,6 +3,7 @@ package com.twol.sigep;
 import java.util.List;
 
 import com.twol.sigep.controller.ControllerEstoque;
+import com.twol.sigep.controller.ControllerPessoa;
 import com.twol.sigep.model.estoque.FinderProduto;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
@@ -26,6 +27,7 @@ import com.twol.sigep.util.Persistencia;
 public class Facede {
 	
 	private ControllerEstoque est;
+	private ControllerPessoa pes;
 	private ControllerFuncionario func;
 	private ControllerPagamento pagam;
 	/*--------------------
@@ -33,29 +35,30 @@ public class Facede {
 	 ---------------------*/
 	public Facede(){
 		est= new ControllerEstoque(Persistencia.emf);
+		pes= new ControllerPessoa(Persistencia.emf);
 		func = new ControllerFuncionario();
 		pagam = new ControllerPagamento();
 	}
 
 	public void adicionarCliente(Cliente c){
-		 Cliente.salvar(c);
+		pes.create(c);
 	}
 	
-	public void removerCliente (Cliente c){
-		Cliente.remover(c);
+	public void removerCliente (Cliente c) throws EntidadeNaoExistenteException{
+		pes.destroy(c);
 	}
 	
-	public void atualizarCliente (Cliente c){
-		Cliente.atualizar(c);
+	public void atualizarCliente (Cliente c) throws EntidadeNaoExistenteException, Exception{
+		pes.edit(c);
 	}
 	
 	public Cliente buscarClientePorId(int id){
-		return Cliente.recuperarCliente(id);
+		return FinderCliente.clienteComId(id);
 		
 	}
 	
 	public List<Cliente> getListaClientes(){
-		return Cliente.recuperarLista();
+		return FinderCliente.listCelientes();
 	}
 	
 	public List<Cliente> buscarClientePorCPFOuNomeQueIniciam(String cpfOuNome){

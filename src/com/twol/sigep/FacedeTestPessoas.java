@@ -93,14 +93,7 @@ public class FacedeTestPessoas {
 		Assert.assertEquals(result.getId(), c.getId());
 	}
 	
-	@Test
-	public void removerCliente() {
-		adicionarCliente();
-		Assert.assertEquals(fac.getListaClientes().size(), 1);
-		Cliente criado = fac.getListaClientes().get(0);
-		fac.removerCliente(criado);
-		Assert.assertEquals(fac.getListaClientes().size(), 0);
-	}
+	
 	
 	
 	@Test
@@ -134,27 +127,7 @@ public class FacedeTestPessoas {
 		Assert.assertArrayEquals(result.getTelefones().toArray(), c.getTelefones().toArray());
 	}
 	
-	@Test
-	public void removerUmTelefoneDoCliente() {
-		Assert.assertEquals(fac.getListaClientes().size(), 0);
-		Cliente c = this.iniciarClienteInformacoesAleatorias();
-		
-		c.addTelefone(criarTelefone());
-		fac.adicionarCliente(c);
-
-		Assert.assertEquals(fac.getListaClientes().size(), 1);
-		Cliente result = fac.buscarClientePorId(c.getId());
-		Assert.assertEquals(result.getTelefones().size(), 1);
-		Assert.assertEquals(result.getTelefones().size(), c.getTelefones().size());
-		
-		c.removerTelefone(c.getTelefones().get(0));
-		fac.atualizarCliente(c);
-		
-		result = fac.buscarClientePorId(c.getId());
-		Assert.assertEquals(result.getTelefones().size(), 0);
-		Assert.assertEquals(result.getTelefones().size(), c.getTelefones().size());
-	}
-
+	
 	@Test
 	public void adicionarVariosClientes() {
 		Assert.assertEquals(fac.getListaClientes().size(), 0);

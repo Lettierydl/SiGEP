@@ -29,7 +29,6 @@ public class ControllerEstoqueTest {
 		ce = new ControllerEstoque(Persistencia.emf);
 		ce.removeAllPromocoes();
 		ce.removeAllProdutos();
-
 	}
 
 	private Produto iniciarProdutoInformacoesAleatorias(String codigo) {

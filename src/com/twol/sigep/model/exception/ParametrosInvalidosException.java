@@ -11,4 +11,9 @@ public class ParametrosInvalidosException extends Exception {
 	public ParametrosInvalidosException(){
 		super("Valor de compo inválido para esta operação");
 	}
+	
+	
+	public ParametrosInvalidosException(String msg){
+		super(msg);
+	}
 }

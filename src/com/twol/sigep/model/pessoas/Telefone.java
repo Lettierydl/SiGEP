@@ -11,26 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
-import com.twol.sigep.model.Entidade;
 import com.twol.sigep.util.Persistencia;
 
 @Table(name = "telefone")
 @Entity
-public class Telefone extends Entidade{
+public class Telefone{
 	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	private int id;
-
-	public int getId() {
-		return id;
-	}
-
-	protected void setId(int id) {
-		this.id = id;
-	}
 	
     /**
      */
@@ -46,7 +37,17 @@ public class Telefone extends Entidade{
      */
     @Column(nullable = false)
     private String operadora;
+    
+    
+    
+    public int getId() {
+		return id;
+	}
 
+	protected void setId(int id) {
+		this.id = id;
+	}
+    
 	public String getDdd() {
 		return ddd;
 	}
@@ -80,6 +81,15 @@ public class Telefone extends Entidade{
 		List<Telefone> telefones = consulta.getResultList();
 		return telefones;
     }
+	
+	public static Telefone recuperarTelefoneId(int id) {
+		Persistencia.restartConnection();
+		Query consulta = Persistencia.em
+				.createQuery("select t from Telefone as t where t.id = :id", Telefone.class);
+		consulta.setParameter("id", id);
+		Telefone telefone = (Telefone) consulta.getSingleResult();
+		return telefone;
+	}
 
 	@Override
 	public String toString() {
@@ -92,7 +102,6 @@ public class Telefone extends Entidade{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((ddd == null) ? 0 : ddd.hashCode());
-		result = prime * result + id;
 		result = prime * result
 				+ ((operadora == null) ? 0 : operadora.hashCode());
 		result = prime * result
@@ -114,8 +123,6 @@ public class Telefone extends Entidade{
 				return false;
 		} else if (!ddd.equals(other.ddd))
 			return false;
-		if (id != other.id)
-			return false;
 		if (operadora == null) {
 			if (other.operadora != null)
 				return false;
@@ -128,5 +135,7 @@ public class Telefone extends Entidade{
 			return false;
 		return true;
 	}
+
+	
     
 }

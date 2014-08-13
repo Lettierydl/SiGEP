@@ -46,9 +46,6 @@ public class Persistencia {
 	
 	public static void limparBancoDeDados(){
 		restartConnection();
-		for(Cliente c : Cliente.recuperarLista()){
-			Cliente.remover(c);
-		}
 		for(Funcionario c : Funcionario.recuperarLista()){
 			Funcionario.remover(c);
 		}

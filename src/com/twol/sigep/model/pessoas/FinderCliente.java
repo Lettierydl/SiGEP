@@ -126,5 +126,40 @@ public class FinderCliente {
 		List<String> nomes = (List<String>) query.getResultList();
 		return nomes;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Cliente> listCelientes() {
+		Persistencia.restartConnection();
+		Query consulta = Persistencia.em
+				.createQuery("select cliente from Cliente cliente order by nome");
+		List<Cliente> clientes = consulta.getResultList();
+		return clientes;
+	}
+
+	public static Cliente clienteComId(int idCliente) {
+		Persistencia.restartConnection();
+		Query consulta = Persistencia.em.createQuery(
+				"select c from Cliente as c where c.id = :idCliente ",
+				Cliente.class);
+		consulta.setParameter("idCliente", idCliente);
+		Cliente c = (Cliente) consulta.getSingleResult();
+		return c;
+	}
+	
+	public static Cliente clientesComNome(
+			String nome) {
+		if (nome == null || nome.length() == 0)
+			throw new IllegalArgumentException(
+					"������ necess������rio um nome v������lido");
+		Persistencia.restartConnection();
+		Query q = Persistencia.em
+				.createQuery(
+						"select o from Cliente as o where LOWER(o.nome) = LOWER(:nome)",
+						Cliente.class);
+		q.setParameter("nome", nome);
+		Cliente cliente = (Cliente) q.getSingleResult();
+		return cliente;
+	}
+
 
 }
