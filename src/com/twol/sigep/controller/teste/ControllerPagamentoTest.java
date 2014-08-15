@@ -12,13 +12,13 @@ import org.junit.Test;
 
 import com.twol.sigep.controller.ControllerPagamento;
 import com.twol.sigep.controller.ControllerPessoa;
+import com.twol.sigep.controller.find.FindCliente;
+import com.twol.sigep.controller.find.FindFuncionario;
+import com.twol.sigep.controller.find.FindPagamento;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.model.pessoas.FinderCliente;
-import com.twol.sigep.model.pessoas.FinderFuncionario;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
-import com.twol.sigep.model.vendas.FinderPagamento;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.util.Persistencia;
 
@@ -80,7 +80,7 @@ public class ControllerPagamentoTest {
 	public void createPagamentoTest() {
 		Pagamento p = iniciarPagamentoInformacoesAleatorias(valor);
 		pa.create(p);
-		assertEquals(FinderPagamento.pagamentoId(p.getId()), p);
+		assertEquals(FindPagamento.pagamentoId(p.getId()), p);
 	}
 	
 	@Test
@@ -88,14 +88,14 @@ public class ControllerPagamentoTest {
 		Pagamento p = iniciarPagamentoESalvarNoBanco();
 		p.setObservacao("Cliente Alterado");
 		pa.edit(p);
-		assertEquals( FinderPagamento.pagamentoId(p.getId()).getObservacao() , p.getObservacao());
+		assertEquals( FindPagamento.pagamentoId(p.getId()).getObservacao() , p.getObservacao());
 	}
 	
 	@Test(expected=NoResultException.class )
 	public void destroyClienteTest() throws EntidadeNaoExistenteException  {
 		Pagamento p = iniciarPagamentoESalvarNoBanco();
 		pa.destroy(p);
-		FinderPagamento.pagamentoId(p.getId());
+		FindPagamento.pagamentoId(p.getId());
 	}
 	
 	@Test
@@ -118,7 +118,7 @@ public class ControllerPagamentoTest {
 		Pagamento p = iniciarPagamentoInformacoesAleatorias(valor);
 		p.setCliente(c);
 		pa.create(p);
-		assertEquals(FinderPagamento.pagamentoId(p.getId()).getCliente(), p.getCliente());	
+		assertEquals(FindPagamento.pagamentoId(p.getId()).getCliente(), p.getCliente());	
 	}
 	
 	@Test
@@ -130,7 +130,7 @@ public class ControllerPagamentoTest {
 		p.setCliente(c);
 		pa.edit(p);
 		
-		assertEquals(FinderPagamento.pagamentoId(p.getId()).getCliente(), p.getCliente());	
+		assertEquals(FindPagamento.pagamentoId(p.getId()).getCliente(), p.getCliente());	
 	}
 	
 	@Test(expected=NoResultException.class)
@@ -143,8 +143,8 @@ public class ControllerPagamentoTest {
 		pa.edit(p);
 		pa.destroy(p);
 		
-		assertEquals(FinderCliente.clienteComId(c.getId()),c);
-		assertNull(FinderPagamento.pagamentoId(p.getId()));
+		assertEquals(FindCliente.clienteComId(c.getId()),c);
+		assertNull(FindPagamento.pagamentoId(p.getId()));
 	}
 	
 	
@@ -158,7 +158,7 @@ public class ControllerPagamentoTest {
 		Pagamento p = iniciarPagamentoInformacoesAleatorias(valor);
 		p.setFuncionario(c);
 		pa.create(p);
-		assertEquals(FinderPagamento.pagamentoId(p.getId()).getFuncionario(), p.getFuncionario());	
+		assertEquals(FindPagamento.pagamentoId(p.getId()).getFuncionario(), p.getFuncionario());	
 	}
 	
 	@Test
@@ -170,7 +170,7 @@ public class ControllerPagamentoTest {
 		p.setFuncionario(c);
 		pa.edit(p);
 		
-		assertEquals(FinderPagamento.pagamentoId(p.getId()).getFuncionario(), p.getFuncionario());	
+		assertEquals(FindPagamento.pagamentoId(p.getId()).getFuncionario(), p.getFuncionario());	
 	}
 	
 	@Test(expected=NoResultException.class)
@@ -183,8 +183,8 @@ public class ControllerPagamentoTest {
 		pa.edit(p);
 		pa.destroy(p);
 		
-		assertEquals(FinderFuncionario.funcionarioComId(c.getId()),c);
-		assertNull(FinderPagamento.pagamentoId(p.getId()));
+		assertEquals(FindFuncionario.funcionarioComId(c.getId()),c);
+		assertNull(FindPagamento.pagamentoId(p.getId()));
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.twol.sigep.controller.teste;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Calendar;
 
@@ -10,17 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.twol.sigep.controller.ControllerPessoa;
-import com.twol.sigep.model.estoque.CategoriaProduto;
-import com.twol.sigep.model.estoque.FinderProduto;
-import com.twol.sigep.model.estoque.Produto;
-import com.twol.sigep.model.estoque.Promocao;
-import com.twol.sigep.model.estoque.UnidadeProduto;
+import com.twol.sigep.controller.find.FindCliente;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
-import com.twol.sigep.model.exception.PromocaoInvalida;
-import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Endereco;
-import com.twol.sigep.model.pessoas.FinderCliente;
 import com.twol.sigep.model.pessoas.Telefone;
 import com.twol.sigep.model.pessoas.UF;
 import com.twol.sigep.util.Persistencia;
@@ -73,24 +67,24 @@ public class ControllerClienteTest {
 	public void createClienteTest() {
 		Cliente p = iniciarClienteInformacoesAleatorias(nome);
 		pe.create(p);
-		assertEquals(FinderCliente.clientesComNome(nome), p);
+		assertEquals(FindCliente.clientesComNome(nome), p);
 	}
 	
 	@Test
 	public void editClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		p.setNome("Cliente Alterado");
 		pe.edit(p);
-		assertEquals(FinderCliente.clienteComId(p.getId()).getNome(), p.getNome());
+		assertEquals(FindCliente.clienteComId(p.getId()).getNome(), p.getNome());
 	}
 	
 	@Test(expected=NoResultException.class )
 	public void destroyClienteTest() throws EntidadeNaoExistenteException  {
 		createClienteTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		pe.destroy(p);
-		FinderCliente.clientesComNome(nome);
+		FindCliente.clientesComNome(nome);
 	}
 	
 	@Test
@@ -112,43 +106,43 @@ public class ControllerClienteTest {
 		Endereco e = criarEndereco();
 		p.setEndereco(e);
 		pe.create(p);
-		assertEquals(FinderCliente.clientesComNome(nome).getEndereco(), e);	
+		assertEquals(FindCliente.clientesComNome(nome).getEndereco(), e);	
 	}
 	
 	@Test
 	public void adicionarEnderecoAoClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		Endereco e = criarEndereco();
 		p.setEndereco(e);
 		pe.edit(p);
-		assertEquals(FinderCliente.clientesComNome(nome).getEndereco(), e);	
+		assertEquals(FindCliente.clientesComNome(nome).getEndereco(), e);	
 	}
 	
 	@Test
 	public void alterarEnderecoDoClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteComEnderecoTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		Endereco e = p.getEndereco();
 		e.setUf(UF.BA);
 		e.setBairro("Bairro Alterado");
 		pe.edit(p);
-		assertEquals(FinderCliente.clientesComNome(nome).getEndereco().getBairro(), "Bairro Alterado");	
+		assertEquals(FindCliente.clientesComNome(nome).getEndereco().getBairro(), "Bairro Alterado");	
 	}
 	
 	@Test
 	public void removerEnderecoDoClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteComEnderecoTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		p.setEndereco(null);
 		pe.edit(p);
-		assertNull(FinderCliente.clientesComNome(nome).getEndereco());	
+		assertNull(FindCliente.clientesComNome(nome).getEndereco());	
 	}
 	
 	@Test(expected=NoResultException.class)
 	public void removerClienteComEnderecoTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteComEnderecoTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		Endereco e = p.getEndereco();
 		pe.destroy(p);
 		assertNull(Endereco.recuperarEnderecoId(e.getId()));	
@@ -165,7 +159,7 @@ public class ControllerClienteTest {
 		Telefone t = criarTelefone();
 		p.addTelefone(t);
 		pe.create(p);
-		assertEquals(FinderCliente.clientesComNome(nome).getTelefones().get(0), t);	
+		assertEquals(FindCliente.clientesComNome(nome).getTelefones().get(0), t);	
 	}
 	
 	@Test
@@ -177,45 +171,45 @@ public class ControllerClienteTest {
 			p.addTelefone(t);
 		}
 		pe.create(p);
-		assertEquals(FinderCliente.clientesComNome(nome).getTelefones().size(), n);	
+		assertEquals(FindCliente.clientesComNome(nome).getTelefones().size(), n);	
 	}
 	
 	
 	@Test
 	public void adicionarTelefoneAoClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		
 		Telefone t = criarTelefone();
 		p.addTelefone(t);
 		pe.edit(p);
-		assertEquals(FinderCliente.clientesComNome(nome).getTelefones().get(0), t);
+		assertEquals(FindCliente.clientesComNome(nome).getTelefones().get(0), t);
 	}
 	
 	@Test
 	public void alterarTelefoneDoClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteComTelefoneTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		Telefone t = p.getTelefones().get(0);
 		t.setTelefone("ALTERADO");
 		pe.edit(p);
-		assertEquals(FinderCliente.clientesComNome(nome).getTelefones().get(0).getTelefone(), "ALTERADO");	
+		assertEquals(FindCliente.clientesComNome(nome).getTelefones().get(0).getTelefone(), "ALTERADO");	
 	}
 	
 	@Test
 	public void removerTelefoneDoClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteComTelefoneTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		Telefone t = p.getTelefones().get(0);
 		p.removerTelefone(t);
 		pe.edit(p);
-		assertEquals(FinderCliente.clientesComNome(nome).getTelefones().size(),0);	
+		assertEquals(FindCliente.clientesComNome(nome).getTelefones().size(),0);	
 	}
 	
 	@Test(expected=NoResultException.class)
 	public void removerClienteComTelefoneTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteComTelefoneTest();
-		Cliente p = FinderCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clientesComNome(nome);
 		Telefone e = p.getTelefones().get(0);
 		pe.destroy(p);
 		assertNull(Telefone.recuperarTelefoneId(e.getId()));	

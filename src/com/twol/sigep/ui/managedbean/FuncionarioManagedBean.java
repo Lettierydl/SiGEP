@@ -9,8 +9,6 @@ import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
-import com.twol.sigep.model.exception.ParametrosInvalidosException;
-import com.twol.sigep.model.exception.PermissaoInvalidaException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.model.pessoas.Endereco;
 import com.twol.sigep.model.pessoas.Funcionario;

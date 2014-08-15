@@ -136,7 +136,6 @@ public class Endereco{
 		return enderecos;
     }
 	
-	@SuppressWarnings("unchecked")
 	public static Endereco recuperarEnderecoId(int id){
 		Persistencia.restartConnection();
 		Query consulta = Persistencia.em

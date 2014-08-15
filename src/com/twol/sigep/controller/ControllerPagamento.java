@@ -1,8 +1,5 @@
 package com.twol.sigep.controller;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
@@ -10,11 +7,10 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import com.twol.sigep.controller.find.FindVenda;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.model.pessoas.Telefone;
-import com.twol.sigep.model.vendas.FinderVenda;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
 
@@ -134,7 +130,7 @@ public class ControllerPagamento {
 	public void abaterValorDoPagamentoNaVenda(Pagamento p){
 		Cliente c = p.getCliente();
 		double valorRestante = p.getValor(); 
-		for(Venda v : FinderVenda.vendasNaoPagaDoCliente(c)){
+		for(Venda v : FindVenda.vendasNaoPagaDoCliente(c)){
 			if(valorRestante == 0){//ja pagou a venda
 				break;
 			}

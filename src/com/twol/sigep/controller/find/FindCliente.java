@@ -1,12 +1,13 @@
-package com.twol.sigep.model.pessoas;
+package com.twol.sigep.controller.find;
 
 import java.util.List;
 
 import javax.persistence.Query;
 
+import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.util.Persistencia;
 
-public class FinderCliente {
+public class FindCliente {
 
 	@SuppressWarnings("unchecked")
 	public static List<Cliente> clientesQueNomeLike(
@@ -157,6 +158,21 @@ public class FinderCliente {
 						"select o from Cliente as o where LOWER(o.nome) = LOWER(:nome)",
 						Cliente.class);
 		q.setParameter("nome", nome);
+		Cliente cliente = (Cliente) q.getSingleResult();
+		return cliente;
+	}
+	
+	public static Cliente clientesComCPF(
+			String cpf) {
+		if (cpf == null || cpf.length() == 0)
+			throw new IllegalArgumentException(
+					"������ necess������rio um nome v������lido");
+		Persistencia.restartConnection();
+		Query q = Persistencia.em
+				.createQuery(
+						"select o from Cliente as o where LOWER(o.cpf) = LOWER(:cpf)",
+						Cliente.class);
+		q.setParameter("cpf", cpf);
 		Cliente cliente = (Cliente) q.getSingleResult();
 		return cliente;
 	}

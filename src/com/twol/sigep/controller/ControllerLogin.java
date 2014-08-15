@@ -2,9 +2,9 @@ package com.twol.sigep.controller;
 
 import javax.persistence.NoResultException;
 
+import com.twol.sigep.controller.find.FindFuncionario;
 import com.twol.sigep.model.exception.LoginIncorretoException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
-import com.twol.sigep.model.pessoas.FinderFuncionario;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 import com.twol.sigep.util.SessionUtil;
@@ -12,6 +12,10 @@ import com.twol.sigep.util.SessionUtil;
 public class ControllerLogin {
 
 	private Funcionario logado = null;
+
+	public Funcionario getLogado() {
+		return logado;
+	}
 
 	public void logar(String login, String senha)
 			throws SenhaIncorretaException, LoginIncorretoException {
@@ -53,11 +57,11 @@ public class ControllerLogin {
 			throws SenhaIncorretaException, LoginIncorretoException {
 		Funcionario f = null;
 		try {
-			f = FinderFuncionario.funcionarioComLoginESenha(login,
+			f = FindFuncionario.funcionarioComLoginESenha(login,
 					criptografar(senha));
 		} catch (Exception e) {
 			try{
-				FinderFuncionario.funcionarioComLogin(login);
+				FindFuncionario.funcionarioComLogin(login);
 			}catch(NoResultException nre){
 				throw new LoginIncorretoException();
 			}

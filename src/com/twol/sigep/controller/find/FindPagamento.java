@@ -1,13 +1,14 @@
-package com.twol.sigep.model.vendas;
+package com.twol.sigep.controller.find;
 
 import java.util.List;
 
 import javax.persistence.Query;
 
 import com.twol.sigep.model.pessoas.Cliente;
+import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.util.Persistencia;
 
-public class FinderPagamento {
+public class FindPagamento {
 	
 	@SuppressWarnings("unchecked")
 	public static List<Pagamento> pagamentosDeHoje() {
@@ -65,7 +66,6 @@ public class FinderPagamento {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
 	public static Pagamento pagamentoId(int id) {
 		
 		String stringQuery = "select p FROM Pagamento as p where p.id = :id";

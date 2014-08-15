@@ -9,9 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.twol.sigep.controller.ControllerPessoa;
+import com.twol.sigep.controller.find.FindFuncionario;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Endereco;
-import com.twol.sigep.model.pessoas.FinderFuncionario;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.Telefone;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
@@ -71,25 +71,25 @@ public class ControllerFuncionarioTest {
 	public void createFuncionarioTest() {
 		Funcionario p = iniciarFuncionarioInformacoesAleatorias(nome);
 		pe.create(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome), p);
+		assertEquals(FindFuncionario.funcionarioComNome(nome), p);
 	}
 	@Test
 	public void editFuncionarioTest() throws EntidadeNaoExistenteException,
 			Exception {
 		createFuncionarioTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		p.setNome("Funcionario Alterado");
 		pe.edit(p);
-		assertEquals(FinderFuncionario.funcionarioComId(p.getId()).getNome(),
+		assertEquals(FindFuncionario.funcionarioComId(p.getId()).getNome(),
 				p.getNome());
 	}
 
 	@Test(expected = NoResultException.class)
 	public void destroyFuncionarioTest() throws EntidadeNaoExistenteException {
 		createFuncionarioTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		pe.destroy(p);
-		FinderFuncionario.funcionarioComNome(nome);
+		FindFuncionario.funcionarioComNome(nome);
 	}
 
 	@Test
@@ -111,30 +111,30 @@ public class ControllerFuncionarioTest {
 		Endereco e = criarEndereco();
 		p.setEndereco(e);
 		pe.create(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome).getEndereco(), e);
+		assertEquals(FindFuncionario.funcionarioComNome(nome).getEndereco(), e);
 	}
 
 	@Test
 	public void adicionarEnderecoAoFuncionarioTest()
 			throws EntidadeNaoExistenteException, Exception {
 		createFuncionarioTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		Endereco e = criarEndereco();
 		p.setEndereco(e);
 		pe.edit(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome).getEndereco(), e);
+		assertEquals(FindFuncionario.funcionarioComNome(nome).getEndereco(), e);
 	}
 
 	@Test
 	public void alterarEnderecoDoFuncionarioTest()
 			throws EntidadeNaoExistenteException, Exception {
 		createFuncionarioComEnderecoTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		Endereco e = p.getEndereco();
 		e.setUf(UF.BA);
 		e.setBairro("Bairro Alterado");
 		pe.edit(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome).getEndereco()
+		assertEquals(FindFuncionario.funcionarioComNome(nome).getEndereco()
 				.getBairro(), "Bairro Alterado");
 	}
 
@@ -142,17 +142,17 @@ public class ControllerFuncionarioTest {
 	public void removerEnderecoDoFuncionarioTest()
 			throws EntidadeNaoExistenteException, Exception {
 		createFuncionarioComEnderecoTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		p.setEndereco(null);
 		pe.edit(p);
-		assertNull(FinderFuncionario.funcionarioComNome(nome).getEndereco());
+		assertNull(FindFuncionario.funcionarioComNome(nome).getEndereco());
 	}
 
 	@Test(expected = NoResultException.class)
 	public void removerFuncionarioComEnderecoTest()
 			throws EntidadeNaoExistenteException, Exception {
 		createFuncionarioComEnderecoTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		Endereco e = p.getEndereco();
 		pe.destroy(p);
 		assertNull(Endereco.recuperarEnderecoId(e.getId()));
@@ -168,7 +168,7 @@ public class ControllerFuncionarioTest {
 		Telefone t = criarTelefone();
 		p.addTelefone(t);
 		pe.create(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome).getTelefones().get(0),
+		assertEquals(FindFuncionario.funcionarioComNome(nome).getTelefones().get(0),
 				t);
 	}
 
@@ -181,7 +181,7 @@ public class ControllerFuncionarioTest {
 			p.addTelefone(t);
 		}
 		pe.create(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome).getTelefones().size(),
+		assertEquals(FindFuncionario.funcionarioComNome(nome).getTelefones().size(),
 				n);
 	}
 
@@ -189,12 +189,12 @@ public class ControllerFuncionarioTest {
 	public void adicionarTelefoneAoFuncionarioTest()
 			throws EntidadeNaoExistenteException, Exception {
 		createFuncionarioTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 
 		Telefone t = criarTelefone();
 		p.addTelefone(t);
 		pe.edit(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome).getTelefones().get(0),
+		assertEquals(FindFuncionario.funcionarioComNome(nome).getTelefones().get(0),
 				t);
 	}
 
@@ -202,11 +202,11 @@ public class ControllerFuncionarioTest {
 	public void alterarTelefoneDoFuncionarioTest()
 			throws EntidadeNaoExistenteException, Exception {
 		createFuncionarioComTelefoneTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		Telefone t = p.getTelefones().get(0);
 		t.setTelefone("ALTERADO");
 		pe.edit(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome).getTelefones().get(0)
+		assertEquals(FindFuncionario.funcionarioComNome(nome).getTelefones().get(0)
 				.getTelefone(), "ALTERADO");
 	}
 
@@ -214,11 +214,11 @@ public class ControllerFuncionarioTest {
 	public void removerTelefoneDoFuncionarioTest()
 			throws EntidadeNaoExistenteException, Exception {
 		createFuncionarioComTelefoneTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		Telefone t = p.getTelefones().get(0);
 		p.removerTelefone(t);
 		pe.edit(p);
-		assertEquals(FinderFuncionario.funcionarioComNome(nome).getTelefones().size(),
+		assertEquals(FindFuncionario.funcionarioComNome(nome).getTelefones().size(),
 				0);
 	}
 
@@ -226,7 +226,7 @@ public class ControllerFuncionarioTest {
 	public void removerFuncionarioComTelefoneTest()
 			throws EntidadeNaoExistenteException, Exception {
 		createFuncionarioComTelefoneTest();
-		Funcionario p = FinderFuncionario.funcionarioComNome(nome);
+		Funcionario p = FindFuncionario.funcionarioComNome(nome);
 		Telefone e = p.getTelefones().get(0);
 		pe.destroy(p);
 		assertNull(Telefone.recuperarTelefoneId(e.getId()));

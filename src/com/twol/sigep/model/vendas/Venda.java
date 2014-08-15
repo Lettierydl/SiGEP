@@ -7,16 +7,12 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,35 +23,45 @@ import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.model.pessoas.Funcionario;
-import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findVendasByCliente", "findVendasByDiaBetween", "findVendasByDiaGreaterThanEquals", "findVendasByFormaDePagamento", "findVendasByFuncionario" })
 @Table(name = "venda")
 @Entity
-public class Venda extends Entidade implements Comparable<Venda>{
+public class Venda implements Comparable<Venda>{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	private int id;
-
-	public int getId() {
-		return id;
-	}
-
-	protected void setId(int id) {
-		this.id = id;
-	}
 	
     /**
+     * Dia e hora que aconteceu a venda
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Calendar dia;
+    
+    /**
+     */
+    @Column(nullable = false, precision = 2)
+    private double desconto;
+
+    /**
+     * Valor Total da Venda
+     */
+    @Column(nullable = false, precision = 2)
+    private double total;
+    
+    /**
+     * O cliente pode pagar apenas uma parte desta venda
+     */
+    @Column(nullable = false, precision = 2)
+    private double partePaga;
+    
+    @Column(nullable = false)
+    private boolean paga = false;
 
     /**
      */
@@ -63,55 +69,31 @@ public class Venda extends Entidade implements Comparable<Venda>{
     @JoinColumn(updatable=true)
     @ForeignKey(name = "funcionario_da_venda")
     private Funcionario funcionario;
-
+    
     /**
      */
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(updatable=true)
-    @ForeignKey(name = "cliente_da_venda")
-    @OnDelete(action=OnDeleteAction.CASCADE)
-    private Cliente cliente;
+    @OneToMany(orphanRemoval = true, mappedBy = "venda" , cascade={CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.DETACH,CascadeType.REFRESH})
+    @ForeignKey(name = "itens_da_venda")
+	@OnDelete(action=OnDeleteAction.CASCADE)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<ItemDeVenda> itensDeVenda = new ArrayList<ItemDeVenda>();
 
     /**
      */
     @ManyToOne
     @JoinColumn(updatable=true)
-    @ForeignKey(name = "dependete_que_fez_a_venda")
-    private Dependente dependente;
-
-    /**
-     */
-    @Column(nullable = false, precision = 2)
-    private double valorTotalDeDesconto;
-
-    /**
-     */
-    @Column(nullable = false, precision = 2)
-    private double valorTotalDaVendaComDesconto;
-
-    /**
-     */
-    @Column(nullable = false, precision = 2)
-    private double valorTotalDaVendaSemDesconto;
+    @ForeignKey(name = "cliente_da_venda")
+    @OnDelete(action=OnDeleteAction.NO_ACTION)
+    private Cliente cliente;
     
-    @Column(nullable = false, precision = 2)
-    private double partePagaDaVenda;
+    public int getId() {
+		return id;
+	}
 
-    /**
-     */
-    @Enumerated(EnumType.STRING)
-    private FormaDePagamento formaDePagamento;
-    
-    @Column(nullable = false)
-    private boolean paga = false;
-
-    /**
-     */
-    @OneToMany(orphanRemoval = true, mappedBy = "venda" , fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
-    private List<LinhaDaVenda> linhasDaVenda = new ArrayList<LinhaDaVenda>();
-    
-    
+	protected void setId(int id) {
+		this.id = id;
+	}
+	
     public Calendar getDia() {
 		return dia;
 	}
@@ -135,30 +117,27 @@ public class Venda extends Entidade implements Comparable<Venda>{
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-
-	public Dependente getDependente() {
-		return dependente;
+	
+	public double getDesconto() {
+		return desconto;
 	}
 
-	public void setDependente(Dependente dependente) {
-		this.dependente = dependente;
+	/**
+	 * Valor da venda já com o desconto
+     */
+	public double getTotalComDesconto() {
+		return this.total-this.desconto;
 	}
 
-	public double getValorTotalDeDesconto() {
-		return valorTotalDeDesconto;
-	}
-
-	public double getValorTotalDaVendaComDesconto() {
-		return valorTotalDaVendaComDesconto;
-	}
-
-	public double getValorTotalDaVendaSemDesconto() {
-		return valorTotalDaVendaSemDesconto;
+	public double getTotal() {
+		return total;
 	}
 	
-	//restante da venda que não foi pago ainda
+	/**
+	 * Valor da venda que falta ser pago
+     */
 	public double getValorNaoPagoDaVenda(){
-		return valorTotalDaVendaComDesconto - partePagaDaVenda;
+		return getTotalComDesconto() - partePaga;
 	}
 	
 	public boolean isPaga() {
@@ -168,92 +147,136 @@ public class Venda extends Entidade implements Comparable<Venda>{
 	public void setPaga(boolean paga) {
 		this.paga = paga;
 	}
-
-	public FormaDePagamento getFormaDePagamento() {
-		return formaDePagamento;
-	}
-
-	void setFormaDePagamento(FormaDePagamento formaDePagamento) {
-		this.formaDePagamento = formaDePagamento;
-	}
 	
 	public double getPartePagaDaVenda() {
-		return partePagaDaVenda;
+		return partePaga;
 	}
 	
 	public void setPartePagaDaVenda(double partePagaDaVenda) {
-		this.partePagaDaVenda = partePagaDaVenda;
+		this.partePaga = partePagaDaVenda;
 	}
 
+	/**
+	 * Acrescenta valor a parte paga da venda
+	 * Modifica o estado da venda para pago
+	 * @param Valor para ser acrescentado a parte paga da venda
+	 */
 	public void acrescentarPartePagaDaVenda(double partePagaDaVenda) {
-		this.partePagaDaVenda += partePagaDaVenda;
-		if(partePagaDaVenda >= valorTotalDaVendaComDesconto){
+		this.partePaga += partePagaDaVenda;
+		if(partePagaDaVenda >= getTotalComDesconto()){
 			setPaga(true);
 		}
 	}
 	
-	public int getQuantidadeDeItens(){
-		int resu = 0;
-		for(LinhaDaVenda lv : getLinhasDaVenda()){
-			if(Double.valueOf(lv.getQuantidadeVendida()).floatValue() == 0){
-				resu += lv.getQuantidadeVendida();
-			}else{// so conta um unidade pra 6,8 kg de alguma coisa por exempro
-				resu++;
-			}
-		}
-		return resu;
-	}
-
-	public List<LinhaDaVenda> getLinhasDaVenda() {
-		return linhasDaVenda;
-	}
-	
-	/*
-	 * Atualiza altomaticamente os valores totais da venda
+	/**
+	 * Apenas o ControllerVenda deve utilizar
+	 * @param itensDeVenda
 	 */
-	void addLinhaDaVenda(LinhaDaVenda lv){
-		if(linhasDaVenda == null){
-			this.linhasDaVenda = new ArrayList<LinhaDaVenda>();
-		}
-		linhasDaVenda.add(lv);
-		lv.setVenda(this);
-		valorTotalDaVendaComDesconto +=lv.getValorTotalDaLinhaComDesconto();
-		valorTotalDaVendaSemDesconto +=lv.getValorTotalDaLinhaSemDesconto();
-		valorTotalDeDesconto +=lv.getValorDoDesconto();
-		LinhaDaVenda.salvar(lv);
+	public void setItensDeVenda(List<ItemDeVenda> itensDeVenda){
+		this.itensDeVenda = itensDeVenda;
 	}
-	
-	void removeLinhaDaVenda(LinhaDaVenda lv){
-		if(linhasDaVenda == null){
-			return;
-		}
-		linhasDaVenda.remove(lv);
-		valorTotalDaVendaComDesconto -=lv.getValorTotalDaLinhaComDesconto();
-		valorTotalDaVendaSemDesconto -=lv.getValorTotalDaLinhaSemDesconto();
-		valorTotalDeDesconto -=lv.getValorDoDesconto();
-		LinhaDaVenda.remover(lv);
-	}
-	
-	protected List<?> getListEntidadeRelacionada(){
-		return this.getLinhasDaVenda();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static List<Venda> recuperarLista(){
-		Persistencia.em.getTransaction().begin();
-		Query consulta = Persistencia.em
-				
-				.createQuery("select venda from Venda venda");
-		List<Venda> vendas = consulta.getResultList();
-		Persistencia.em.getTransaction().commit();
-		return vendas;
-    }
 
-	@Override//ordena do menor para o maior (valor da venda)
-	public int compareTo(Venda o) {
-		if(o.getValorTotalDaVendaComDesconto()==getValorTotalDaVendaComDesconto()){
-			return 0;
+	public List<ItemDeVenda> getItensDeVenda() {
+		if(itensDeVenda == null){
+			itensDeVenda = new ArrayList<ItemDeVenda>();
 		}
-		return o.getValorTotalDaVendaComDesconto() < getValorTotalDaVendaComDesconto() ? 1 : -1;
+		return itensDeVenda;
 	}
+	
+	static int in = 0;
+	int getNewIndex() {
+		return in++;
+	}
+	
+	/**
+	 * @see Deve ser atualizado a venda logo em seguida para que o item de venda seja salvo
+	 * @exception NullPointer se o produto nao existir
+	 * @param item já deve vir com produto
+	 */
+	public void addItemDeVenda(ItemDeVenda item){
+		if(item.getProduto()==null){
+			throw new NullPointerException("Item de venda sem produto");
+		}else{
+			this.getItensDeVenda().add(item);
+			item.setIndex(getNewIndex());
+			item.setVenda(this);
+			this.desconto += item.getDesconto();
+			this.total += item.getTotal();
+		}
+	}
+	
+	/**
+	 * @see Este metodo so deve ser utilizado pelo ControllerVenda.removerItemDeVenda(item)
+	 * @see Deve ser atualizado a venda e removido o ItemDeVenda do banco logo em seguida
+	 * @param item que existe nesta venda
+	 */
+	public void removeItemDeVenda(ItemDeVenda item){
+		if(this.getItensDeVenda().remove(item)){
+			//atualizar o index
+			this.desconto -= item.getDesconto();
+			this.total -= item.getTotal();
+			item.setVenda(null);
+		}
+	}
+	
+	/**
+	 * Ordena da mais antiga para a mais recente
+	 */
+	@Override
+	public int compareTo(Venda o) {
+		return o.dia.compareTo(this.dia);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(desconto);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((dia == null) ? 0 : dia.hashCode());
+		result = prime * result + (paga ? 1231 : 1237);
+		temp = Double.doubleToLongBits(partePaga);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(total);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Venda other = (Venda) obj;
+		if (Double.doubleToLongBits(desconto) != Double
+				.doubleToLongBits(other.desconto))
+			return false;
+		if (dia == null) {
+			if (other.dia != null)
+				return false;
+		}
+		if (id != other.id || (id == 0 || 0 == other.id  ))
+			return false;
+		if (paga != other.paga)
+			return false;
+		if (Double.doubleToLongBits(partePaga) != Double
+				.doubleToLongBits(other.partePaga))
+			return false;
+		if (Double.doubleToLongBits(total) != Double
+				.doubleToLongBits(other.total))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Venda [id=" + id + ", total=" + total + "]";
+	}
+	
+	
+	
 }

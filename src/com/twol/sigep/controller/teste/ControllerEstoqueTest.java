@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.twol.sigep.controller.ControllerEstoque;
+import com.twol.sigep.controller.find.FindProduto;
 import com.twol.sigep.model.estoque.CategoriaProduto;
-import com.twol.sigep.model.estoque.FinderProduto;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.estoque.Promocao;
 import com.twol.sigep.model.estoque.UnidadeProduto;
@@ -86,24 +86,24 @@ public class ControllerEstoqueTest {
 	public void createProdutoTest() {
 		Produto p = iniciarProdutoInformacoesAleatorias(codigo);
 		ce.create(p);
-		assertEquals(FinderProduto.produtoComCodigoDeBarras(codigo), p);
+		assertEquals(FindProduto.produtoComCodigoDeBarras(codigo), p);
 	}
 	
 	@Test
 	public void editProdutoTest() throws EntidadeNaoExistenteException, Exception {
 		createProdutoTest();
-		Produto p = FinderProduto.produtoComCodigoDeBarras(codigo);
+		Produto p = FindProduto.produtoComCodigoDeBarras(codigo);
 		p.setDescricao("Produto Alterado");
 		ce.edit(p);
-		assertEquals(FinderProduto.produtoComCodigoDeBarras(codigo).getDescricao(), p.getDescricao());
+		assertEquals(FindProduto.produtoComCodigoDeBarras(codigo).getDescricao(), p.getDescricao());
 	}
 	
 	@Test(expected=NoResultException.class )
 	public void destroyProdutoTest() throws EntidadeNaoExistenteException  {
 		createProdutoTest();
-		Produto p = FinderProduto.produtoComCodigoDeBarras(codigo);
+		Produto p = FindProduto.produtoComCodigoDeBarras(codigo);
 		ce.destroy(p);
-		FinderProduto.produtoComCodigoDeBarras(codigo);
+		FindProduto.produtoComCodigoDeBarras(codigo);
 	}
 	
 	@Test
@@ -163,13 +163,13 @@ public class ControllerEstoqueTest {
 	@Test
 	public void createUmaPromocaoValidaAoProduto() throws EntidadeNaoExistenteException, Exception {
 		createProdutoTest();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
+		Produto c = FindProduto.produtoComCodigoDeBarras(codigo);
 		
 		Promocao p = this.iniciarPromocaoValidaInformacoesAleatorias(c.getValorDeVenda()*0.25);
 		p.setProduto(c);
 		ce.create(p);
 		
-		Produto result = FinderProduto.produtoComCodigoDeBarras(codigo);
+		Produto result = FindProduto.produtoComCodigoDeBarras(codigo);
 		assertEquals(result.getPromocoes().size(), 1);
 		assertArrayEquals(result.getPromocoes().toArray(), c.getPromocoes().toArray());
 		assertEquals(result.getPromocaoValida(), c.getPromocaoValida());
@@ -178,19 +178,19 @@ public class ControllerEstoqueTest {
 	@Test(expected=NoResultException.class )
 	public void destroyUmProdutoComUmaPromocao() throws EntidadeNaoExistenteException, Exception {
 		createUmaPromocaoValidaAoProduto();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
+		Produto c = FindProduto.produtoComCodigoDeBarras(codigo);
 		ce.destroy(c);
 		
-		FinderProduto.produtoComCodigoDeBarras(codigo);
+		FindProduto.produtoComCodigoDeBarras(codigo);
 	}
 	
 	@Test
 	public void destroyUmaPromocaoDeUmProduto() throws EntidadeNaoExistenteException, Exception {
 		createUmaPromocaoValidaAoProduto();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
+		Produto c = FindProduto.produtoComCodigoDeBarras(codigo);
 		
 		ce.destroy(c.getPromocaoValida());
-		c = FinderProduto.produtoComCodigoDeBarras(codigo);
+		c = FindProduto.produtoComCodigoDeBarras(codigo);
 		assertNull(c.getPromocaoValida());
 	}
 	
@@ -198,7 +198,7 @@ public class ControllerEstoqueTest {
 	@Test(expected = PromocaoValidaJaExistente.class)
 	public void creatVariasPromocaosValidasAoProduto() throws PromocaoValidaJaExistente, PromocaoInvalida {
 		createProdutoTest();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
+		Produto c = FindProduto.produtoComCodigoDeBarras(codigo);
 		
 		Promocao p = this.iniciarPromocaoValidaInformacoesAleatorias(c.getValorDeVenda()*0.25);
 		p.setProduto(c);
@@ -212,7 +212,7 @@ public class ControllerEstoqueTest {
 	@Test(expected = PromocaoInvalida.class)
 	public void creatUmaPromocaoInvalidaAoProduto() throws PromocaoValidaJaExistente, PromocaoInvalida {
 		createProdutoTest();
-		Produto c = FinderProduto.produtoComCodigoDeBarras(codigo);
+		Produto c = FindProduto.produtoComCodigoDeBarras(codigo);
 		
 		Promocao p = this.iniciarPromocaoInvalidaInformacoesAleatorias(c.getValorDeVenda()*0.25);
 		p.setProduto(c);

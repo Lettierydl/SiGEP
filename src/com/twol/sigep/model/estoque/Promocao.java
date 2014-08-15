@@ -18,11 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.infinispan.factories.annotations.DefaultFactoryFor;
 
-import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.exception.PromocaoInvalida;
 import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
 import com.twol.sigep.util.Persistencia;
@@ -164,7 +160,7 @@ public class Promocao {
 		return promocoes;
     }
 	
-	@SuppressWarnings("unchecked")
+	
 	public static Promocao recuperarPromocao(int id){
 		Persistencia.restartConnection();
 		Query consulta = Persistencia.em

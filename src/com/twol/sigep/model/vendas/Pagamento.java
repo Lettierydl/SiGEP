@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,6 +42,13 @@ public class Pagamento {
 	@Column
 	private String observacao;
 	
+	 /**
+	  * Como foi efetuado o Pagamento
+     */
+    @Enumerated(EnumType.STRING)
+    private FormaDePagamento formaDePagamento;
+
+
 	@ManyToOne
 	@JoinColumn(updatable=true)
 	@ForeignKey(name = "pagamentos_do_cliente")
@@ -109,6 +118,15 @@ public class Pagamento {
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
 	}
+	
+	public FormaDePagamento getFormaDePagamento() {
+		return formaDePagamento;
+	}
+
+	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
+		this.formaDePagamento = formaDePagamento;
+	}
+
 
 
 	

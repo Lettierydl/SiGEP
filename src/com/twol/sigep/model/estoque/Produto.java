@@ -13,21 +13,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.ForeignKey;
 
-import com.twol.sigep.model.Entidade;
 import com.twol.sigep.model.exception.PromocaoInvalida;
 import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
-import com.twol.sigep.model.pessoas.Representante;
-import com.twol.sigep.util.Persistencia;
 
 //@RooJpaActiveRecord(finders = { "findProdutoesByDescricaoLike", "findProdutoesByCategoria", "findProdutoesByCodigoDeBarrasLike", "findProdutoesByFabricante" })
 @Table(name = "produto")

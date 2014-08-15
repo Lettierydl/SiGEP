@@ -166,7 +166,7 @@ public class PagamentoManagedBean {
 		this.vendaASerPaga = vendaASerPaga;
 		setClienteSelecionado(vendaASerPaga.getCliente());
 		setNomeClienteParaVenda(getClienteSelecionado().getNome());
-		if(vendaASerPaga.getValorTotalDaVendaComDesconto() <= getClienteSelecionado().getDebito()){
+		if(vendaASerPaga.getTotalComDesconto() <= getClienteSelecionado().getDebito()){
 			this.newPagamento.setValor(vendaASerPaga.getValorNaoPagoDaVenda());
 		}else{
 			this.newPagamento.setValor(vendaASerPaga.getCliente().getDebito());

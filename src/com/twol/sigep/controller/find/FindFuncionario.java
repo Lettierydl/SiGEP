@@ -1,12 +1,13 @@
-package com.twol.sigep.model.pessoas;
+package com.twol.sigep.controller.find;
 
 import java.util.List;
 
 import javax.persistence.Query;
 
+import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.util.Persistencia;
 
-public class FinderFuncionario {
+public class FindFuncionario {
 
 	@SuppressWarnings("unchecked")
 	public static List<Funcionario> funcionariosQueNomeLike(String nome) {
@@ -162,5 +163,6 @@ public class FinderFuncionario {
 		Funcionario fuc= (Funcionario) consulta.getSingleResult();
 		return fuc;
     }
+
 
 }

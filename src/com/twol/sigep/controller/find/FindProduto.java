@@ -1,4 +1,4 @@
-package com.twol.sigep.model.estoque;
+package com.twol.sigep.controller.find;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,9 +6,10 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
+import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.util.Persistencia;
 
-public class FinderProduto {
+public class FindProduto {
 
 	@SuppressWarnings("unchecked")
 	public static List<Produto> produtosQueCodigoDeBarrasLike(

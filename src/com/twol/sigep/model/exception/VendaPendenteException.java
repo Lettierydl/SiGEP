@@ -8,7 +8,11 @@ public class VendaPendenteException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
 	public VendaPendenteException(){
-		super("Ainda existe uma venda não finalizada");
+		super("Existe uma venda nao finalizada");
+	}
+	
+	public VendaPendenteException(String msg){
+		super(msg);
 	}
 
 }
