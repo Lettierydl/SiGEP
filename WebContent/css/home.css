@@ -1,0 +1,178 @@
+@CHARSET "US-ASCII";
+div {
+	width: 100%;
+}
+
+.logo {
+	margin-top: 13px;
+	margin-left: 1px;
+	height: 90px;
+	width: 90px;
+}
+
+.menu {
+	z-index: 10;
+	display: inline;
+	top: 0px;
+	left: 0px;
+	float: right;
+	position: fixed;
+	height: 165px;
+}
+
+.menu div>div {
+	width: 990px;
+	margin: auto;
+}
+
+.barra_superior {
+	height: 116px;
+	background-color: rgb(60, 171, 198);
+}
+
+.barra_inferior {
+	height: 49px;
+	top: 116px;
+	background-color: rgb(243, 243, 243);
+}
+
+/*botao home*/
+.barra_inferior  a>img {
+	float: right;
+	top: 5.5px;
+	margin-right: 10px;
+}
+
+/*texto ajuda*/
+.ajuda {
+	font-size: 15px;
+	font-family: "Dosis";
+	color: rgb(121, 121, 121);
+	line-height: 3.312;
+	position: absolute;
+	margin-left: 5px;
+	line-height: 3.312;
+}
+
+/*logado é um submenu do usuario
+*/
+.logado {
+	position: relative;
+	display: inline;
+	font-size: 15px;
+	font-family: "Dosis";
+	color: rgb(121, 121, 121);
+	line-height: 3.312;
+	float: right;
+	cursor: pointer;
+	line-height: 3.312;
+	margin-right: 20px;
+}
+
+/*caixa do submenu*/
+.logado ul {
+	position: absolute;
+	width: 119px;
+	height: 90px;
+	background-color: #312530;
+	line-height: 30px;
+	visibility: collapse;
+	font-size: 17px;
+	font-family: "Dosis";
+	color: rgb(255, 255, 255);
+	list-style: none;
+	padding-left: 0px;
+}
+
+:hover.logado  ul {
+	visibility: visible;
+	background-color: #312530;
+	top: 32px;
+	left: 50%;
+	margin-left: -90px;
+}
+
+.logado ul li {
+	height: 45px;
+}
+/*Opções do submenu
+*/
+.logado ul li a:hover {
+	color: rgb(141, 141, 141);
+}
+
+.logado a {
+	position: absolute;
+	font-size: 17px;
+	font-family: "Dosis";
+	color: rgb(121, 121, 121);
+	text-decoration: none;
+	padding: 9px 21px 0px 21px;
+}
+
+/*triangulo*/
+.logado ul:after {
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	margin-left: 43px;
+	border-bottom: 8px solid #312530;
+	border-right: 8px solid transparent;
+	border-left: 8px solid transparent;
+}
+
+/*
+	div central da pagina
+*/
+.content {
+	position: relative;
+	z-index: 9;
+	width: 990px;
+	margin: auto;
+	margin-top: 165px;
+}
+
+
+
+.botoes {
+	position: relative;
+	margin: auto;
+	margin-top: 234px;
+	width: 583px;
+	height: 392px;
+}
+
+.botoes a img {
+	position: relative;
+	margin: 5px 5px 5px 5px;
+}
+
+.botoes a img:HOVER {
+	opacity: 0.9;
+}
+
+
+@-webkit-keyframes fadeIn {
+0% { opacity: 0; }
+100% { opacity: 1; } 
+}
+@-moz-keyframes fadeIn {
+0% { opacity: 0;}
+100% { opacity: 1; }
+}
+@-o-keyframes fadeIn {
+0% { opacity: 0; }
+100% { opacity: 1; }
+}
+@keyframes fadeIn {
+0% { opacity: 0; }
+100% { opacity: 1; }
+}
+
+.fadeIn {
+-webkit-animation: fadeIn 0.5s ease-in-out;
+-moz-animation: fadeIn 0.5s ease-in-out;
+-o-animation: fadeIn 0.5s ease-in-out;
+animation: fadeIn 0.5s ease-in-out;
+}

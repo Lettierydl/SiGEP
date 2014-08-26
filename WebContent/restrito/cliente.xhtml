@@ -10,12 +10,9 @@
 	<link rel="stylesheet" type="text/css" href="../css/style_modal.css" />
 </h:head>
 
-<ui:composition template="template/template_menus.xhtml">
-	<ui:define name="cliente">
-		<a href='cliente.jsf' class="ativo"><span>Cliente</span></a>
-	</ui:define>
+<ui:composition template="home.xhtml">
 
-	<ui:define name="corpo">
+	<ui:define name="content">
 		<div class="container" align="center">
 			<h:dataTable id="tabelaCliente"
 				styleClass="table table-hover table-bordered tabela"

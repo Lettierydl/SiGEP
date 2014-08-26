@@ -153,5 +153,9 @@ public class FuncionarioManagedBean {
 		this.newTelefone = newTelefone;
 	}
 	
+	public Funcionario getFuncionarioLogado(){
+		return f.getFuncionarioLogado();
+	}
+	
 	
 }

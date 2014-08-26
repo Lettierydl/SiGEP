@@ -25,6 +25,7 @@ import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.Persistencia;
+import com.twol.sigep.util.SessionUtil;
 
 public class Facede {
 
@@ -175,6 +176,7 @@ public class Facede {
 			throws SenhaIncorretaException, LoginIncorretoException {
 		lg.logar(login, senha);
 		vend.setLogado(lg.getLogado());
+		SessionUtil.putFuncionarioLogado(lg.getLogado());
 	}
 
 	/**

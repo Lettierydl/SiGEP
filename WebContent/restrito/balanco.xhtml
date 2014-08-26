@@ -4,27 +4,28 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 
-<ui:composition template="template/template_menus.xhtml">
+<ui:composition template="home.xhtml">
 	<ui:define name="balaco">
 		<a href='balanco.jsf' class="ativo"><span>Balanço</span></a>
 	</ui:define>
-	
+
 	<ui:define name="corpo">
 		<h:panelGrid columns="2">
 
-								<h:outputLabel value="Nome do Cliente:" for="autoCompletCliente"/>
-								
-								<p:autoComplete id="autoCompletCliente" value="#{pagamentoBean.nomeCliente}"   
-                    						completeMethod="#{pagamentoBean.}">
-                    						
-                    				<f:ajax event="keyup" render=":tabelaPagamentos"/>
-								</p:autoComplete>
+			<h:outputLabel value="Nome do Cliente:" for="autoCompletCliente" />
+
+			<p:autoComplete id="autoCompletCliente"
+				value="#{pagamentoBean.nomeCliente}"
+				completeMethod="#{pagamentoBean.}">
+
+				<f:ajax event="keyup" render=":tabelaPagamentos" />
+			</p:autoComplete>
 		</h:panelGrid>
-		
-	
-	
+
+
+
 	</ui:define>
-	
+
 
 </ui:composition>
 ￼￼￼￼

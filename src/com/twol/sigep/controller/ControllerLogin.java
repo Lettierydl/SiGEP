@@ -14,6 +14,11 @@ public class ControllerLogin {
 	private Funcionario logado = null;
 
 	public Funcionario getLogado() {
+		if(logado == null){
+			if(SessionUtil.getFuncionarioLogado() != null){
+				this.logado = SessionUtil.getFuncionarioLogado();
+			}
+		}
 		return logado;
 	}
 
@@ -22,7 +27,6 @@ public class ControllerLogin {
 		if (logado == null) {
 			Funcionario f = validarSenha(login, senha);
 			this.logado = f;
-			SessionUtil.putFuncionarioLogado(f);
 			//registrar login em algum canto
 		} else {
 			logoff();
