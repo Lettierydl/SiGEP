@@ -21,15 +21,16 @@
 		<div class="barra_inferior">
 			<div>
 
-				<span class="ajuda">#{msgs.ajuda}</span> <a href="home.jsf"
-					class="home" title="voltar para home"> <img
-					src="../imagens/bt_home.png" />
-				</a> <span class="logado">#{funcionarioBean.funcionarioLogado.nome}
-					<ul>
+				<span class="ajuda">#{msgs.ajuda}</span>
+
+				<div class="menu-usuario" >
+					<span class="logado">#{funcionarioBean.funcionarioLogado.nome}</span>
+					<ul class="submenu">
 						<li><a href="funcionario.jsf">minha conta</a></li>
 						<li><a href="logoff.jsf">sair</a></li>
 					</ul>
-				</span>
+				</div>
+				
 			</div>
 		</div>
 	</div>

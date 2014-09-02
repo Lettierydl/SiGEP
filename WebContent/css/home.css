@@ -20,7 +20,7 @@ div {
 	height: 165px;
 }
 
-.menu div>div {
+.menu > div > div {
 	width: 990px;
 	margin: auto;
 }
@@ -56,71 +56,102 @@ div {
 
 /*logado é um submenu do usuario
 */
-.logado {
+.menu-usuario{
+	position:relative;
+	float:right;
+	text-align: right;
+	width:90px;
+}
+.menu-usuario span{
+	z-index:20;
 	position: relative;
-	display: inline;
+	cursor: pointer;
 	font-size: 15px;
 	font-family: "Dosis";
 	color: rgb(121, 121, 121);
 	line-height: 3.312;
-	float: right;
-	cursor: pointer;
-	line-height: 3.312;
-	margin-right: 20px;
-}
-
-/*caixa do submenu*/
-.logado ul {
-	position: absolute;
-	width: 119px;
-	height: 90px;
-	background-color: #312530;
-	line-height: 30px;
-	visibility: collapse;
-	font-size: 17px;
-	font-family: "Dosis";
-	color: rgb(255, 255, 255);
-	list-style: none;
-	padding-left: 0px;
-}
-
-:hover.logado  ul {
-	visibility: visible;
-	background-color: #312530;
-	top: 32px;
-	left: 50%;
-	margin-left: -90px;
-}
-
-.logado ul li {
-	height: 45px;
-}
-/*Opções do submenu
-*/
-.logado ul li a:hover {
-	color: rgb(141, 141, 141);
-}
-
-.logado a {
-	position: absolute;
-	font-size: 17px;
-	font-family: "Dosis";
-	color: rgb(121, 121, 121);
-	text-decoration: none;
-	padding: 9px 21px 0px 21px;
+	margin-right: -102px;
+	outline: none;/*marcação de azul no elemento*/
 }
 
 /*triangulo*/
-.logado ul:after {
-	content: '';
-	position: absolute;
-	bottom: 100%;
-	left: 50%;
-	margin-left: 43px;
-	border-bottom: 8px solid #312530;
-	border-right: 8px solid transparent;
-	border-left: 8px solid transparent;
+.menu-usuario span:after {
+    content: "";
+    width: 0;height: 0;
+    position: absolute;
+    top: 50%;
+    margin-top: -3px;
+    margin-left: 5px;
+    border-width: 6px 6px 0 6px;
+    border-style: solid;
+    border-color: rgb(121, 121, 121) transparent;
 }
+/*caixa do submenu*/
+.menu-usuario .submenu{;
+    /* Size & position */
+   	position: relative;
+   	float:right;
+	padding-left: 0px;
+	top:49px;
+	margin:0px 0px 0px 0px;
+	
+   	
+    /* Styles */
+    width: 119px;height: 90px;
+	background: #312530;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    -webkit-transition: all 0.1s ease-in;
+    -moz-transition: all 0.1s ease-in;
+    -ms-transition: all 0.1s ease-in;
+    -o-transition: all 0.1s ease-in;
+    transition: all 0.2s ease-in;
+    list-style: none;
+    border-radius:2px;
+    
+    /* Hiding */
+    opacity: 0;
+    visibility: collapse;
+}
+
+:hover.menu-usuario .submenu{
+	visibility: visible;
+	opacity: 1;
+}
+/*triangulo do submenu*/
+.menu-usuario .submenu:after {
+    content: "";
+	position:absolute;
+    bottom: 100%;
+    right: 1px;/*localização do triangulo de encaixe*/
+    border-width: 0 6px 6px 6px;
+    border-style: solid;
+    border-color: #312530 transparent;    
+}
+
+.menu-usuario .submenu li a {
+    display: block;
+    text-decoration: none;
+    
+    /*Font*/
+	font-size: 17px;
+  	font-family: "Dosis";
+  	color:  #9a9494;  
+  	line-height: 2.922;
+  	margin-right: 19px;
+}
+.menu-usuario .submenu li:last-child{
+	margin-top: -7px;
+}
+
+/* Hover state */
+.menu-usuario .submenu li a:hover{
+	color: #f4f4f4; 
+}
+
+
+
+
+
 
 /*
 	div central da pagina
@@ -138,7 +169,7 @@ div {
 .botoes {
 	position: relative;
 	margin: auto;
-	margin-top: 234px;
+	margin-top: 230px;
 	width: 583px;
 	height: 392px;
 }

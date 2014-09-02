@@ -1,0 +1,236 @@
+@CHARSET "US-ASCII";
+
+div {
+	width: 100%;
+}
+
+.logo {
+	margin-top: 13px;
+	margin-left: 1px;
+	height: 90px;
+	width: 90px;
+	float: left;
+}
+
+.menu-botoes {
+	float: right;
+	width: 812px;
+}
+
+.menu-botoes  img {
+	width: 48px;
+	height: 53px;
+	margin: 31.5px 35px 31.5px 35px;
+	-webkit-transition: all 0.2s ease-in;
+	-moz-transition: all 0.2s ease-in;
+	-ms-transition: all 0.2s ease-in;
+	-o-transition: all 0.2s ease-in;
+}
+.menu-botoes  :hover img {
+	margin-top: 20px;
+	-webkit-transition: all 0.1s ease-in;
+	-moz-transition: all 0.1s ease-in;
+	-ms-transition: all 0.1s ease-in;
+	-o-transition: all 0.1s ease-in;
+}
+
+.menu-botoes  span {
+	position:relative;
+	top:-23px;
+	
+	font-size: 17px;
+	font-family: "Dosis";
+	font-weight: bold;
+	text-transform: uppercase;
+	color: #ffffff;
+	opacity: 0;
+	-webkit-transition: all 0.2s ease-in;
+}
+.menu-botoes :hover span {
+	opacity: 1;
+	-webkit-transition: all 0.1s ease-in;
+}
+
+.menu-botoes  a {
+	width: 116px;
+	height: 116px;
+}
+
+
+.menu-botoes .botao_par {
+	float: left;
+	width: 116px;
+	height: 116px;
+	text-align: center;
+	background-color: #389db5;
+}
+.menu-botoes .botao_impar {
+	float: left;
+	width: 116px;
+	height: 116px;
+	text-align: center;
+}
+
+
+.menu {
+	z-index: 10;
+	display: inline;
+	top: 0px;
+	left: 0px;
+	float: right;
+	position: fixed;
+	height: 165px;
+}
+
+.menu>div>div {
+	width: 990px;
+	margin: auto;
+}
+
+.barra_superior {
+	height: 116px;
+	background-color: rgb(60, 171, 198);
+}
+
+.barra_inferior {
+	height: 49px;
+	top: 116px;
+	background-color: rgb(243, 243, 243);
+}
+
+/*botao home*/
+.barra_inferior  a>img {
+	float: right;
+	top: 5.5px;
+	margin-right: 10px;
+}
+
+/*texto ajuda*/
+.ajuda {
+	font-size: 15px;
+	font-family: "Dosis";
+	color: rgb(121, 121, 121);
+	line-height: 3.312;
+	position: absolute;
+	margin-left: 5px;
+	line-height: 3.312;
+}
+
+/*logado �� um submenu do usuario
+*/
+.menu-usuario {
+	position: relative;
+	float: right;
+	text-align: right;
+	width: 90px;
+}
+
+.menu-usuario span {
+	z-index: 20;
+	position: relative;
+	cursor: pointer;
+	font-size: 15px;
+	font-family: "Dosis";
+	color: rgb(121, 121, 121);
+	line-height: 3.312;
+	margin-right: -102px;
+	outline: none; /*marca����o de azul no elemento*/
+}
+
+/*triangulo*/
+.menu-usuario span:after {
+	content: "";
+	width: 0;
+	height: 0;
+	position: absolute;
+	top: 50%;
+	margin-top: -3px;
+	margin-left: 5px;
+	border-width: 6px 6px 0 6px;
+	border-style: solid;
+	border-color: rgb(121, 121, 121) transparent;
+}
+/*caixa do submenu*/
+.menu-usuario .submenu {;
+	/* Size & position */
+	position: relative;
+	float: right;
+	padding-left: 0px;
+	top: 49px;
+	margin: 0px 0px 0px 0px;
+	/* Styles */
+	width: 119px;
+	height: 90px;
+	background: #312530;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	-webkit-transition: all 0.1s ease-in;
+	-moz-transition: all 0.1s ease-in;
+	-ms-transition: all 0.1s ease-in;
+	-o-transition: all 0.1s ease-in;
+	transition: all 0.2s ease-in;
+	list-style: none;
+	border-radius: 2px;
+	/* Hiding */
+	opacity: 0;
+	visibility: collapse;
+}
+
+:hover.menu-usuario .submenu {
+	visibility: visible;
+	opacity: 1;
+}
+/*triangulo do submenu*/
+.menu-usuario .submenu:after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	right: 1px; /*localiza����o do triangulo de encaixe*/
+	border-width: 0 6px 6px 6px;
+	border-style: solid;
+	border-color: #312530 transparent;
+}
+
+.menu-usuario .submenu li a {
+	display: block;
+	text-decoration: none;
+	/*Font*/
+	font-size: 17px;
+	font-family: "Dosis";
+	color: #9a9494;
+	line-height: 2.922;
+	margin-right: 19px;
+}
+
+.menu-usuario .submenu li:last-child {
+	margin-top: -7px;
+}
+
+/* Hover state */
+.menu-usuario .submenu li a:hover {
+	color: #f4f4f4;
+}
+
+
+@-webkit-keyframes fadeIn {
+0% { opacity: 1; margin-top: -100px;}
+100% { margin-top: 31px;} 
+}
+@-moz-keyframes fadeIn {
+0% { opacity: 1;margin-top: -100px;}
+100% { margin-top: 31px;}
+}
+@-o-keyframes fadeIn {
+0% { opacity: 1;margin-top: -100px;}
+100% { margin-top: 31px;}
+}
+@keyframes fadeIn {
+0% { opacity: 1;margin-top: -100px;}
+100% {margin-top: 31px;}
+}
+
+.fadeIn img{
+-webkit-animation: fadeIn 0.4s ease-in-out;
+-moz-animation: fadeIn 0.4s ease-in-out;
+-o-animation: fadeIn 0.4s ease-in-out;
+animation: fadeIn 0.4s ease-in-out;
+}
