@@ -5,13 +5,26 @@
 	xmlns:p="http://primefaces.org/ui">
 
 
-<ui:composition template="home.xhtml">
+<h:head>
+	<title>SiGEP</title>
+	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
+	<link rel="stylesheet" type="text/css"
+		href="http://fonts.googleapis.com/css?family=Dosis" />
+	<script type="text/javascript" charset="utf-8"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" />
+	<script type="text/javascript" src="../js/componentes.js" />
+</h:head>
 
-	<ui:define name="content">
+<h:body>
+	<ui:include src="componentes/menu.xhtml" />
+	<script>ativarMenuBotoes("produto");</script>
+
+
+	<div class="content">
 		<div class="container" align="center">
-			
-			
-			<h:dataTable id="tabelaProdutos" styleClass="table table-hover table-bordered tabela"
+
+			<h:dataTable id="tabelaProdutos"
+				styleClass="table table-hover table-bordered tabela"
 				value="#{produtoBean.listAtualDeProdutos}" var="produto">
 				<f:facet name="header">
 					<h4 align="center">Produtos</h4>
@@ -38,70 +51,71 @@
 				</h:column>
 			</h:dataTable>
 		</div>
-	</ui:define>
-	<ui:define name="formAdicionar">
-		<h3>Adicionar</h3>
-		<div class="container">
-			<h:form id="formAdicionar">
-				<h:panelGrid columns="2">
 
-					<h:outputLabel value="Descrição" for="inputDescricao" />
-					<h:inputText id="inputDescricao"
-						value="#{produtoBean.newProduto.descricao}" />
+		<ui:define name="formAdicionar">
+			<h3>Adicionar</h3>
+			<div class="container">
+				<h:form id="formAdicionar">
+					<h:panelGrid columns="2">
 
-					<h:outputLabel value="Código de Barras:" for="inputCodigoDeBarras" />
-					<h:inputText id="inputCodigoDeBarras"
-						value="#{produtoBean.newProduto.codigoDeBarras}" />
+						<h:outputLabel value="Descrição" for="inputDescricao" />
+						<h:inputText id="inputDescricao"
+							value="#{produtoBean.newProduto.descricao}" />
 
-					<h:outputLabel value="Valor de Compra:" for="inputValorDeCompra" />
-					<h:inputText id="inputValorDeCompra"
-						value="#{produtoBean.newProduto.valorDeCompra}" />
+						<h:outputLabel value="Código de Barras:" for="inputCodigoDeBarras" />
+						<h:inputText id="inputCodigoDeBarras"
+							value="#{produtoBean.newProduto.codigoDeBarras}" />
 
-					<h:outputLabel value="Valor de Venda:" for="inputValorDeVenda" />
-					<h:inputText id="inputValorDeVenda"
-						value="#{produtoBean.newProduto.valorDeVenda}" />
+						<h:outputLabel value="Valor de Compra:" for="inputValorDeCompra" />
+						<h:inputText id="inputValorDeCompra"
+							value="#{produtoBean.newProduto.valorDeCompra}" />
 
-					<h:outputLabel value="Quantidade em Estoque:"
-						for="inputQuantidadeEmEstoque" />
-					<h:inputText id="inputQuantidadeEmEstoque"
-						value="#{produtoBean.newProduto.quantidadeEmEstoque}" />
+						<h:outputLabel value="Valor de Venda:" for="inputValorDeVenda" />
+						<h:inputText id="inputValorDeVenda"
+							value="#{produtoBean.newProduto.valorDeVenda}" />
 
-					<h:outputLabel value="Limite Mínimo em Estoque:"
-						for="inputLimiteMinimoEmEstoque" />
-					<h:inputText id="inputLimiteMinimoEmEstoque"
-						value="#{produtoBean.newProduto.limiteMinimoEmEstoque}" />
-						
-				</h:panelGrid>
-				<h:selectOneMenu value="#{produtoBean.newProduto.categoria}">
+						<h:outputLabel value="Quantidade em Estoque:"
+							for="inputQuantidadeEmEstoque" />
+						<h:inputText id="inputQuantidadeEmEstoque"
+							value="#{produtoBean.newProduto.quantidadeEmEstoque}" />
+
+						<h:outputLabel value="Limite Mínimo em Estoque:"
+							for="inputLimiteMinimoEmEstoque" />
+						<h:inputText id="inputLimiteMinimoEmEstoque"
+							value="#{produtoBean.newProduto.limiteMinimoEmEstoque}" />
+
+					</h:panelGrid>
+					<h:selectOneMenu value="#{produtoBean.newProduto.categoria}">
 						<f:selectItems value="#{produtoBean.categorias}" var="categorias"
-						itemLabel="#{categorias.name}" itemValue="#{categorias}"/>
-				</h:selectOneMenu>
+							itemLabel="#{categorias.name}" itemValue="#{categorias}" />
+					</h:selectOneMenu>
 
-				<h:commandButton value="Cadastrar"
-					actionListener="#{produtoBean.cadastrarProduto()}" />
-				
-			</h:form>
-		</div>
-		
-	</ui:define>
+					<h:commandButton value="Cadastrar"
+						actionListener="#{produtoBean.cadastrarProduto()}" />
 
-	<ui:define name="formPesquisar">
-		<div class="container">
-			<h3>Pesquisar</h3>
-			<h:form id="formPesquisar">
-				<h:panelGrid columns="2">
+				</h:form>
+			</div>
 
-					<h:outputLabel value="Descrição:" for="inputDescricaoPesquisar" />
-					<h:inputText value="#{produtoBean.descricao}" id="inputDescricaoPesquisar">
-     					<f:ajax event="keyup" listener="#{produtoBean.modificarListaAtualDeProdutosPelaDescricao()}"/>
-					</h:inputText>
+		</ui:define>
 
-				</h:panelGrid>
-			</h:form>
-		</div>
-	</ui:define>
+		<ui:define name="formPesquisar">
+			<div class="container">
+				<h3>Pesquisar</h3>
+				<h:form id="formPesquisar">
+					<h:panelGrid columns="2">
 
+						<h:outputLabel value="Descrição:" for="inputDescricaoPesquisar" />
+						<h:inputText value="#{produtoBean.descricao}"
+							id="inputDescricaoPesquisar">
+							<f:ajax event="keyup"
+								listener="#{produtoBean.modificarListaAtualDeProdutosPelaDescricao()}" />
+						</h:inputText>
 
-</ui:composition>
+					</h:panelGrid>
+				</h:form>
+			</div>
+		</ui:define>
+	</div>
+</h:body>
 ￼￼￼￼
 </html>

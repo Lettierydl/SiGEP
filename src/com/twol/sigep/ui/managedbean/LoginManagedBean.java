@@ -23,6 +23,7 @@ public class LoginManagedBean {
 	private String senha = "";
 
 	public LoginManagedBean() {
+		System.out.println("teste");
 		fac = new Facede();
 	}
 

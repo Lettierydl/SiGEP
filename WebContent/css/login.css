@@ -1,33 +1,4 @@
 @CHARSET "US-ASCII";
-/*
-* {
-	border: 1px dashed black;
-}
-
-
-@-webkit-keyframes fadeIn {
-0% { opacity: 0; }
-100% { opacity: 1; } 
-}
-@-moz-keyframes fadeIn {
-0% { opacity: 0;}
-100% { opacity: 1; }
-}
-@-o-keyframes fadeIn {
-0% { opacity: 0; }
-100% { opacity: 1; }
-}
-@keyframes fadeIn {
-0% { opacity: 0; }
-100% { opacity: 1; }
-}
-.fadeIn {
--webkit-animation: fadeIn 1s ease-in-out;
--moz-animation: fadeIn 1s ease-in-out;
--o-animation: fadeIn 1s ease-in-out;
-animation: fadeIn 1s ease-in-out;
-}
-*/
 
 #body{
 	background-color: rgb(60, 171, 198);
@@ -64,6 +35,7 @@ div input{
   	top: 398.964px;
   	padding-left:23px;
   	border-style: none;
+	
 }
 
 div input:HOVER{

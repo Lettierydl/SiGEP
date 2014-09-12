@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>SiGEP</title>
+	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
+	<link rel="stylesheet" type="text/css"
+		href="http://fonts.googleapis.com/css?family=Dosis" />
+</h:head>
+
+<h:body>
+<ui:composition>
+	<div id="menu" class="menu">
+		
+		<div class="barra_superior">
+			<div>
+				<img src="../imagens/logo.png" class="logo" />
+
+				<div class="menu-botoes fadeIn" id="menu-botoes">
+					<div class="botao_par" id="home">
+						<a href="home.jsf"/>
+						<img src="../imagens/home_ico.png" />
+						<span>home</span>
+					</div>
+					<div class="botao_impar" id="venda">
+						<a href="venda.jsf" />
+						<img src="../imagens/venda_ico.png" />
+						<span>venda</span>
+					</div>
+					<div class="botao_par" id="pagamento">
+						<a href="pagamento.jsf" />
+						<img src="../imagens/pagamento_ico.png" />
+						<span>pagamento</span>
+					</div>
+					<div class="botao_impar" id="cliente">
+						<a href="cliente.jsf" />
+						<img src="../imagens/cliente_ico.png" />
+						<span>cliente</span>
+					</div>
+					<div class="botao_par" id="produto">
+						<a href="produto.jsf" />
+						<img src="../imagens/produto_ico.png" />
+						<span>produto</span>
+					</div>
+					<div class="botao_impar" id="funcionario">
+						<a href="funcionario.jsf" />
+						<img src="../imagens/funcionario_ico.png" />
+						<span>funcionário</span>
+					</div>
+					<div class="botao_par" id="configuracao">
+						<a href="configuracao.jsf" />
+						<img src="../imagens/configuracao_ico.png" />
+						<span>configuração</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="barra_inferior">
+			<div>
+				<span class="ajuda">#{msgs.ajuda}</span>
+				<div class="menu-usuario">
+					<span class="logado">#{funcionarioBean.funcionarioLogado.nome}</span>
+					<ul class="submenu">
+						<li><a href="funcionario.jsf">minha conta</a></li>
+						<li><a href="logoff.jsf">sair</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</ui:composition>
+
+	<div class="content">
+		<ui:insert name="content">
+
+		</ui:insert>
+	</div>
+</h:body>
+</html>

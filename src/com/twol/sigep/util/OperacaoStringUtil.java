@@ -21,6 +21,9 @@ public class OperacaoStringUtil {
 		return cep.substring(0, 5)+"-"+cep.subSequence(5, cep.length());
 	}
 	
+	public static String retirarMascaraDeCPF(String cpf){
+		return cpf.replace(".", "").replace("-", "");
+	}
 	
 	
 }

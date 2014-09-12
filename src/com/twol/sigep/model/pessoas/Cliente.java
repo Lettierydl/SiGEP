@@ -25,6 +25,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
+import com.twol.sigep.util.OperacaoStringUtil;
 
 //@RooJpaActiveRecord(finders = { "findClientesByCpfEquals", "findClientesByCpfLike", "findClientesByDataDeNascimentoBetween", "findClientesByNomeEquals", "findClientesByNomeLike" })
 @Table(name = "cliente")
@@ -118,7 +119,7 @@ public class Cliente {
 	}
 
 	public void setCpf(String cpf) {
-		this.cpf = cpf;
+		this.cpf = OperacaoStringUtil.retirarMascaraDeCPF(cpf);
 	}
 
 	public Calendar getDataDeNascimento() {

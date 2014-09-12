@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><link type="text/css" rel="stylesheet" href="SiGEP_arquivos/theme.css">
+	<title>SiGEP</title>
+
+	<link rel="stylesheet" href="SiGEP_arquivos/foundation.css">
+
+	<link type="text/css" rel="stylesheet" href="SiGEP_arquivos/menu.css">
+	<link type="text/css" rel="stylesheet" href="SiGEP_arquivos/componentes.css">
+
+	<link rel="stylesheet" type="text/css" href="SiGEP_arquivos/css.css">
+
+
+	<script type="text/javascript" src="SiGEP_arquivos/componentes.js"></script>
+	<script type="text/javascript" src="SiGEP_arquivos/jquery.js"></script>
+	<script src="SiGEP_arquivos/jquery_003.js" type="text/javascript"></script>
+	
+	<link rel="stylesheet" href="SiGEP_arquivos/jquery-ui.css">
+	<script src="SiGEP_arquivos/jquery-ui.js"></script><meta class="foundation-data-attribute-namespace"><meta class="foundation-mq-xxlarge"><meta class="foundation-mq-xlarge"><meta class="foundation-mq-large"><meta class="foundation-mq-medium"><meta class="foundation-mq-small"><style></style></head><body>
+	<div id="menu" class="menu">
+		
+		<div class="barra_superior">
+			<div>
+				<img src="SiGEP_arquivos/logo.png" class="logo">
+
+				<div class="menu-botoes" id="menu-botoes">
+					<div class="botao_par" id="home">
+						<a href="http://localhost:8080/SiGEP/restrito/home.jsf"></a>
+						<img src="SiGEP_arquivos/home_ico.png">
+						<span>home</span>
+					</div>
+					<div class="botao_impar" id="venda">
+						<a href="http://localhost:8080/SiGEP/restrito/venda.jsf"></a>
+						<img src="SiGEP_arquivos/venda_ico.png">
+						<span>venda</span>
+					</div>
+					<div class="botao_par" id="pagamento">
+						<a href="http://localhost:8080/SiGEP/restrito/pagamento.jsf"></a>
+						<img src="SiGEP_arquivos/pagamento_ico.png">
+						<span>pagamento</span>
+					</div>
+					<div class="botao_impar active" id="cliente">
+						<a href="http://localhost:8080/SiGEP/restrito/cliente.jsf"></a>
+						<img src="SiGEP_arquivos/cliente_ico.png">
+						<span>cliente</span>
+					</div>
+					<div class="botao_par" id="produto">
+						<a href="http://localhost:8080/SiGEP/restrito/produto.jsf"></a>
+						<img src="SiGEP_arquivos/produto_ico.png">
+						<span>produto</span>
+					</div>
+					<div class="botao_impar" id="funcionario">
+						<a href="http://localhost:8080/SiGEP/restrito/funcionario.jsf"></a>
+						<img src="SiGEP_arquivos/funcionario_ico.png">
+						<span>funcionário</span>
+					</div>
+					<div class="botao_par" id="configuracao">
+						<a href="http://localhost:8080/SiGEP/restrito/configuracao.jsf"></a>
+						<img src="SiGEP_arquivos/configuracao_ico.png">
+						<span>configuração</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="barra_inferior">
+			<div>
+				<span class="ajuda">Ajuda e suporte 83 96103163</span>
+				<div class="menu-usuario">
+					<span class="logado">Lettiery</span>
+					<ul class="submenu">
+						<li><a href="http://localhost:8080/SiGEP/restrito/funcionario.jsf">minha conta</a></li>
+						<li><a href="http://localhost:8080/SiGEP/restrito/logoff.jsf">sair</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>ativarMenuBotoes("cliente");</script>
+
+	<div class="content">
+		<h4 class="titulo-tabela">Clientes</h4>
+
+		<div class="pesquisa">
+			<a class="botao-pesquia" onclick="ativarBotaoPesquisa()"> <img src="SiGEP_arquivos/pesquisa_ico.png">
+			</a><input id="input_pesquisa" name="input_pesquisa" class="input-inativo" type="text">
+		</div>
+		<div class="criar" data-reveal-id="myModal">
+			<img src="SiGEP_arquivos/criar_ico.png">
+		</div>
+
+
+		<div class="tabela"><table id="tabelaCliente">
+<thead>
+<tr>
+<th scope="col">Nome</th>
+<th scope="col">CPF</th>
+<th scope="col">Debito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 
+					
+				</td>
+<td>
+					
+				</td>
+<td>
+					0.0
+				</td>
+</tr>
+<tr>
+<td> 
+					Amanda Vilar
+				</td>
+<td>
+					23332412312
+				</td>
+<td>
+					15.6
+				</td>
+</tr>
+<tr>
+<td> 
+					Carlos Vinicios
+				</td>
+<td>
+					99888733432
+				</td>
+<td>
+					34.0
+				</td>
+</tr>
+<tr>
+<td> 
+					João Pedro
+				</td>
+<td>
+					66343439004
+				</td>
+<td>
+					23.23
+				</td>
+</tr>
+<tr>
+<td> 
+					Leo
+				</td>
+<td>
+					12312312312
+				</td>
+<td>
+					0.0
+				</td>
+</tr>
+<tr>
+<td> 
+					Leo dlamare
+				</td>
+<td>
+					09876543212
+				</td>
+<td>
+					0.0
+				</td>
+</tr>
+<tr>
+<td> 
+					Leo Teste
+				</td>
+<td>
+					11231324415
+				</td>
+<td>
+					0.0
+				</td>
+</tr>
+<tr>
+<td> 
+					Lettiery D'Lamare
+				</td>
+<td>
+					00999888273
+				</td>
+<td>
+					59.8
+				</td>
+</tr>
+<tr>
+<td> 
+					Tião Felíciano
+				</td>
+<td>
+					71282823232
+				</td>
+<td>
+					0.932423
+				</td>
+</tr>
+</tbody>
+</table>
+
+		</div>
+
+
+		<div style="display: none;"></div>
+
+	</div>
+
+
+
+
+
+
+
+
+	
+
+
+	<script type="text/javascript" src="SiGEP_arquivos/jquery_002.js"></script>
+	<script src="SiGEP_arquivos/foundation.js"></script>
+	<script>
+		$(document).foundation();
+	</script>
+
+￼￼￼￼
+<div style="display: block;" class="reveal-modal-bg"></div><div style="display: block; opacity: 1; visibility: visible; top: 100px;" id="myModal" class="reveal-modal modal open" data-reveal="myModal">
+			<h2>Criar cliente</h2>
+<form id="formAdicionar" name="formAdicionar" method="post" action="/SiGEP/restrito/cliente.jsf" enctype="application/x-www-form-urlencoded">
+<input name="formAdicionar" value="formAdicionar" type="hidden">
+
+				<div class="formulario" onfocus="focus('inputNome');"><table>
+<tbody>
+<tr>
+<td><label for="inputNome">Nome:</label></td>
+<td><input id="inputNome" name="inputNome" type="text"></td>
+</tr>
+<tr>
+<td><label for="inputCPF">CPF:</label></td>
+<td><input id="inputCPF" name="inputCPF" type="text"></td>
+</tr>
+<tr>
+<td><label for="inputDataDeNascimento">Data de Nascimento:</label></td>
+<td><input id="inputDataDeNascimento" name="inputDataDeNascimento" type="text"></td>
+</tr>
+<tr>
+<td>
+
+						<a href="#modalTelefones">Telefones</a>
+						<a href="#modalEndereco">Endereco</a></td>
+<td><input name="j_idt24" value="Cadastrar" type="submit"></td>
+</tr>
+</tbody>
+</table>
+
+					<script>
+						maskCPF('inputCPF');
+						maskData('inputDataDeNascimento');
+					</script>
+				</div><input name="javax.faces.ViewState" id="javax.faces.ViewState" value="8374969329850084203:5255605950254591766" autocomplete="off" type="hidden">
+</form>
+
+			<a class="close-reveal-modal">×</a>
+		</div></body></html>

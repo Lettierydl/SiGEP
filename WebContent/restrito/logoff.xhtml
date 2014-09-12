@@ -4,9 +4,23 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 	
+<h:head>
+	<title>SiGEP</title>
+	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
+	<link rel="stylesheet" type="text/css"
+		href="http://fonts.googleapis.com/css?family=Dosis" />
+	<script type="text/javascript" charset="utf-8"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" />
+	<script type="text/javascript" src="../js/componentes.js" />
+</h:head>
+
+<h:body>
+	<ui:include src="componentes/menu.xhtml" />
+	<script>ativarMenuBotoes("logoff");</script>
 	
-<ui:composition template="home.xhtml">
-	<ui:define name="content">
-	</ui:define>
-</ui:composition>
+	<div class="content">
+	</div>
+
+
+</h:body>
 ￼￼￼￼</html>
