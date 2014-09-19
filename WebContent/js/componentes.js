@@ -5,7 +5,7 @@ function ativarMenuBotoes(titulo) {
 }
 
 function ativarBotaoPesquisa() {
-	var campo = $("input");
+	var campo = $("#input_pesquisa");
 	if (campo.attr('class') == "input-inativo") {
 		campo.removeClass("input-inativo");
 		campo.addClass("input-ativo");
@@ -16,12 +16,17 @@ function ativarBotaoPesquisa() {
 	}
 }
 function focus(idCampo) {
-	print(idCampo);
-	prompt(idCampo, 0);
+	$("#" + idCampo).focus();
 }
 
-
-
+// Abrir modal ao cliclar na linha da tabela
+function abrirModalClickLinhaTabela(idTable) {
+	$('#'+idTable+' tbody').on('click', 'tr', function() {
+		var nome = $('td', this).eq(0).text();
+		var cpf = $('td', this).eq(4).text();
+		alert(nome + ', cpf: ' + cpf);
+	});
+}
 
 function maskDatepicker(idCampo) {
 	maskData(idCampo);

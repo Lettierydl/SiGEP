@@ -3,14 +3,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
-	<title>SiGEP</title>
+	<title>Cloud Sistem</title>
 	
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Dosis"/>
 	<link type="text/css" rel="stylesheet" href="css/login.css" />
-	<link rel="stylesheet" type="text/css"
-		href="http://fonts.googleapis.com/css?family=Dosis"/>
-	
 </h:head>
 <h:body id="body">
 	<div class="logo">
@@ -19,12 +17,12 @@
 	<h:form>
 		<div class="formulario">
 			<h:inputText id="login" required="true" maxlength="50"
-				value="#{loginBean.login}" requiredMessage="Login inválido" />
-			<p:watermark value="nome de usuário" for="login" />
+				value="#{loginBean.login}" requiredMessage="Login inválido" p:placeholder="nome de usuário" >
+			</h:inputText>
 
 			<h:inputSecret id="senha" required="true" value="#{loginBean.senha}"
-				requiredMessage="Login inválido"/>
-			<p:watermark value="senha" for="senha" />
+				requiredMessage="Login inválido" p:placeholder="senha"/>
+				
 			<h:messages styleClass="messages" tooltip="true"/>
 
 			<h:commandButton id="entrar" actionListener="#{loginBean.logar}"

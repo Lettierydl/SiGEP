@@ -1,10 +1,6 @@
 package com.twol.sigep.model.pessoas;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,15 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 
 //@RooJpaActiveRecord(finders = { "findFuncionariosByCpfEquals", "findFuncionariosByCpfLike", "findFuncionariosByNomeEquals", "findFuncionariosByNomeLike", "findFuncionariosByTipoDeFuncionario" })
@@ -43,14 +31,6 @@ public class Funcionario {
 
     /**
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(updatable=true)
-	@ForeignKey(name = "endereco_do_funcionario")
-	@OnDelete(action=OnDeleteAction.CASCADE)
-    private Endereco endereco;
-
-    /**
-     */
     @Column(nullable = false)
     private String senha;
 
@@ -68,10 +48,14 @@ public class Funcionario {
     /**
      */
     
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name="funcionario_telefone", joinColumns={@JoinColumn(name="funcionario_id")}, inverseJoinColumns={@JoinColumn(name="telefone_id")})
-	@ForeignKey(name = "telefones_dos_funcionarios")
-    private List<Telefone> telefones = new ArrayList<Telefone>();
+    @Column(nullable = true, length = 14)
+	private String telefone;
+	
+	@Column(nullable = true, length = 14)
+	private String celular;
+	
+	@Column(nullable = true, length = 500)
+	private String endereco;
     
     /*
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "funcionario")
@@ -102,11 +86,28 @@ public class Funcionario {
 		this.login = login;
 	}
 
-	public Endereco getEndereco() {
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	public String getCelular() {
+		return celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
+	}
+
+	public String getEndereco() {
 		return endereco;
 	}
 
-	public void setEndereco(Endereco endereco) {
+	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
 
@@ -134,24 +135,7 @@ public class Funcionario {
 		this.cpf = cpf;
 	}
 
-	public List<Telefone> getTelefones() {
-		return telefones;
-	}
 	
-
-	public void addTelefone(Telefone telefone) {
-		if(this.telefones == null){
-			this.telefones = new ArrayList<Telefone>();
-		}
-		this.telefones.add(telefone);
-	}
-	
-	public void removerTelefone(Telefone telefone) {
-		if(this.telefones == null){
-			return;
-		}
-		this.telefones.remove(telefone);
-	}
 
 	@Override
 	public int hashCode() {

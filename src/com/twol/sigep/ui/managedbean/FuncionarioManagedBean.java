@@ -4,17 +4,13 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
-import com.twol.sigep.model.pessoas.Endereco;
 import com.twol.sigep.model.pessoas.Funcionario;
-import com.twol.sigep.model.pessoas.Telefone;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
-import com.twol.sigep.model.pessoas.UF;
 @ViewScoped
 @ManagedBean(name = "funcionarioBean")
 public class FuncionarioManagedBean {
@@ -25,16 +21,11 @@ public class FuncionarioManagedBean {
 	private Funcionario newFuncionario;
 	private TipoDeFuncionario tipoDoFuncionario = TipoDeFuncionario.Caixa;
 	private String nome = "";
-	private Endereco newEndereco;
-	private UF uf = UF.PB;
-	private Telefone newTelefone;
 	private List<Funcionario> listAtualDeFuncionarios;
 	
 	public FuncionarioManagedBean(){
 		f = new Facede();
 		newFuncionario = new Funcionario();
-		newTelefone = new Telefone();
-		newEndereco = new Endereco();
 		listAtualDeFuncionarios = f.getFuncionarios();
 	}
 
@@ -76,26 +67,7 @@ public class FuncionarioManagedBean {
 		}
 	}
 	
-	public void addEnderecoFuncionario(AjaxBehaviorEvent event){
-		newEndereco.setUf(uf);
-		newFuncionario.setEndereco(newEndereco);
-		RequestContext.getCurrentInstance().update("labelEndereco");
-	}
 	
-	public void addTelefoneFuncionario(){
-		newFuncionario.addTelefone(newTelefone);
-		RequestContext.getCurrentInstance().update("tabelaTelefones");
-		newTelefone = new Telefone();
-	}
-	
-	public void removerTelefoneFuncionario(Telefone telefone){
-		newFuncionario.removerTelefone(telefone);
-		RequestContext.getCurrentInstance().update("tabelaTelefones");
-	}
-	
-	public UF[] getUfs(){
-		return UF.values();
-	}
 
 	public String getSenha() {
 		return senha;
@@ -127,30 +99,6 @@ public class FuncionarioManagedBean {
 
 	public void setTipoDoFuncionario(TipoDeFuncionario tipoDoFuncionario) {
 		this.tipoDoFuncionario = tipoDoFuncionario;
-	}
-
-	public Endereco getNewEndereco() {
-		return newEndereco;
-	}
-
-	public void setNewEndereco(Endereco newEndereco) {
-		this.newEndereco = newEndereco;
-	}
-
-	public UF getUf() {
-		return uf;
-	}
-
-	public void setUf(UF uf) {
-		this.uf = uf;
-	}
-
-	public Telefone getNewTelefone() {
-		return newTelefone;
-	}
-
-	public void setNewTelefone(Telefone newTelefone) {
-		this.newTelefone = newTelefone;
 	}
 	
 	public Funcionario getFuncionarioLogado(){

@@ -44,8 +44,7 @@ public class WebFiltro implements Filter {
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		Funcionario funcionarioLogado = null;
 		try {
-			funcionarioLogado = (Funcionario) httpRequest.getSession()
-					.getAttribute(SessionUtil.KEY_USUARIO_LOGADO);
+			funcionarioLogado = (Funcionario) httpRequest.getSession().getAttribute(SessionUtil.KEY_USUARIO_LOGADO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

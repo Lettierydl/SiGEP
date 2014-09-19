@@ -2,11 +2,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://java.sun.com/jsf/passthrough">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
 	<title>SiGEP</title>
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="foundation/js/vendor/modernizr.js"></script>
 
 	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
 	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
@@ -18,9 +19,9 @@
 	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/jquery.js" />
 	<script src="../js/jquery.maskedinput.js" type="text/javascript"></script>
-	
+
 	<link rel="stylesheet"
-		href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"/>
+		href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
 	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
 
@@ -37,12 +38,16 @@
 	<div class="content">
 		<h4 class="titulo-tabela">Clientes</h4>
 
+		<h:form  prependId="false">
 		<div class="pesquisa">
 			<a class="botao-pesquia" onclick="ativarBotaoPesquisa()"> <img
 				src="../imagens/pesquisa_ico.png" />
 			</a>
-			
-			<h:inputText id="input_pesquisa" styleClass="input-inativo" />
+
+			<h:inputText id="input_pesquisa" styleClass="input-inativo"
+				p:placeholder="persquisar cliete" value="#{clienteBean.nomePesquisa}">
+				<f:ajax event="keyup" listener="#{clienteBean.modificarListaAtualDeClientes()}" render=":tabelaCliente"/>
+			</h:inputText>
 		</div>
 		<div class="criar" data-reveal-id="myModal">
 			<img src="../imagens/criar_ico.png" />
@@ -52,221 +57,80 @@
 			<h:dataTable id="tabelaCliente"
 				value="#{clienteBean.listAtualDeClientes}" var="cliente">
 				<f:facet name="header">
-
+				
 				</f:facet>
-				<h:column>
+				<f:ajax event="click" listener="#{clienteBean.editCliente}"/>
+				
+				<h:column headerClass="large-2">
 					<f:facet name="header">Nome</f:facet> 
 					#{cliente.nome}
 				</h:column>
-				<h:column>
-					<f:facet name="header">CPF</f:facet>
-					#{cliente.cpf}
-				</h:column>
-				<h:column>
+				<h:column headerClass="large-1">
 					<f:facet name="header">Debito</f:facet>
 					#{cliente.debito}
 				</h:column>
+				<h:column headerClass="large-2">
+					<f:facet name="header">Telefones</f:facet>
+					#{cliente.celular}<br/>#{cliente.telefone}
+				</h:column>
+				<h:column  headerClass="large-5">
+					<f:facet name="header">Endereço</f:facet>
+					#{cliente.endereco}
+				</h:column>
+				<h:column  headerClass="large-2">
+					<f:facet name="header">CPF</f:facet>
+					#{cliente.cpf}
+				</h:column>
+				
 			</h:dataTable>
 		</div>
+		</h:form>
 
-
-		<div id="myModal" class="reveal-modal modal" data-reveal="myModal" >
+		<div id="myModal" class="reveal-modal modal" data-reveal="myModal">
 			<h2>Criar cliente</h2>
-			<h:form id="formAdicionar" prependId="false">
-				<div class="formulario">
-					<h:panelGrid columns="2">
-						<h:outputLabel value="Nome:" for="inputNome" />
-						<h:inputText id="inputNome" value="#{clienteBean.newCliente.nome}"/>
+					<h:form id="formAdicionar" prependId="false">
+						<div class="formulario">
+							<div class="row">
+						
+							<div class="large-5 columns" id="coluna1">
+							<h:panelGrid columns="2" >
+								<h:outputLabel value="Nome:" for="inputNome" />
+								<h:inputText id="inputNome" value="#{clienteBean.newCliente.nome}" styleClass="campo-grande" />
+								
+								<h:outputLabel value="CPF:" for="inputCPF" />
+								<h:inputText id="inputCPF" value="#{clienteBean.newCliente.cpf}" styleClass="campo-grande" />
 
-						<h:outputLabel value="CPF:" for="inputCPF" />
-
-
-						<h:inputText id="inputCPF" value="#{clienteBean.newCliente.cpf}" />
-
-
-						<h:outputLabel value="Data de Nascimento:"
-							for="inputDataDeNascimento" />
-
-						<h:inputText id="inputDataDeNascimento"
-							value="#{clienteBean.newCliente.dataDeNascimentoDate}">
-							<f:convertDateTime pattern="dd/MM/yyyy"/>
-						</h:inputText>
-
-						<a href="#modalTelefones">Telefones</a>
-						<a href="#modalEndereco">Endereco</a>
-
-						<h:commandButton value="Cadastrar"
-							actionListener="#{clienteBean.cadastrarCliente()}" />
-					</h:panelGrid>
-					<script>
-						maskCPF('inputCPF');
-						maskData('inputDataDeNascimento');
-					</script>
-				</div>
-			</h:form>
-
-			<a class="close-reveal-modal">&#215;</a>
+								<h:outputLabel value="Nascimento:" for="inputDataDeNascimento" />
+								<h:inputText id="inputDataDeNascimento" value="#{clienteBean.newCliente.dataDeNascimentoDate}" styleClass="campo-grande"><f:convertDateTime pattern="dd/MM/yyyy" /></h:inputText>
+							</h:panelGrid>
+							</div>
+							
+							<div class="large-6 columns" id="coluna2" align="right">
+								<h:panelGrid columns="2" >
+									<h:outputLabel value="Cel:" for="inputCel" />
+									<h:inputText id="inputCel" maxlength="14" value="#{clienteBean.newCliente.celular}"  styleClass="campo-grande" />
+								
+									<h:outputLabel value="Tel:" for="inputTel" />
+									<h:inputText id="inputTel" maxlength="14" value="#{clienteBean.newCliente.telefone}"  styleClass="campo-grande" />
+								
+									<h:outputLabel value="Endereço:" for="inputEndereco" />
+									<h:inputText id="inputEndereco" maxlength="300" value="#{clienteBean.newCliente.endereco}"  styleClass="campo-grande" p:placeholder="Rua Rita Pereira de Almeida, nº512, Brasilia"/>
+								
+								</h:panelGrid>
+							</div>
+							
+							<script>maskCPF('inputCPF');maskData('inputDataDeNascimento');maskTelefone('inputTel');maskTelefone('inputCel');</script>
+							</div>
+							<div class="row">
+								<h:commandButton styleClass="bt-cadastrar" value="Cadastrar" actionListener="#{clienteBean.cadastrarCliente()}" />
+							</div>
+						</div>
+					</h:form>
+				<a class="close-reveal-modal">&#215;</a>
+			</div>
+			
 		</div>
 
-	</div>
-
-
-
-
-
-
-
-
-	<ui:remove>
-		<ui:define name="formAdicionar">
-			<h3>Adicionar</h3>
-			<div class="container">
-				<h:form id="formAdicionar">
-					<h:panelGrid columns="2">
-
-						<h:outputLabel value="Nome:" for="inputNome" />
-						<h:inputText id="inputNome" value="#{clienteBean.newCliente.nome}" />
-
-						<h:outputLabel value="CPF:" for="inputCPF" />
-						<h:inputText id="inputCPF" value="#{clienteBean.newCliente.cpf}" />
-
-						<h:outputLabel value="Data de Nascimento:"
-							for="inputDataDeNascimento" />
-
-						<a href="#modalTelefones">Telefones</a>
-						<a href="#modalEndereco">Endereco</a>
-
-						<h:commandButton value="Cadastrar"
-							actionListener="#{clienteBean.cadastrarCliente()}" />
-
-					</h:panelGrid>
-				</h:form>
-
-				<ul class="lb-album">
-					<li>
-
-						<div class="lb-overlay" id="modalEndereco" align="center">
-							<div class="panel">
-								<a href="#" class="">X</a>
-								<h:form id="formEndereco">
-									<h:panelGrid columns="2" id="formularioGup2">
-										<h:outputLabel value="Rua:" for="inputRua" />
-										<h:inputText id="inputRua"
-											value="#{clienteBean.newEndereco.rua}" />
-
-										<h:outputLabel value="Número:" for="inputNumero" />
-										<h:inputText id="inputNumero" maxlength="10"
-											value="#{clienteBean.newEndereco.numero}" />
-
-										<h:outputLabel value="Bairro:" for="inputBairro" />
-										<h:inputText id="inputBairro"
-											value="#{clienteBean.newEndereco.bairro}" />
-
-										<h:outputLabel value="Cidade:" for="inputCidade" />
-										<h:inputText id="inputCidade"
-											value="#{clienteBean.newEndereco.cidade}" />
-
-
-										<h:outputLabel value="UF:" for="selectUF" />
-										<h:selectOneMenu id="selectUF" value="#{clienteBean.uf}">
-											<f:selectItems value="#{clienteBean.ufs}" var="uf"
-												itemValue="#{uf}" itemLabel="#{uf.name}" />
-										</h:selectOneMenu>
-
-
-										<h:outputLabel value="CEP:" for="inputCep" />
-										<h:inputText id="inputCep"
-											value="#{clienteBean.newEndereco.cep}" />
-
-										<h:commandButton id="submeterFormEndereco" value="Adicionar">
-											<f:ajax listener="#{clienteBean.addEnderecoCliente}"
-												execute=":formEndereco" render=":formEndereco" event="click" />
-										</h:commandButton>
-									</h:panelGrid>
-									<h:outputLabel id="labelEndereco"
-										value="#{clienteBean.newEndereco}" />
-								</h:form>
-
-							</div>
-						</div>
-
-
-						<div class="lb-overlay" id="modalTelefones" align="center">
-							<div class="panel">
-								<a href="#" class="">X</a>
-								<h:form id="formTelefone">
-									<h:panelGrid columns="2" id="formularioGup">
-										<h:outputLabel value="DDD:" for="inputDdd" />
-										<h:inputText id="inputDdd" maxlength="2"
-											value="#{clienteBean.newTelefone.ddd}" />
-
-										<h:outputLabel value="Telefone:" for="inputTelefone" />
-										<h:inputText id="inputTelefone" maxlength="9"
-											value="#{clienteBean.newTelefone.telefone}" />
-
-										<h:outputLabel value="Operadora:" for="inputOperadora" />
-										<h:inputText id="inputOperadora"
-											value="#{clienteBean.newTelefone.operadora}" />
-
-										<h:commandButton id="submeterForm" value="Adicionar">
-											<f:ajax listener="#{clienteBean.addTelefoneCliente}"
-												execute="@form" render="@form" event="click" />
-										</h:commandButton>
-									</h:panelGrid>
-								</h:form>
-
-								<h:dataTable id="tabelaTelefones"
-									styleClass="table table-hover table-bordered tabela"
-									value="#{clienteBean.newCliente.telefones}" var="telefone">
-									<f:facet name="header">
-										<h4 align="center">Telefones</h4>
-									</f:facet>
-									<h:column>
-										<f:facet name="header">DDD</f:facet> 
-																#{telefone.ddd}
-															</h:column>
-									<h:column>
-										<f:facet name="header">Telefone</f:facet> 
-																#{telefone.telefone}
-															</h:column>
-									<h:column>
-										<f:facet name="header">Operadora</f:facet> 
-																#{telefone.operadora}
-															</h:column>
-									<h:column>
-										<f:facet name="header">Remover</f:facet>
-										<h:commandButton value="Remover">
-											
-										</h:commandButton>
-									</h:column>
-								</h:dataTable>
-							</div>
-						</div>
-					</li>
-				</ul>
-
-			</div>
-		</ui:define>
-
-		<ui:define name="formPesquisar">
-			<div class="container">
-				<h3>Pesquisar</h3>
-				<h:form id="formPesquisar">
-					<h:panelGrid columns="2">
-
-						<h:outputLabel value="Nome ou CPF:" for="inputNomePesquisar" />
-						<h:inputText id="inputNomePesquisar"
-							value="#{clienteBean.nomeOuCpf}">
-							<f:ajax event="keyup"
-								listener="#{clienteBean.modificarListaAtualDeClientes()}" />
-						</h:inputText>
-
-
-					</h:panelGrid>
-				</h:form>
-			</div>
-		</ui:define>
-	</ui:remove>
 
 
 	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />

@@ -1,3 +1,6 @@
+@IMPORT url("modal.css");
+
+
 /*titulo da tabela*/
 .titulo-tabela {
 	margin-top: 61px;
@@ -21,6 +24,8 @@
 	margin: auto;
 	border-spacing: 2px;
 	border-collapse: separate;
+	max-width: 880px;
+	min-width: 880px;
 }
 
 .tabela tbody tr {
@@ -29,6 +34,10 @@
 	font-size: 15px;
 	font-family: "Dosis";
 	text-align: center;
+}
+
+.tabela tbody tr:nth-child(2n) td{
+	background-color: #f3f3f3;
 }
 
 .tabela tbody td {
@@ -51,17 +60,10 @@
 	padding-right: 15px;
 }
 
-.tabela tbody tr:hover {
+.tabela tbody tr:hover td{
 	background-color: #ffffff;
 }
 
-.tabela tbody tr:nth-child(2n) {
-	background-color: #f8f8f8;
-}
-
-.tabela tbody tr:hover:nth-child(2n) {
-	background-color: #ffffff;
-}
 
 .tabela tbody td {
 	padding-left: 15px;
@@ -127,8 +129,7 @@
 	box-shadow: 0.1px 2.0px 0px 0px rgba(218, 217, 217, 0.392);
 	opacity: 1;
 	visibility: visible;
-	-webkit-transition: width 0.3s ease-in, margin 0.3s ease-in, opacity
-		0.3s ease-in;
+	-webkit-transition: width 0.3s ease-in, margin 0.3s ease-in, opacity 0.3s ease-in;
 	-moz-transition: width 0.3s ease-in, margin 0.3s ease-in, opacity 0.3s
 		ease-in;
 }
@@ -144,45 +145,7 @@
 	-moz-transition: all 0.3s ease-in;
 }
 
-.modal {
-	position: absolute;
-	width: 50%;
-}
 
-.formulario > table{
-	position:relative;
-	margin:auto;
-	align:center;
-	/*font*/
-	font-size: 17px;
-	font-family: "Dosis";
-	color: rgb(143, 143, 143);
-	line-height: 2.922;
-	border-style: none;
-}
-.formulario > table  td{
-	text-align: justify;
-	padding: 15px 15px 15px 15px;	
-}
-
-.formulario input {
-	width: 313px;
-	height: 49px;
-	margin-left: 2px;
-	
-	color: rgb(143, 143, 143);
-	padding-left: 20px;
-	outline: none;
-	border-bottom-style:1.5px dashed rgba(238, 238, 238, 1);
-	box-shadow: 0.1px 2.0px 0px 0px rgba(218, 217, 217, 0.392);
-	box-shadow: 3px 3px 1px 0px rgba(238, 238, 238, 1);
-	
-	outline: none;
-	
-	
-}
-.formulario label{
-}
 
 
 ::-webkit-input-placeholder {

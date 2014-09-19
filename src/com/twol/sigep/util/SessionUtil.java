@@ -13,7 +13,7 @@ public class SessionUtil {
 
 	public static final String KEY_USUARIO_LOGADO = "USUARIO_LOGADO";
 	public static final String PAGE_PRINCIPAL = "restrito/home.jsf";
-	public static final String PAGE_INICIAL = "/SiGEP/";
+	public static final String PAGE_INICIAL = "/CloudSistem/";
 	
 	
 

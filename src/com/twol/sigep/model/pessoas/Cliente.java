@@ -1,28 +1,17 @@
 package com.twol.sigep.model.pessoas;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.util.OperacaoStringUtil;
@@ -44,14 +33,6 @@ public class Cliente {
 	private String nome;
 
 	/**
-     */
-	@OneToOne(cascade = {CascadeType.ALL})
-	@JoinColumn(updatable=true)
-	@ForeignKey(name = "endereco_do_cliente")
-	@OnDelete(action=OnDeleteAction.CASCADE)
-	private Endereco endereco;
-
-	/**
 	 * Valor total de quanto o cliente deve
      */
 	@Column(nullable = false, precision = 2)
@@ -68,10 +49,15 @@ public class Cliente {
 	@Temporal(TemporalType.DATE)
 	private Calendar dataDeNascimento;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name="cliente_telefone", joinColumns={@JoinColumn(name="cliente_id")}, inverseJoinColumns={@JoinColumn(name="telefone_id")})
-	@ForeignKey(name = "telefones_do_cliente")
-	private List<Telefone> telefones = new ArrayList<Telefone>();
+	@Column(nullable = true, length = 14)
+	private String telefone;
+	
+	@Column(nullable = true, length = 14)
+	private String celular;
+	
+	@Column(nullable = true, length = 500)
+	private String endereco;
+	
 	
 	/**
      
@@ -101,13 +87,28 @@ public class Cliente {
 		this.nome = nome;
 	}
 
-	
-	public Endereco getEndereco() {
+		public String getEndereco() {
 		return endereco;
 	}
 
-	public void setEndereco(Endereco endereco) {
+	public void setEndereco(String endereco) {
 		this.endereco = endereco;
+	}
+
+	public String getTelefone() {
+		return OperacaoStringUtil.formatarStringParaMascaraDeTelefone(telefone);
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = OperacaoStringUtil.retirarMascaraDeTelefone(telefone);
+	}
+
+	public String getCelular() {
+		return OperacaoStringUtil.formatarStringParaMascaraDeTelefone(celular);
+	}
+
+	public void setCelular(String celular) {
+		this.celular = OperacaoStringUtil.retirarMascaraDeTelefone(celular);
 	}
 
 	public double getDebito() {
@@ -115,7 +116,7 @@ public class Cliente {
 	}
 
 	public String getCpf() {
-		return cpf;
+		return OperacaoStringUtil.formatarStringParaMascaraDeCPF(cpf);
 	}
 
 	public void setCpf(String cpf) {
@@ -140,26 +141,6 @@ public class Cliente {
 	public void setDataDeNascimentoDate(Date dataDeNascimento) {
 		this.dataDeNascimento = Calendar.getInstance();
 		this.dataDeNascimento.setTime(dataDeNascimento);
-	}
-	
-	public List<Telefone> getTelefones() {
-		return telefones;
-	}
-
-	public void addTelefone(Telefone telefone) {
-		if (this.telefones == null) {
-			this.telefones = new ArrayList<Telefone>();
-		}
-		this.telefones.add(telefone);
-		//Telefone.salvar(telefone);
-	}
-	
-	public void removerTelefone(Telefone telefone){
-		if(this.telefones == null){
-			this.telefones = new ArrayList<Telefone>();
-			return;
-		}
-		this.telefones.remove(telefone);
 	}
 	
 	
@@ -198,7 +179,7 @@ public class Cliente {
 		if (valor > 0) {
 			debito += valor;
 		} else {
-			throw new ParametrosInvalidosException("Não pode ser acencentado um valor negativo ao debito do cliente");
+			throw new ParametrosInvalidosException("N��o pode ser acencentado um valor negativo ao debito do cliente");
 		}
 	}
 
@@ -207,7 +188,7 @@ public class Cliente {
 		if (valor > 0) {
 			debito -= valor;
 		} else {
-			throw new ParametrosInvalidosException("Não pode ser retirado um valor negativo ao debito do cliente");
+			throw new ParametrosInvalidosException("N��o pode ser retirado um valor negativo ao debito do cliente");
 		}
 	}
 

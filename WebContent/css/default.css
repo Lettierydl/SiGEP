@@ -47,7 +47,7 @@
 	line-height: 3.312;
 }
 
-/*logado �� um submenu do usuario
+/*logado ������ um submenu do usuario
 */
 .menu-usuario {
 	position: relative;
@@ -65,7 +65,7 @@
 	color: rgb(121, 121, 121);
 	line-height: 3.312;
 	margin-right: -102px;
-	outline: none; /*marca����o de azul no elemento*/
+	outline: none; /*marca������������o de azul no elemento*/
 }
 
 /*triangulo*/
@@ -115,7 +115,7 @@
 	content: "";
 	position: absolute;
 	bottom: 100%;
-	right: 1px; /*localiza����o do triangulo de encaixe*/
+	right: 1px; /*localiza������������o do triangulo de encaixe*/
 	border-width: 0 6px 6px 6px;
 	border-style: solid;
 	border-color: #312530 transparent;

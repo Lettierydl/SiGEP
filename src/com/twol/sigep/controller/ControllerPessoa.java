@@ -10,9 +10,7 @@ import javax.persistence.criteria.Root;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.model.pessoas.Endereco;
 import com.twol.sigep.model.pessoas.Funcionario;
-import com.twol.sigep.model.pessoas.Telefone;
 
 public class ControllerPessoa {
 
@@ -51,24 +49,13 @@ public class ControllerPessoa {
             em = getEntityManager();
             em.getTransaction().begin();
             //atualiza entidades de relacionamento do produto incluindo listas
-            Cliente clienteold = em.getReference(Cliente.class, cliente.getId());
-            if(clienteold.getEndereco()!=null && cliente.getEndereco()==null){
-            	em.remove(clienteold.getEndereco());
-            }
-            if(clienteold.getTelefones().size() > cliente.getTelefones().size()){
-            	for(Telefone t : clienteold.getTelefones()){
-            		if(!cliente.getTelefones().contains(t)){
-            			em.remove(t);
-            		}
-            	}
-            }
             cliente = em.merge(cliente);
             em.getTransaction().commit();
         } catch (Exception ex) {
         	try{
         		em.find(Cliente.class, cliente.getId());
         	}catch(EntityNotFoundException enfe){
-        		throw new EntidadeNaoExistenteException("O cliente " + cliente.getNome() + " não existe.");
+        		throw new EntidadeNaoExistenteException("O cliente " + cliente.getNome() + " n��o existe.");
         	}
             throw ex;
         } finally {
@@ -87,7 +74,7 @@ public class ControllerPessoa {
             	cliente = em.getReference(Cliente.class, cliente.getId());
             	cliente.getId();
             } catch (EntityNotFoundException enfe) {
-            	throw new EntidadeNaoExistenteException("O cliente " + cliente.getNome() + " não existe.");
+            	throw new EntidadeNaoExistenteException("O cliente " + cliente.getNome() + " n��o existe.");
             }
             //remove das listas e atualiza entidades relacionadas
             em.remove(cliente);
@@ -125,24 +112,13 @@ public class ControllerPessoa {
             em = getEntityManager();
             em.getTransaction().begin();
             //atualiza entidades de relacionamento do produto incluindo listas
-            Funcionario funcionarioold = em.getReference(Funcionario.class, funcionario.getId());
-            if(funcionarioold.getEndereco()!=null && funcionario.getEndereco()==null){
-            	em.remove(funcionarioold.getEndereco());
-            }
-            if(funcionarioold.getTelefones().size() > funcionario.getTelefones().size()){
-            	for(Telefone t : funcionarioold.getTelefones()){
-            		if(!funcionario.getTelefones().contains(t)){
-            			em.remove(t);
-            		}
-            	}
-            }
             funcionario = em.merge(funcionario);
             em.getTransaction().commit();
         } catch (Exception ex) {
         	try{
         		em.find(Funcionario.class, funcionario.getId());
         	}catch(EntityNotFoundException enfe){
-        		throw new EntidadeNaoExistenteException("O funcionário " + funcionario.getNome() + " não existe.");
+        		throw new EntidadeNaoExistenteException("O funcion��rio " + funcionario.getNome() + " n��o existe.");
         	}
             throw ex;
         } finally {
@@ -161,7 +137,7 @@ public class ControllerPessoa {
             	funcionario = em.find(Funcionario.class, funcionario.getId());
             	funcionario.getId();
             } catch (EntityNotFoundException enfe) {
-            	throw new EntidadeNaoExistenteException("A funcionário " + funcionario.getNome() + " não existe.");
+            	throw new EntidadeNaoExistenteException("A funcion��rio " + funcionario.getNome() + " n��o existe.");
             }
             
             //remove das listas e atualiza entidades relacionadas 
@@ -215,37 +191,7 @@ public class ControllerPessoa {
             }
         }
     }
-    
-    public void removeAllEnderecos(){
-    	EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            em.createNativeQuery("DELETE FROM Endereco WHERE id > 0;", Endereco.class).executeUpdate();
-            em.getTransaction().commit();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-    }
-    
-    public void removeAllTelefones(){
-    	EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            em.createNativeQuery("DELETE FROM cliente_telefone WHERE telefone_id > 0;").executeUpdate();
-            em.createNativeQuery("DELETE FROM funcionario_telefone WHERE telefone_id > 0;").executeUpdate();
-            em.createNativeQuery("DELETE FROM Telefone WHERE id > 0;", Telefone.class).executeUpdate();
-            em.getTransaction().commit();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-    }
-    
+     
     public int getQuantidadeClientes() {
         EntityManager em = getEntityManager();
         try {
