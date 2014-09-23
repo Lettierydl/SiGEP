@@ -18,11 +18,11 @@ public class OperacaoStringUtil {
 	}
 	
 	public static String formatarStringParaMascaraDeCep(String cep){
-		return cep ==null? "" :cep.substring(0, 5)+"-"+cep.substring(5);
+		return cep == null  || cep.isEmpty() ? "" :cep.substring(0, 5)+"-"+cep.substring(5);
 	}
 	
 	public static String formatarStringParaMascaraDeTelefone(String telefone) {
-		return telefone ==null ? "" : "("+ telefone.substring(0, 2) +")"+telefone.substring(2, 6)+"-"+telefone.substring(6);
+		return (telefone == null || telefone.isEmpty()) ? "" : "("+ telefone.substring(0, 2) +")"+telefone.substring(2, 6)+"-"+telefone.substring(6);
 	}
 	
 	public static String retirarMascaraDeCPF(String cpf){
@@ -30,11 +30,11 @@ public class OperacaoStringUtil {
 	}
 
 	public static String retirarMascaraDeTelefone(String telefone) {
-		return telefone.replace("(", "").replace(")", "").replace("-", "");
+		return  (telefone == null || telefone.isEmpty())? "" : telefone.replace("(", "").replace(")", "").replace("-", "");
 	}
 
 	public static String formatarStringParaMascaraDeCPF(String cpf) {
-		return cpf ==null? "" :cpf.substring(0, 3)+"."+cpf.substring(3, 6)+"."+cpf.substring(6, 9)+"-"+cpf.substring(9);
+		return cpf == null || cpf.isEmpty() ? "" :cpf.substring(0, 3)+"."+cpf.substring(3, 6)+"."+cpf.substring(6, 9)+"-"+cpf.substring(9);
 	}
 
 

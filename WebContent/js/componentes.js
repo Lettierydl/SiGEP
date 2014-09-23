@@ -17,15 +17,12 @@ function ativarBotaoPesquisa() {
 }
 function focus(idCampo) {
 	$("#" + idCampo).focus();
+	alert(idCampo);
 }
 
-// Abrir modal ao cliclar na linha da tabela
-function abrirModalClickLinhaTabela(idTable) {
-	$('#'+idTable+' tbody').on('click', 'tr', function() {
-		var nome = $('td', this).eq(0).text();
-		var cpf = $('td', this).eq(4).text();
-		alert(nome + ', cpf: ' + cpf);
-	});
+// Abrir modal foundation
+function abrirModa(idModal) {
+	$( "#"+idModal ).foundation('reveal', 'open');
 }
 
 function maskDatepicker(idCampo) {

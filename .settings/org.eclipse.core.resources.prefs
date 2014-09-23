@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//WebContent/css/default.css=UTF-8
+encoding//WebContent/restrito/dialogs/exemplo.xhtml=UTF-8
 encoding//src/com/twol/sigep/controller/ControllerPessoa.java=UTF-8
 encoding//src/com/twol/sigep/model/pessoas/Cliente.java=UTF-8
 encoding//src/com/twol/sigep/util/OperacaoStringUtil.java=UTF-8

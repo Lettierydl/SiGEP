@@ -1,95 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:pi="http://primefaces.org/ui">
-<h:head>
-	<title>SiGEP</title>
-
-	<link rel="stylesheet" href="../foundation/css/foundation.css" />
-	<script src="../foundation/js/vendor/modernizr.js"></script>
-
-	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
-	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
-
-	<link rel="stylesheet" type="text/css"
-		href="http://fonts.googleapis.com/css?family=Dosis" />
-
-
-	<script type="text/javascript" src="../js/componentes.js" />
-	<script type="text/javascript" src="../js/jquery.js" />
-	<script src="../js/jquery.maskedinput.js" type="text/javascript"></script>
-
-	<link rel="stylesheet"
-		href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
-	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-
-
-
-</h:head>
-
-<h:body>
-
-
-
-	<ui:include src="componentes/menu.xhtml" />
-	<script>ativarMenuBotoes("cliente");</script>
-
-	<div class="content">
-		<h4 class="titulo-tabela">Clientes</h4>
-
-		<div class="pesquisa">
-			<a class="botao-pesquia" onclick="ativarBotaoPesquisa()"> <img
-				src="../imagens/pesquisa_ico.png" />
-			</a>
-
-			<h:inputText id="input_pesquisa" styleClass="input-inativo"
-				p:placeholder="persquisar cliete" value="#{clienteBean.nomePesquisa}">
-				<f:ajax event="keyup" listener="#{clienteBean.modificarListaAtualDeClientes()}" render=":tabelaCliente"/>
-			</h:inputText>
-		</div>
-		<div class="criar" data-reveal-id="modalCriar">
-			<img src="../imagens/criar_ico.png" />
-		</div>
-
-
-		
-
-		<div class="tabela">
-			<h:dataTable id="tabelaCliente" 
-				value="#{clienteBean.listAtualDeClientes}" var="cliente">
-				<f:facet name="header"/>
-				<h:column headerClass="large-2">
-					<f:facet name="header">Nome</f:facet> 
-					#{cliente.nome}
-				</h:column>
-				<h:column headerClass="large-1">
-					<f:facet name="header">Debito</f:facet>
-					#{cliente.debito}
-				</h:column>
-				<h:column headerClass="large-2">
-					<f:facet name="header">Telefones</f:facet>
-					#{cliente.celular}<br/>#{cliente.telefone}
-				</h:column>
-				<h:column  headerClass="large-5">
-					<f:facet name="header">Endereço</f:facet>
-					#{cliente.endereco}
-				</h:column>
-				<h:column  headerClass="large-2">
-					<f:facet name="header">CPF</f:facet>
-					#{cliente.cpf}
-				</h:column>
-				
-				<h:column  headerClass="large-1">
-					<f:facet name="header">Editar</f:facet>
-					<pi:commandLink value="Edit" actionListener="#{clienteBean.openEditCliente(cliente)}" rendered="true" update="@all"/>
-					
-				</h:column>
-			</h:dataTable>
-			
-			
-			<div id="modalEdit" class="reveal-modal modal" data-reveal="modalEdit">
+<div id="modalEdit" class="reveal-modal modal" data-reveal="modalEdit">
 			<h2>Editar cliente</h2>
 					<h:form id="formEdit" prependId="false">
 						<div class="formulario">
@@ -132,9 +41,9 @@
 				<a class="close-reveal-modal">&#215;</a>
 			</div>
 			
-		</div>
-
-		<div id="modalCriar" class="reveal-modal modal" data-reveal="modalCriar">
+			
+			
+			<div id="modalCriar" class="reveal-modal modal" data-reveal="modalCriar">
 			<h2>Criar cliente</h2>
 					<h:form id="formAdicionar" prependId="false">
 						<div class="formulario">
@@ -179,18 +88,4 @@
 			
 			
 			
-	
-	  <!-- Fim content -->
-		</div>
-
-
-
-	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
-	<script src="../foundation/js/foundation.min.js"></script>
-	<script>
-		$(document).foundation();
-	</script>
-</h:body>
-
-￼￼￼￼
-</html>
+			

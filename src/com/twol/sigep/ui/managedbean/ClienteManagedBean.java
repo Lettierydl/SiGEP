@@ -3,28 +3,29 @@ package com.twol.sigep.ui.managedbean;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIData;
-import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.bean.SessionScoped;
 
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
+import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Cliente;
 
-@ViewScoped
+@SessionScoped
 @ManagedBean(name = "clienteBean")
 public class ClienteManagedBean {
 	private Facede f;
 	
 	private String nomePesquisa;
 	private Cliente newCliente;
+	private Cliente editCliente;
 	private List<Cliente> listAtualDeClientes;
 	
 	
 	public ClienteManagedBean(){
 		f = new Facede();
 		newCliente = new Cliente();
+		setEditCliente(new Cliente());
 		listAtualDeClientes = f.getListaClientes();
 	}
 	
@@ -59,14 +60,26 @@ public class ClienteManagedBean {
 	}
 	
 	
-	//recuperar linha do click
-	public void editCliente(AjaxBehaviorEvent event){
-		System.out.println(event.getComponent().getClientId());
-		System.out.println(event);
-		System.out.println(event.getBehavior());
-		System.out.println(event.getSource());
-		UIData dataTable = (UIData) event.getSource();
-		System.out.println(dataTable.getRowData());
+	
+	public void openEditCliente(Cliente c){
+		this.setEditCliente(c);
+		RequestContext.getCurrentInstance().execute("abrirModa('modalEdit');");
+		/*
+		RequestContext.getCurrentInstance().update("formEdit");
+		RequestContext.getCurrentInstance().update("nomeEdit");
+		RequestContext.getCurrentInstance().openDialog("modalEdit");
+		RequestContext.getCurrentInstance().openDialog("#modalEdit");*/
+	}
+	
+	public void editarCliente(){
+		try {
+			f.atualizarCliente(editCliente);
+		} catch (EntidadeNaoExistenteException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		RequestContext.getCurrentInstance().update("@all");
 	}
 	
 	
@@ -87,6 +100,16 @@ public class ClienteManagedBean {
 
 	public void setNewCliente(Cliente newCliente) {
 		this.newCliente = newCliente;
+	}
+
+
+	public Cliente getEditCliente() {
+		return editCliente;
+	}
+
+
+	public void setEditCliente(Cliente editCliente) {
+		this.editCliente = editCliente;
 	}	
 	
 }

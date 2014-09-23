@@ -139,8 +139,10 @@ public class Cliente {
 	}
 	
 	public void setDataDeNascimentoDate(Date dataDeNascimento) {
-		this.dataDeNascimento = Calendar.getInstance();
-		this.dataDeNascimento.setTime(dataDeNascimento);
+		if(dataDeNascimento != null){
+			this.dataDeNascimento = Calendar.getInstance();
+			this.dataDeNascimento.setTime(dataDeNascimento);
+		}
 	}
 	
 	
