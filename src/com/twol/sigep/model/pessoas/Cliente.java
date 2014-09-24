@@ -87,7 +87,7 @@ public class Cliente {
 		this.nome = nome;
 	}
 
-		public String getEndereco() {
+	public String getEndereco() {
 		return endereco;
 	}
 

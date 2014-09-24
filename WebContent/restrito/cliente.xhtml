@@ -5,7 +5,7 @@
 	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:pi="http://primefaces.org/ui">
 <h:head>
-	<title>SiGEP</title>
+	<title>Cloud</title>
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
@@ -38,101 +38,106 @@
 
 	<div class="content">
 		<h4 class="titulo-tabela">Clientes</h4>
-
-		<div class="pesquisa">
-			<a class="botao-pesquia" onclick="ativarBotaoPesquisa()"> <img
-				src="../imagens/pesquisa_ico.png" />
-			</a>
-
-			<h:inputText id="input_pesquisa" styleClass="input-inativo"
-				p:placeholder="persquisar cliete" value="#{clienteBean.nomePesquisa}">
-				<f:ajax event="keyup" listener="#{clienteBean.modificarListaAtualDeClientes()}" render=":tabelaCliente"/>
-			</h:inputText>
-		</div>
-		<div class="criar" data-reveal-id="modalCriar">
-			<img src="../imagens/criar_ico.png" />
-		</div>
-
-
 		
-
-		<div class="tabela">
-			<h:dataTable id="tabelaCliente" 
-				value="#{clienteBean.listAtualDeClientes}" var="cliente">
-				<f:facet name="header"/>
-				<h:column headerClass="large-2">
-					<f:facet name="header">Nome</f:facet> 
-					#{cliente.nome}
-				</h:column>
-				<h:column headerClass="large-1">
-					<f:facet name="header">Debito</f:facet>
-					#{cliente.debito}
-				</h:column>
-				<h:column headerClass="large-2">
-					<f:facet name="header">Telefones</f:facet>
-					#{cliente.celular}<br/>#{cliente.telefone}
-				</h:column>
-				<h:column  headerClass="large-5">
-					<f:facet name="header">Endereço</f:facet>
-					#{cliente.endereco}
-				</h:column>
-				<h:column  headerClass="large-2">
-					<f:facet name="header">CPF</f:facet>
-					#{cliente.cpf}
-				</h:column>
+		<h:form  prependId="false">
+			<div class="pesquisa">
+				<a class="botao-pesquia" onclick="ativarBotaoPesquisa()"> <img
+					src="../imagens/pesquisa_ico.png" />
+				</a>
 				
-				<h:column  headerClass="large-1">
-					<f:facet name="header">Editar</f:facet>
-					<pi:commandLink value="Edit" actionListener="#{clienteBean.openEditCliente(cliente)}" rendered="true" update="@all"/>
-					
-				</h:column>
-			</h:dataTable>
-			
-			
-			<div id="modalEdit" class="reveal-modal modal" data-reveal="modalEdit">
-			<h2>Editar cliente</h2>
-					<h:form id="formEdit" prependId="false">
-						<div class="formulario">
-							<div class="row">
-						
-							<div class="large-5 columns" id="coluna1">
-							<h:panelGrid columns="2" >
-								<h:outputLabel value="Nome:" for="nomeEdit" />
-								<h:inputText id="nomeEdit" value="#{clienteBean.editCliente.nome}" styleClass="campo-grande" />
-								
-								<h:outputLabel value="CPF:" for="CPFEdit" />
-								<h:inputText id="CPFEdit" value="#{clienteBean.editCliente.cpf}" styleClass="campo-grande" />
-
-								<h:outputLabel value="Nascimento:" for="dataEdit" />
-								<h:inputText id="dataEdit" value="#{clienteBean.editCliente.dataDeNascimentoDate}" styleClass="campo-grande"><f:convertDateTime pattern="dd/MM/yyyy" /></h:inputText>
-							</h:panelGrid>
-							</div>
-							
-							<div class="large-6 columns" id="coluna2" align="right">
-								<h:panelGrid columns="2" >
-									<h:outputLabel value="Cel:" for="celEdit" />
-									<h:inputText id="celEdit" maxlength="14" value="#{clienteBean.editCliente.celular}"  styleClass="campo-grande" />
-								
-									<h:outputLabel value="Tel:" for="telEdit" />
-									<h:inputText id="telEdit" maxlength="14" value="#{clienteBean.editCliente.telefone}"  styleClass="campo-grande" />
-								
-									<h:outputLabel value="Endereço:" for="enderecoEdit" />
-									<h:inputText id="enderecoEdit" maxlength="300" value="#{clienteBean.editCliente.endereco}"  styleClass="campo-grande" p:placeholder="Rua Rita Pereira de Almeida, nº512, Brasilia"/>
-								
-								</h:panelGrid>
-							</div>
-							
-							<script>maskCPF('CPFEdit');maskData('dataEdit');maskTelefone('telEdit');maskTelefone('celEdit');</script>
-							</div>
-							<div class="row">
-								<h:commandButton styleClass="bt-cadastrar" value="Editar" actionListener="#{clienteBean.editarCliente()}"/>
-							</div>
-						</div>
-					</h:form>
-				<a class="close-reveal-modal">&#215;</a>
+				<h:inputText id="input_pesquisa" styleClass="input-inativo"
+					p:placeholder="persquisar cliete" value="#{clienteBean.nomePesquisa}"
+					valueChangeListener="#{clienteBean.modific}">
+					<f:ajax event="keyup" listener="#{clienteBean.modificarListaAtualDeClientes()}" render=":tabelaCliete"/>
+				</h:inputText>
 			</div>
+		</h:form>
 			
-		</div>
+			<div class="criar" data-reveal-id="modalCriar">
+				<img src="../imagens/criar_ico.png" />
+			</div>
+	
+	
+			
+	
+			<div class="tabela">
+				<h:dataTable id="tabelaCliente" 
+					value="#{clienteBean.listAtualDeClientes}" var="cliente">
+					<f:facet name="header"/>
+					<h:column headerClass="large-2">
+						<f:facet name="header">Nome</f:facet> 
+						#{cliente.nome}
+					</h:column>
+					<h:column headerClass="large-1">
+						<f:facet name="header">Debito</f:facet>
+						#{cliente.debito}
+					</h:column>
+					<h:column headerClass="large-2">
+						<f:facet name="header">Telefones</f:facet>
+						#{cliente.celular}<br/>#{cliente.telefone}
+					</h:column>
+					<h:column  headerClass="large-5">
+						<f:facet name="header">Endereço</f:facet>
+						#{cliente.endereco}
+					</h:column>
+					<h:column  headerClass="large-2">
+						<f:facet name="header">CPF</f:facet>
+						#{cliente.cpf}
+					</h:column>
+					
+					<h:column  headerClass="large-1">
+						<f:facet name="header">Editar</f:facet>
+						<pi:commandLink value="Edit" actionListener="#{clienteBean.openEditCliente(cliente)}" rendered="true" update="@all"/>
+						
+					</h:column>
+				</h:dataTable>
+				
+				
+				<div id="modalEdit" class="reveal-modal modal" data-reveal="modalEdit">
+				<h2>Editar cliente</h2>
+						<h:form id="formEdit"  prependId="false">
+							<div class="formulario">
+								<div class="row">
+							
+								<div class="large-5 columns" id="coluna1">
+								<h:panelGrid columns="2" >
+									<h:outputLabel value="Nome:" for="nomeEdit" />
+									<h:inputText id="nomeEdit" value="#{clienteBean.editCliente.nome}" styleClass="campo-grande" />
+									
+									<h:outputLabel value="CPF:" for="CPFEdit" />
+									<h:inputText id="CPFEdit" value="#{clienteBean.editCliente.cpf}" styleClass="campo-grande" />
+	
+									<h:outputLabel value="Nascimento:" for="dataEdit" />
+									<h:inputText id="dataEdit" value="#{clienteBean.editCliente.dataDeNascimentoDate}" styleClass="campo-grande"><f:convertDateTime pattern="dd/MM/yyyy" /></h:inputText>
+								</h:panelGrid>
+								</div>
+								
+								<div class="large-6 columns" id="coluna2" align="right">
+									<h:panelGrid columns="2" >
+										<h:outputLabel value="Cel:" for="celEdit" />
+										<h:inputText id="celEdit" maxlength="14" value="#{clienteBean.editCliente.celular}"  styleClass="campo-grande" />
+									
+										<h:outputLabel value="Tel:" for="telEdit" />
+										<h:inputText id="telEdit" maxlength="14" value="#{clienteBean.editCliente.telefone}"  styleClass="campo-grande" />
+									
+										<h:outputLabel value="Endereço:" for="enderecoEdit" />
+										<h:inputText id="enderecoEdit" maxlength="300" value="#{clienteBean.editCliente.endereco}"  styleClass="campo-grande" p:placeholder="Rua Rita Pereira de Almeida, nº512, Brasilia"/>
+									
+									</h:panelGrid>
+								</div>
+								
+								<script>maskCPF('CPFEdit');maskData('dataEdit');maskTelefone('telEdit');maskTelefone('celEdit');</script>
+								</div>
+								<div class="row">
+									<h:commandButton styleClass="bt-cadastrar" value="Salvar" actionListener="#{clienteBean.editarCliente()}" />
+								</div>
+							</div>
+						</h:form>
+					<a class="close-reveal-modal">&#215;</a>
+				</div><!-- fim modal Edit -->
+				
+				
+			</div><!-- fim div tabela -->
 
 		<div id="modalCriar" class="reveal-modal modal" data-reveal="modalCriar">
 			<h2>Criar cliente</h2>

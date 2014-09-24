@@ -91,7 +91,7 @@ public class Facede {
 	}
 
 	/*-------------------------
-	 * Metodos do Usuário/Funcionario
+	 * Metodos do Usu��rio/Funcionario
 	 --------------------------*/
 
 	public List<Funcionario> getListaFuncionarios() {
@@ -103,9 +103,18 @@ public class Facede {
 		lg.atribuirSenhaETipoAoFuncionario(f, senha, tipoDeFuncionario);
 		pes.create(f);
 	}
-
+	
+	/*Não salva o funcionario no banco*/
+	public void alterarSenhaDoFuncionario(Funcionario f, String senha, String novaSenha) throws SenhaIncorretaException, LoginIncorretoException{
+		lg.alterarSenhaDoFuncionario(f, senha, novaSenha);
+	}
+	
 	public List<Funcionario> buscarFuncionarioPorNomeQueInicia(String nome) {
 		return FindFuncionario.funcionariosQueNomeInicia(nome);
+	}
+	
+	public Funcionario buscarFuncionarioPorId(int id) {
+		return FindFuncionario.funcionarioComId(id);
 	}
 
 	public void removerFuncionario(Funcionario u)
@@ -169,7 +178,7 @@ public class Facede {
 	 * @exception SenhaIncorretaException
 	 *                Funcionario existente porem a senha esta incorreta
 	 * @exception LoginIncorretoException
-	 *                Login do funcionario não existe caso senha de errado,
+	 *                Login do funcionario n��o existe caso senha de errado,
 	 *                retorna falso
 	 */
 	public void login(String login, String senha)

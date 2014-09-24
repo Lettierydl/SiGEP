@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.twol.sigep.util.OperacaoStringUtil;
+
 
 //@RooJpaActiveRecord(finders = { "findFuncionariosByCpfEquals", "findFuncionariosByCpfLike", "findFuncionariosByNomeEquals", "findFuncionariosByNomeLike", "findFuncionariosByTipoDeFuncionario" })
 @Table(name = "funcionario")
@@ -88,19 +90,19 @@ public class Funcionario {
 
 
 	public String getTelefone() {
-		return telefone;
+		return OperacaoStringUtil.formatarStringParaMascaraDeTelefone(telefone);
 	}
 
 	public void setTelefone(String telefone) {
-		this.telefone = telefone;
+		this.telefone = OperacaoStringUtil.retirarMascaraDeTelefone(telefone);
 	}
 
 	public String getCelular() {
-		return celular;
+		return OperacaoStringUtil.formatarStringParaMascaraDeTelefone(celular);
 	}
 
 	public void setCelular(String celular) {
-		this.celular = celular;
+		this.celular = OperacaoStringUtil.retirarMascaraDeTelefone(celular);
 	}
 
 	public String getEndereco() {
@@ -128,11 +130,11 @@ public class Funcionario {
 	}
 
 	public String getCpf() {
-		return cpf;
+		return  OperacaoStringUtil.formatarStringParaMascaraDeCPF(cpf);
 	}
 
 	public void setCpf(String cpf) {
-		this.cpf = cpf;
+		this.cpf = OperacaoStringUtil.retirarMascaraDeCPF(cpf);
 	}
 
 	

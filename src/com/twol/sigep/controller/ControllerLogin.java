@@ -48,12 +48,12 @@ public class ControllerLogin {
 			f.setSenha(this.criptografar(senha));
 			f.setTipoDeFuncionario(tipoDeFuncionario);
 		}else{
-			throw new SenhaIncorretaException("Senha já cadastrada para este funcionario");
+			throw new SenhaIncorretaException("Senha j�� cadastrada para este funcionario");
 		}
 	}
 	
-	public void alterarSenhaDoFuncionario(Funcionario f,  String novaSenha) throws SenhaIncorretaException, LoginIncorretoException{
-		validarSenha(f.getLogin(), f.getSenha());
+	public void alterarSenhaDoFuncionario(Funcionario f, String senha, String novaSenha) throws SenhaIncorretaException, LoginIncorretoException{
+		validarSenha(f, senha);
 		f.setSenha(this.criptografar(novaSenha));
 	}
 
@@ -72,6 +72,14 @@ public class ControllerLogin {
 			throw new SenhaIncorretaException();
 		}
 		return f;
+	}
+	
+	/*valida sem consultar no banco*/
+	private void validarSenha(Funcionario f , String senha)
+			throws SenhaIncorretaException {
+		if(!f.getSenha().equals(criptografar(senha))){
+			throw new SenhaIncorretaException();
+		}
 	}
 	
 	private String criptografar(String string) {

@@ -4,23 +4,30 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
 
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
+import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.LoginIncorretoException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 @ViewScoped
 @ManagedBean(name = "funcionarioBean")
 public class FuncionarioManagedBean {
-	private String senha;
+	
 
 	private Facede f;
 	
 	private Funcionario newFuncionario;
+	private Funcionario editFuncionario;
 	private TipoDeFuncionario tipoDoFuncionario = TipoDeFuncionario.Caixa;
-	private String nome = "";
+	private String nomePesquisa = "";
+	private String senha;
+	private String senhaEdit;
+	private String senhaNewEdit;
 	private List<Funcionario> listAtualDeFuncionarios;
 	
 	public FuncionarioManagedBean(){
@@ -58,8 +65,8 @@ public class FuncionarioManagedBean {
 	}
 	
 	public void modificarListaAtualDeFuncionarioPeloNome(){
-		if(nome != null && nome.length() != 0){
-			listAtualDeFuncionarios = f.buscarFuncionarioPorNomeQueInicia(nome);
+		if(nomePesquisa != null && nomePesquisa.length() != 0){
+			listAtualDeFuncionarios = f.buscarFuncionarioPorNomeQueInicia(nomePesquisa);
 			RequestContext.getCurrentInstance().update("tabelaFuncionarios");
 		}else{
 			listAtualDeFuncionarios = f.getFuncionarios();
@@ -67,7 +74,40 @@ public class FuncionarioManagedBean {
 		}
 	}
 	
+	public void openEditFuncionario(Funcionario f){
+		this.setEditFuncionario(f);
+		RequestContext.getCurrentInstance().execute("abrirModa('modalEdit');");
+		/*
+		RequestContext.getCurrentInstance().update("formEdit");
+		RequestContext.getCurrentInstance().update("nomeEdit");
+		RequestContext.getCurrentInstance().openDialog("modalEdit");
+		RequestContext.getCurrentInstance().openDialog("#modalEdit");*/
+	}
 	
+	public void modific(ValueChangeEvent event){
+		nomePesquisa = (String) event.getNewValue();
+		modificarListaAtualDeFuncionarioPeloNome();
+	}
+	
+	public void editarFuncionario(){
+		if(senhaNewEdit!=null && !senhaNewEdit.isEmpty() ){
+			try {
+				f.alterarSenhaDoFuncionario(editFuncionario, senhaEdit, senhaNewEdit);
+			} catch (SenhaIncorretaException e) {
+				e.printStackTrace();
+			} catch (LoginIncorretoException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			f.atualizarFuncionario(editFuncionario);
+		} catch (EntidadeNaoExistenteException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		RequestContext.getCurrentInstance().update("@all");
+	}
 
 	public String getSenha() {
 		return senha;
@@ -85,12 +125,12 @@ public class FuncionarioManagedBean {
 		this.newFuncionario = newFuncionario;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getNomePesquisa() {
+		return nomePesquisa;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setNomePesquisa(String nome) {
+		this.nomePesquisa = nome;
 	}
 
 	public TipoDeFuncionario getTipoDoFuncionario() {
@@ -103,6 +143,30 @@ public class FuncionarioManagedBean {
 	
 	public Funcionario getFuncionarioLogado(){
 		return f.getFuncionarioLogado();
+	}
+
+	public Funcionario getEditFuncionario() {
+		return editFuncionario;
+	}
+
+	public void setEditFuncionario(Funcionario editFuncionario) {
+		this.editFuncionario = editFuncionario;
+	}
+
+	public String getSenhaEdit() {
+		return senhaEdit;
+	}
+
+	public void setSenhaEdit(String senhaEdit) {
+		this.senhaEdit = senhaEdit;
+	}
+
+	public String getSenhaNewEdit() {
+		return senhaNewEdit;
+	}
+
+	public void setSenhaNewEdit(String senhaNewEdit) {
+		this.senhaNewEdit = senhaNewEdit;
 	}
 	
 	

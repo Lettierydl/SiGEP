@@ -19,6 +19,7 @@
 	text-align: justify;
 	padding: 0px 0px 10px 10px;	
 	cellspacing: 5px;
+	height: 68px;max-height: 68px;
 }
 .forulario table td:nth-child(2n){
 	float: left;
@@ -49,42 +50,41 @@
 }
 
 .formulario input{
+	height: 39px;
+	margin-right: 5px;
+	margin-left: 2px;
+	
 	/*font*/
 	font-size: 17px;
 	font-family: "Dosis";
 	color: rgb(143, 143, 143);
 	line-height: 2.922;
 	border-style: groove;
-	margin-right: 5px;
-}
-
-.formulario .campo-grande {
-	width: 313px;
-	height: 49px;
-	margin-left: 2px;
 	
 	color: rgb(143, 143, 143);
 	padding-left: 20px;
 	border-bottom-style:1.5px dashed rgba(238, 238, 238, 1);
 	box-shadow: 0.1px 2.0px 0px 0px rgba(218, 217, 217, 0.392);
 	box-shadow: 3px 3px 1px 0px rgba(238, 238, 238, 1);
+}
 
-	
+.formulario .campo-grande {
+	width: 313px;
 	padding-bottom: 10px;
 }
 
 .formulario .campo-medio {
 	width: 113px;
-	height: 39px;
-	margin-left: 2px;
-	
-	color: rgb(143, 143, 143);
-	padding-left: 20px;
-	border-bottom-style:1.5px dashed rgba(238, 238, 238, 1);
-	box-shadow: 0.1px 2.0px 0px 0px rgba(218, 217, 217, 0.392);
-	box-shadow: 3px 3px 1px 0px rgba(238, 238, 238, 1);
-	
-	margin-left:15px;margin-right:15px;
+	height: 47px;
 }
+
+.formulario .radio-buton{
+	float: left;
+	width: 150%;
+}
+.radio-buton label,.radio-buton input{
+	height: 10px;
+}
+
 
 

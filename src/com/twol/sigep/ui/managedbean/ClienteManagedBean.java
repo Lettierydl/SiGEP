@@ -3,7 +3,8 @@ package com.twol.sigep.ui.managedbean;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
 
 import org.primefaces.context.RequestContext;
 
@@ -11,7 +12,7 @@ import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Cliente;
 
-@SessionScoped
+@ViewScoped
 @ManagedBean(name = "clienteBean")
 public class ClienteManagedBean {
 	private Facede f;
@@ -69,6 +70,11 @@ public class ClienteManagedBean {
 		RequestContext.getCurrentInstance().update("nomeEdit");
 		RequestContext.getCurrentInstance().openDialog("modalEdit");
 		RequestContext.getCurrentInstance().openDialog("#modalEdit");*/
+	}
+	
+	public void modific(ValueChangeEvent event){
+		nomePesquisa = (String) event.getNewValue();
+		modificarListaAtualDeClientes();
 	}
 	
 	public void editarCliente(){

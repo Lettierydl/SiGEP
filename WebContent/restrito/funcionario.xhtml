@@ -2,16 +2,30 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
 
 <h:head>
-	<title>SiGEP</title>
+	<title>Cloud Sistem</title>
+
+	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="../foundation/js/vendor/modernizr.js"></script>
+
 	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
+	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
+
 	<link rel="stylesheet" type="text/css"
 		href="http://fonts.googleapis.com/css?family=Dosis" />
-	<script type="text/javascript" charset="utf-8"
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" />
+
+
 	<script type="text/javascript" src="../js/componentes.js" />
+	<script type="text/javascript" src="../js/jquery.js" />
+	<script src="../js/jquery.maskedinput.js" type="text/javascript"></script>
+
+	<link rel="stylesheet"
+		href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+
 </h:head>
 
 <h:body>
@@ -19,33 +33,184 @@
 	<script>ativarMenuBotoes("funcionario");</script>
 
 	<div class="content">
-
-
-
-		<ui:define name="content">
-			<div class="container" align="center">
-				<h:dataTable id="tabelaFuncionarios"
-					styleClass="table table-hover table-bordered tabela"
-					value="#{funcionarioBean.listAtualDeFuncionarios}"
-					var="funcionario">
-					<f:facet name="header">
-						<h4 align="center">Funcionários</h4>
-					</f:facet>
-					<h:column>
-						<f:facet name="header">Nome</f:facet> 
+		<h4 class="titulo-tabela">Funcionários</h4>
+		
+		<h:form prependId="false">
+			<div class="pesquisa">
+				<a class="botao-pesquia" onclick="ativarBotaoPesquisa()"> <img
+					src="../imagens/pesquisa_ico.png" />
+				</a>
+	
+				<h:inputText id="input_pesquisa" styleClass="input-inativo"
+					p:placeholder="persquisar funcionario" value="#{funcionarioBean.nomePesquisa}"
+					valueChangeListener="#{funcionarioBean.modific}">
+					<f:ajax event="keyup" listener="#{funcionarioBean.modificarListaAtualDeFuncionarioPeloNome()}" render=":tabelaFuncionario"/>
+				</h:inputText>
+			</div>
+		</h:form>
+		
+		<div class="criar" data-reveal-id="modalCriar">
+			<img src="../imagens/criar_ico.png" />
+		</div>
+			
+		
+		<div class="tabela">
+			<h:dataTable id="tabelaFuncionario" 
+				value="#{funcionarioBean.listAtualDeFuncionarios}" var="funcionario">
+				<f:facet name="header"/>
+				<h:column headerClass="large-2">
+					<f:facet name="header">Nome</f:facet> 
 					#{funcionario.nome}
 				</h:column>
-					<h:column>
-						<f:facet name="header">CPF</f:facet>
-					#{funcionario.cpf}
-				</h:column>
-					<h:column>
-						<f:facet name="header">Tipo</f:facet>
+				<h:column headerClass="large-1">
+					<f:facet name="header">Função</f:facet>
 					#{funcionario.tipoDeFuncionario}
 				</h:column>
-				</h:dataTable>
+				<h:column headerClass="large-2">
+					<f:facet name="header">Telefones</f:facet>
+					#{funcionario.celular}<br/>#{funcionario.telefone}
+				</h:column>
+				<h:column  headerClass="large-5">
+					<f:facet name="header">Endereço</f:facet>
+					#{funcionario.endereco}
+				</h:column>
+				<h:column  headerClass="large-2">
+					<f:facet name="header">CPF</f:facet>
+					#{funcionario.cpf}
+				</h:column>
+				
+				<h:column  headerClass="large-1">
+					<f:facet name="header">Editar</f:facet>
+					<pi:commandLink value="Edit" actionListener="#{funcionarioBean.openEditFuncionario(funcionario)}" rendered="true" update="@all"/>
+					
+				</h:column>
+			</h:dataTable>
+			
+				<div id="modalEdit" class="reveal-modal modal" data-reveal="modalEdit">
+				<h2>Editar cliente</h2>
+						<h:form id="formEdit"  prependId="false">
+							<div class="formulario">
+								<div class="row">
+							
+								<div class="large-5 columns" id="coluna1">
+								<h:panelGrid columns="2" >
+									<h:outputLabel value="Nome:" for="editNome" />
+									<h:inputText id="editNome" value="#{funcionarioBean.editFuncionario.nome}" styleClass="campo-grande" />
+									
+									<h:outputLabel value="CPF:" for="editCPF" />
+									<h:inputText id="editCPF" value="#{funcionarioBean.editFuncionario.cpf}" styleClass="campo-grande" />
+									
+									<h:outputLabel value="Endereço:" for="editEndereco" />
+									<h:inputText id="editEndereco" maxlength="300" value="#{funcionarioBean.editFuncionario.endereco}"  styleClass="campo-grande" p:placeholder="Rua Rita Pereira de Almeida, nº512, Brasilia"/>
+									
+								</h:panelGrid>
+								</div>
+								
+								<div class="large-6 columns" id="coluna2" align="right">
+									<h:panelGrid columns="4" >
+											<h:outputLabel value="Cel:" for="editCel" />
+											<h:inputText id="editCel" maxlength="14" value="#{funcionarioBean.editFuncionario.celular}"  styleClass="campo-medio" />
+										
+											<h:outputLabel value="Tel:" for="editTel" />
+											<h:inputText id="editTel" maxlength="14" value="#{funcionarioBean.editFuncionario.telefone}"  styleClass="campo-medio" />
+										
+											<h:outputLabel value="Login:" for="editLogin" />
+											<h:inputText id="editLogin" maxlength="12" value="#{funcionarioBean.editFuncionario.login}"  styleClass="campo-medio" />
+										
+											<h:outputLabel value=""  />
+											<h:outputLabel value=""  />
+											
+										
+											<h:outputLabel value="Senha:" for="editSenha" />
+											<h:inputSecret id="editSenha" maxlength="12" value="#{funcionarioBean.senhaEdit}"  styleClass="campo-medio" />
+											
+											<h:outputLabel value="Nova Senha:" for="editNewSenha" />
+											<h:inputSecret id="editNewSenha" maxlength="12" value="#{funcionarioBean.senhaNewEdit}"  styleClass="campo-medio" />
+											
+											
+									</h:panelGrid>
+								</div>
+								
+								
+								<script>maskCPF('editCPF');maskTelefone('editTel');maskTelefone('editCel');</script>
+								</div>
+								<div class="row">
+									<h:commandButton styleClass="bt-cadastrar" value="Salvar" actionListener="#{funcionarioBean.editarFuncionario}" />
+								</div>
+						</div>
+						</h:form>
+					<a class="close-reveal-modal">&#215;</a>
+				</div><!-- fim modal Edit -->
+			
+			
+			
+			
+		</div><!-- fim div tabela -->	
+		
+		<div id="modalCriar" class="reveal-modal modal" data-reveal="modalCriar">
+			<h2>Criar funcionário</h2>
+					<h:form id="formAdicionar"  prependId="false">
+						<div class="formulario">
+							<div class="row">
+						
+							<div class="large-5 columns" id="coluna1">
+							<h:panelGrid columns="2" >
+								<h:outputLabel value="Nome:" for="inputNome" />
+								<h:inputText id="inputNome" value="#{funcionarioBean.newFuncionario.nome}" styleClass="campo-grande" />
+								
+								<h:outputLabel value="CPF:" for="inputCPF" />
+								<h:inputText id="inputCPF" value="#{funcionarioBean.newFuncionario.cpf}" styleClass="campo-grande" />
+								
+								<h:outputLabel value="Endereço:" for="inputEndereco" />
+								<h:inputText id="inputEndereco" maxlength="300" value="#{funcionarioBean.newFuncionario.endereco}"  styleClass="campo-grande" p:placeholder="Rua Rita Pereira de Almeida, nº512, Brasilia"/>
+								
+							</h:panelGrid>
+							</div>
+							
+							<div class="large-6 columns" id="coluna2" align="right">
+								<h:panelGrid columns="4" >
+										<h:outputLabel value="Cel:" for="inputCel" />
+										<h:inputText id="inputCel" maxlength="14" value="#{funcionarioBean.newFuncionario.celular}"  styleClass="campo-medio" />
+									
+										<h:outputLabel value="Tel:" for="inputTel" />
+										<h:inputText id="inputTel" maxlength="14" value="#{funcionarioBean.newFuncionario.telefone}"  styleClass="campo-medio" />
+									
+										<h:outputLabel value="Login:" for="inputLogin" />
+										<h:inputText id="inputLogin" maxlength="12" value="#{funcionarioBean.newFuncionario.login}"  styleClass="campo-medio" />
+									
+										<h:outputLabel value="Senha:" for="inputSenha" />
+										<h:inputSecret id="inputSenha" maxlength="12" value="#{funcionarioBean.senha}"  styleClass="campo-medio" />
+										
+										<h:outputLabel value="Função:" for="inputFuncao" />
+										<h:selectOneRadio id="inputFuncao" value="#{funcionarioBean.tipoDoFuncionario}" styleClass="radio-buton">
+											<f:selectItems value="#{funcionarioBean.getTiposFuncionario()}"
+												var="tipos" itemLabel="#{tipos}" itemValue="#{tipos}" />
+										</h:selectOneRadio>
+										
+								</h:panelGrid>
+							</div>
+							
+							
+							<script>maskCPF('inputCPF');maskTelefone('inputTel');maskTelefone('inputCel');</script>
+							</div>
+							<div class="row">
+								<h:commandButton styleClass="bt-cadastrar" value="Cadastrar" actionListener="#{funcionarioBean.cadastrarFuncionario()}" />
+							</div>
+						</div>
+					</h:form>
+				<a class="close-reveal-modal">&#215;</a>
 			</div>
-		</ui:define>
+		
+		
+		
+		<!-- fim content -->			
+	</div>
+
+
+
+
+
+
 		<ui:define name="formAdicionar">
 			<h3>Adicionar</h3>
 			<div class="container">
@@ -207,8 +372,12 @@
 				</h:form>
 			</div>
 		</ui:define>
-	</div>
 
+	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
+	<script src="../foundation/js/foundation.min.js"></script>
+	<script>
+		$(document).foundation();
+	</script>
 </h:body>
 ￼￼￼￼
 </html>
