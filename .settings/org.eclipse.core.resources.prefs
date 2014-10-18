@@ -4,5 +4,7 @@ encoding//WebContent/restrito/dialogs/exemplo.xhtml=UTF-8
 encoding//src/com/twol/sigep/Facede.java=UTF-8
 encoding//src/com/twol/sigep/controller/ControllerLogin.java=UTF-8
 encoding//src/com/twol/sigep/controller/ControllerPessoa.java=UTF-8
+encoding//src/com/twol/sigep/controller/find/FindProduto.java=UTF-8
+encoding//src/com/twol/sigep/model/estoque/Produto.java=UTF-8
 encoding//src/com/twol/sigep/model/pessoas/Cliente.java=UTF-8
 encoding//src/com/twol/sigep/util/OperacaoStringUtil.java=UTF-8

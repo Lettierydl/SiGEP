@@ -38,10 +38,6 @@ public class Produto{
 	@Column(nullable = false)
 	private String descricao;
 	
-	
-	@Enumerated(EnumType.STRING)
-	private UnidadeProduto descricaoUnidade;
-	
 
 	@Column(nullable = false, precision = 2)
 	private double valorDeCompra;
@@ -65,6 +61,9 @@ public class Produto{
      */
 	@Enumerated(EnumType.STRING)
 	private CategoriaProduto categoria = CategoriaProduto.Outra;
+	
+	@Enumerated(EnumType.STRING)
+	private UnidadeProduto descricaoUnidade;
 
 	
 	
@@ -178,7 +177,7 @@ public class Produto{
 		return null;
 	}
 
-	//apenas quem deve usar esse metodo é o Promocao.setProduto(Produto)
+	//apenas quem deve usar esse metodo �� o Promocao.setProduto(Produto)
 	void addPromocaoValida(Promocao p) throws PromocaoValidaJaExistente, PromocaoInvalida {
 		if (promocoes == null) {
 			promocoes = new ArrayList<Promocao>();
@@ -193,7 +192,7 @@ public class Produto{
 		//p.setProduto(this);
 	}
 
-	//apenas quem deve usar esse metodo é o destry(promocao)
+	//apenas quem deve usar esse metodo �� o destry(promocao)
 	public void removerPromocao(Promocao p) {
 		if (getPromocoes() == null) {
 			return;

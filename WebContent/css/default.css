@@ -53,10 +53,15 @@
 	position: relative;
 	float: right;
 	text-align: right;
-	width: 90px;
+	width: 200px;
+	top:0px;
+	height: 50px;
+	width: 10%;
+	cursor: pointer;
 }
 
-.menu-usuario span {
+
+.menu-usuario .logado {
 	z-index: 20;
 	position: relative;
 	cursor: pointer;
@@ -64,12 +69,13 @@
 	font-family: "Dosis";
 	color: rgb(121, 121, 121);
 	line-height: 3.312;
-	margin-right: -102px;
-	outline: none; /*marca������������o de azul no elemento*/
+	margin-right: 20px;
+	outline: none;
+	height: 100%;
 }
 
 /*triangulo*/
-.menu-usuario span:after {
+.menu-usuario .logado:after {
 	content: "";
 	width: 0;
 	height: 0;
@@ -79,49 +85,64 @@
 	margin-left: 5px;
 	border-width: 6px 6px 0 6px;
 	border-style: solid;
-	border-color: rgb(121, 121, 121) transparent;
+	border-color: #312530 transparent;
 }
 /*caixa do submenu*/
-.menu-usuario .submenu {;
+.menu-usuario .submenu {
 	/* Size & position */
 	position: relative;
 	float: right;
 	padding-left: 0px;
 	top: 49px;
-	margin: 0px 0px 0px 0px;
 	/* Styles */
-	width: 119px;
-	height: 90px;
-	background: #312530;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-	-webkit-transition: all 0.1s ease-in;
-	-moz-transition: all 0.1s ease-in;
-	-ms-transition: all 0.1s ease-in;
-	-o-transition: all 0.1s ease-in;
-	transition: all 0.2s ease-in;
+	-webkit-transition: all 0.0s ease-in;
+	-moz-transition: all 0.0s ease-in;
+	-ms-transition: all 0.0s ease-in;
+	-o-transition: all 0.0s ease-in;
+	transition: all 0.0s ease-in;
+	border:1px inset #312530;
 	list-style: none;
 	border-radius: 2px;
-	/* Hiding */
-	opacity: 0;
-	visibility: hidden;
+	border-top-right-radius: 5px;
+	width: 119px; height: 90px;
+	background-color: #312530;
 }
 
 :hover.menu-usuario .submenu {
 	visibility: visible;
 	opacity: 1;
+	
 }
 /*triangulo do submenu*/
-.menu-usuario .submenu:after {
+.menu-usuario .submenu:BEFORE {
 	content: "";
-	position: absolute;
-	bottom: 100%;
-	right: 1px; /*localiza������������o do triangulo de encaixe*/
-	border-width: 0 6px 6px 6px;
-	border-style: solid;
-	border-color: #312530 transparent;
+	border-color: transparent transparent transparent transparent;
 }
 
-.menu-usuario .submenu li a {
+:hover.menu-usuario .submenu:after{
+	left:105px;
+}
+
+.menu-usuario .submenu:after{
+	position: absolute;
+	content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: inset 7px;
+    left:92%;
+    border-color: transparent transparent #312530 transparent;
+    border-bottom-style: solid;
+    position: absolute;
+    top: -14px;
+    z-index: 88; 
+}
+.menu-usuario .submenu li{
+	height: 45px;
+}
+
+.menu-usuario .submenu li > a {
 	display: block;
 	text-decoration: none;
 	/*Font*/
@@ -129,17 +150,22 @@
 	font-family: "Dosis";
 	color: #9a9494;
 	line-height: 2.922;
-	margin-right: 19px;
+	position:relative;
+	bottom: 10px;right: 10px;
+	height: 90%; width: 90%;
 }
 
 .menu-usuario .submenu li:last-child {
-	margin-top: -7px;
+	text-align: right;
+	border-top: 1px solid #3e2f3d;
 }
-
-/* Hover state */
-.menu-usuario .submenu li a:hover {
+.menu-usuario .submenu li:hover, .menu-usuario .submenu li:focus{
+	background: #443843;
+}
+.menu-usuario .submenu li a:hover{
 	color: #f4f4f4;
 }
+
 
 .content {
 	position: relative;

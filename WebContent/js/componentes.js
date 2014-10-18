@@ -1,3 +1,5 @@
+
+
 function ativarMenuBotoes(titulo) {
 	$("#menu-botoes").removeClass("fadeIn");
 	$("#" + titulo).addClass("active");
@@ -37,7 +39,12 @@ function maskDatepicker(idCampo) {
 function maskData(idCampo) {
 	$("#" + idCampo).mask("99/99/9999");
 }
-
+function maskValor(idCampo){
+	
+}
+function maskQuantidade(idCampo){
+	
+}
 function maskCPF(idCampo) {
 	$("#" + idCampo).mask("999.999.999-99");
 }

@@ -2,120 +2,223 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
-
-
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
 <h:head>
-	<title>SiGEP</title>
+	<title>Cloud Sistem</title>
+
+	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="../foundation/js/vendor/modernizr.js"></script>
+
 	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
+	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
+
 	<link rel="stylesheet" type="text/css"
 		href="http://fonts.googleapis.com/css?family=Dosis" />
-	<script type="text/javascript" charset="utf-8"
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" />
+
+
 	<script type="text/javascript" src="../js/componentes.js" />
+	<script type="text/javascript" src="../js/jquery.js" />
+	<script src="../js/jquery.maskedinput.js" type="text/javascript"></script>
+
+	<link rel="stylesheet"
+		href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 </h:head>
 
 <h:body>
 	<ui:include src="componentes/menu.xhtml" />
 	<script>ativarMenuBotoes("produto");</script>
 
-
 	<div class="content">
-		<div class="container" align="center">
-
+		<h4 class="titulo-tabela">Produtos</h4>
+		
+		<h:form prependId="false">
+			<div class="pesquisa">
+				<a class="botao-pesquia" onclick="ativarBotaoPesquisa()"> <img
+					src="../imagens/pesquisa_ico.png" />
+				</a>
+	
+				<h:inputText id="input_pesquisa" styleClass="input-inativo"
+					p:placeholder="persquisar produto" value="#{produtoBean.descricaoPesquisa}"
+					valueChangeListener="#{produtoBean.modific}">
+					<f:ajax event="keyup" listener="#{produtoBean.modificarListaAtualDeProdutosPelaDescricao}" render=":tabelaProduto"/>
+				</h:inputText>
+			</div>
+		</h:form>
+		
+		<div class="criar" data-reveal-id="modalCriar">
+			<img src="../imagens/criar_ico.png" />
+		</div>
+		
+		<div class="tabela">
 			<h:dataTable id="tabelaProdutos"
-				styleClass="table table-hover table-bordered tabela"
 				value="#{produtoBean.listAtualDeProdutos}" var="produto">
-				<f:facet name="header">
-					<h4 align="center">Produtos</h4>
-				</f:facet>
-				<h:column>
+				<f:facet name="header"/>
+				<h:column headerClass="large-4">
 					<f:facet name="header">Descição</f:facet> 
 					#{produto.descricao}
 				</h:column>
-				<h:column>
+				<h:column headerClass="large-2">
 					<f:facet name="header">Código de Baras</f:facet>
 					#{produto.codigoDeBarras}
 				</h:column>
-				<h:column>
+				<h:column headerClass="large-2">
 					<f:facet name="header">Valor de Venda</f:facet>
 					#{produto.valorDeVenda}
 				</h:column>
-				<h:column>
+				<h:column headerClass="large-2">
 					<f:facet name="header">Categoria</f:facet>
 					#{produto.categoria.name}
 				</h:column>
-				<h:column>
+				<h:column headerClass="large-2">
 					<f:facet name="header">Quantidade em Estoque</f:facet>
-					#{produto.quantidadeEmEstoque}
+					#{produto.quantidadeEmEstoque} #{produto.descricaoUnidade.name}
+				</h:column>
+				<h:column  headerClass="large-1">
+					<f:facet name="header">Editar</f:facet>
+					<pi:commandLink value="Edit" actionListener="#{produtoBean.openEditProduto(produto)}" rendered="true" update="@all"/>
 				</h:column>
 			</h:dataTable>
-		</div>
+			
+			
+			<div id="modalEdit" class="reveal-modal modal" data-reveal="modalEdit">
+				<h2>Editar produto</h2>
+				<h:form id="formEdit"  prependId="false">
+							<div class="formulario">
+								<div class="row">
+						
+							<div class="large-5 columns" id="coluna1">
+							<h:panelGrid columns="2" >
+								<h:outputLabel value="Código:" for="editCodigo" />
+								<h:inputText id="editCodigo"  maxlength="13" value="#{produtoBean.editProduto.codigoDeBarras}" styleClass="campo-grande" title="Código de Barras"/>
+								
+								<h:outputLabel value="Descrição:" for="editDescricao" />
+								<h:inputText id="editDescricao" value="#{produtoBean.editProduto.descricao}" styleClass="campo-grande" />
+								
+								<h:outputLabel value="Categoria:" for="editCategoria" />
+								<h:selectOneMenu styleClass="combobox" id="editCategoria" value="#{produtoBean.editProduto.categoria}"  >
+									<f:selectItems value="#{produtoBean.categorias}" var="categorias" 
+										itemLabel="#{categorias.name}" itemValue="#{categorias}"/>
+								</h:selectOneMenu>
+								
+							</h:panelGrid>
+							</div>
+							
+							
+							<div class="large-6 columns" id="coluna2" align="right">
+								<h:panelGrid columns="4" >
+										<h:outputLabel value="Valor:" for="editValorV" />
+										<h:inputText id="editValorV" title="Valor de Venda" maxlength="11" value="#{produtoBean.editProduto.valorDeVenda}"  styleClass="campo-medio" />
+									
+										<h:outputLabel value="Compra:" for="editValorC" />
+										<h:inputText id="editValorC" title="Valor de Compra"  maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio" />
+									
+										
+										<h:outputLabel value="Quantidade:" for="editQuantidade" />
+										<h:inputText id="editQuantidade" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio" title="Quantidade atual em estoque"/>
+									
+										<h:outputLabel value="Limite:" for="editLimite" />
+										<h:inputText id="editLimite" maxlength="11" value="#{produtoBean.editProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio" title="Limime mínimo permitido em estoque"/>
+									
+											
+										
+										<h:outputLabel value="Unidade:" for="editUnidade" />
+										<h:selectOneMenu styleClass="combobox"  id="editUnidade" value="#{produtoBean.editProduto.descricaoUnidade}"  >
+												<f:selectItems value="#{produtoBean.unidadesProduto}" var="unidade" 
+													itemLabel="#{unidade.name}" itemValue="#{unidade}"/>
+										</h:selectOneMenu>
+										
+								</h:panelGrid>
+							</div>
+							<script>maskValor('editValorV');maskValor('editValorC');maskQuantidade('editQuantidade');</script>
+							</div>
+							<div class="row">
+								<h:commandButton styleClass="bt-cadastrar" value="Salvar" actionListener="#{produtoBean.editarProduto}" />
+							</div>
+						</div>
+						</h:form>
+					<a class="close-reveal-modal">&#215;</a>
+				</div><!-- fim modal Edit -->
+			
+			
+		</div><!-- fim da tabela -->
+		
+		
+		<div id="modalCriar" class="reveal-modal modal" data-reveal="modalCriar">
+			<h2>Criar produto</h2>
+					<h:form id="formAdicionar"  prependId="false">
+						<div class="formulario">
+							<div class="row">
+						
+							<div class="large-5 columns" id="coluna1">
+							<h:panelGrid columns="2" >
+								<h:outputLabel value="Código:" for="inputCodigo" />
+								<h:inputText id="inputCodigo"  maxlength="13" value="#{produtoBean.newProduto.codigoDeBarras}" styleClass="campo-grande" title="Código de Barras"/>
+								
+								<h:outputLabel value="Descrição:" for="inputDescricao" />
+								<h:inputText id="inputDescricao" value="#{produtoBean.newProduto.descricao}" styleClass="campo-grande" />
+								
+								<h:outputLabel value="Categoria:" for="inputCategoria" />
+								<h:selectOneMenu styleClass="combobox" id="inputCategoria" value="#{produtoBean.newProduto.categoria}"  >
+									<f:selectItems value="#{produtoBean.categorias}" var="categorias" 
+										itemLabel="#{categorias.name}" itemValue="#{categorias}"/>
+								</h:selectOneMenu>
+								
+							</h:panelGrid>
+							</div>
+							
+							
+							<div class="large-6 columns" id="coluna2" align="right">
+								<h:panelGrid columns="4" >
+										<h:outputLabel value="Valor:" for="inputValorV" />
+										<h:inputText id="inputValorV" title="Valor de Venda" maxlength="11" value="#{produtoBean.newProduto.valorDeVenda}"  styleClass="campo-medio" />
+									
+										<h:outputLabel value="Compra:" for="inputValorC" />
+										<h:inputText id="inputValorC" title="Valor de Compra"  maxlength="11" value="#{produtoBean.newProduto.valorDeCompra}"  styleClass="campo-medio" />
+									
+										
+										<h:outputLabel value="Quantidade:" for="inputQuantidade" />
+										<h:inputText id="inputQuantidade" maxlength="11" value="#{produtoBean.newProduto.quantidadeEmEstoque}"  styleClass="campo-medio" title="Quantidade atual em estoque"/>
+									
+										<h:outputLabel value="Limite:" for="inputLimite" />
+										<h:inputText id="inputLimite" maxlength="11" value="#{produtoBean.newProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio" title="Limime mínimo permitido em estoque"/>
+									
+											
+										
+										<h:outputLabel value="Unidade:" for="inputUnidade" />
+										<h:selectOneMenu styleClass="combobox"  id="inputUnidade" value="#{produtoBean.newProduto.descricaoUnidade}"  >
+												<f:selectItems value="#{produtoBean.unidadesProduto}" var="unidade" 
+													itemLabel="#{unidade.name}" itemValue="#{unidade}"/>
+										</h:selectOneMenu>
+										
+								</h:panelGrid>
+							</div>
+							<script>maskValor('inputValorV');maskValor('inputValorC');maskQuantidade('inputQuantidade');</script>
+							</div>
+							<div class="row">
+								<h:commandButton styleClass="bt-cadastrar" value="Cadastrar" actionListener="#{produtoBean.cadastrarProduto}" />
+							</div>
+						</div>
+					</h:form>
+				<a class="close-reveal-modal">&#215;</a>
+			</div><!-- fim do modal -->
+		
+		
+		
+		
+		
+		
+		
+	</div> <!-- Fim content -->
 
-		<ui:define name="formAdicionar">
-			<h3>Adicionar</h3>
-			<div class="container">
-				<h:form id="formAdicionar">
-					<h:panelGrid columns="2">
-
-						<h:outputLabel value="Descrição" for="inputDescricao" />
-						<h:inputText id="inputDescricao"
-							value="#{produtoBean.newProduto.descricao}" />
-
-						<h:outputLabel value="Código de Barras:" for="inputCodigoDeBarras" />
-						<h:inputText id="inputCodigoDeBarras"
-							value="#{produtoBean.newProduto.codigoDeBarras}" />
-
-						<h:outputLabel value="Valor de Compra:" for="inputValorDeCompra" />
-						<h:inputText id="inputValorDeCompra"
-							value="#{produtoBean.newProduto.valorDeCompra}" />
-
-						<h:outputLabel value="Valor de Venda:" for="inputValorDeVenda" />
-						<h:inputText id="inputValorDeVenda"
-							value="#{produtoBean.newProduto.valorDeVenda}" />
-
-						<h:outputLabel value="Quantidade em Estoque:"
-							for="inputQuantidadeEmEstoque" />
-						<h:inputText id="inputQuantidadeEmEstoque"
-							value="#{produtoBean.newProduto.quantidadeEmEstoque}" />
-
-						<h:outputLabel value="Limite Mínimo em Estoque:"
-							for="inputLimiteMinimoEmEstoque" />
-						<h:inputText id="inputLimiteMinimoEmEstoque"
-							value="#{produtoBean.newProduto.limiteMinimoEmEstoque}" />
-
-					</h:panelGrid>
-					<h:selectOneMenu value="#{produtoBean.newProduto.categoria}">
-						<f:selectItems value="#{produtoBean.categorias}" var="categorias"
-							itemLabel="#{categorias.name}" itemValue="#{categorias}" />
-					</h:selectOneMenu>
-
-					<h:commandButton value="Cadastrar"
-						actionListener="#{produtoBean.cadastrarProduto()}" />
-
-				</h:form>
-			</div>
-
-		</ui:define>
-
-		<ui:define name="formPesquisar">
-			<div class="container">
-				<h3>Pesquisar</h3>
-				<h:form id="formPesquisar">
-					<h:panelGrid columns="2">
-
-						<h:outputLabel value="Descrição:" for="inputDescricaoPesquisar" />
-						<h:inputText value="#{produtoBean.descricao}"
-							id="inputDescricaoPesquisar">
-							<f:ajax event="keyup"
-								listener="#{produtoBean.modificarListaAtualDeProdutosPelaDescricao()}" />
-						</h:inputText>
-
-					</h:panelGrid>
-				</h:form>
-			</div>
-		</ui:define>
-	</div>
+	
+	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
+	<script src="../foundation/js/foundation.min.js"></script>
+	<script>
+		$(document).foundation();
+	</script>
+	
 </h:body>
 ￼￼￼￼
 </html>

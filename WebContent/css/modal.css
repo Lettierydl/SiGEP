@@ -57,7 +57,6 @@
 	/*font*/
 	font-size: 17px;
 	font-family: "Dosis";
-	color: rgb(143, 143, 143);
 	line-height: 2.922;
 	border-style: groove;
 	
@@ -86,5 +85,30 @@
 	height: 10px;
 }
 
+/*combobox
+.combobox{
+	background: transparent;
+  	width: 95%;
+  	padding: 5px;
+
+	border-style: groove;
+	border-bottom-style:1.5px dashed rgba(238, 238, 238, 1);
+	box-shadow: 0.1px 2.0px 0px 0px rgba(218, 217, 217, 0.392);
+	box-shadow: 3px 3px 1px 0px rgba(238, 238, 238, 1);
+	
+	outline: none;	
+
+  	border-radius: 0px;
+  	height: 39px;
+  	-webkit-appearance: none;
+  	
+  	/*font*/
+	font-size: 17px;
+	font-family: "Dosis";
+	line-height: 2.922;
+	color: rgb(143, 143, 143);
+	
+	overflow: hidden;
+}*/
 
 
