@@ -6,23 +6,119 @@
 
 
 <h:head>
-	<title>SiGEP</title>
-	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
+	<title>Cloud Sistem</title>
+
+	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="../foundation/js/vendor/modernizr.js"></script>
+
+	<link type="text/css" rel="stylesheet" href="../css/venda.css" />
+
 	<link rel="stylesheet" type="text/css"
 		href="http://fonts.googleapis.com/css?family=Dosis" />
-	<script type="text/javascript" charset="utf-8"
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" />
+
 	<script type="text/javascript" src="../js/componentes.js" />
+	<script type="text/javascript" src="../js/jquery.js" />
+	<script type="text/javascript" src="../js/jquery.maskedinput.js" />
+	<script type="text/javascript" src="../js/jquery.mask.js" />
+
+
+
+
+
+	<script>
+				jQuery(function($) {
+			$('.CPFMask').mask("999.999.999-99");
+			$('.DateMask').mask("99/99/9999");
+			$('.TelMask').mask("(99) 9999-9999");
+			$('.money').mask('000000000,00', {
+				reverse : true
+			});
+			$('.quantidade').mask('000000000,000', {
+				reverse : true
+			});
+
+		});
+	</script>
+	
+
 </h:head>
 
 <h:body>
-	<ui:include src="componentes/menu.xhtml" />
-	<script>ativarMenuBotoes("venda");</script>
 
-
-	<div class="content">
-		Venda
-	</div>
+		<div class="top">
+			<h:commandButton id = "full" onclick="requestFullScreen();" image="../imagens/fullscreen.svg" styleClass="br-fullscrean"/> 
+			<div class="dimensao">
+				<img src="../imagens/logo.png" class="logo" />
+				<h:outputLabel value="Vendas" styleClass="titulo"/>
+				<h:outputLabel value="Mercadinho Popular" styleClass="nome"/>
+			
+			</div>
+			
+		</div>
+		
+		<div class="descricao">
+			<div class="dimensao">
+				<h:outputLabel value="Nome do Produto" styleClass="produto"/> <br/>
+				<h:outputLabel styleClass="calculo">2 x R$ 2,50 = <span>R$ 5,00</span></h:outputLabel>
+			</div>
+		</div>
+		<div class = "footer">
+			
+			<div class="formulario">
+				<h:outputLabel value="Total"/>
+				<div class="total">
+					<h:outputLabel value="R$ 238,90"/>
+				</div>
+				
+				<div class="campos">
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Código de brras ou nome" for="codigo" />
+						<h:outputLabel value="Quantidade" for="quantidade" />
+					
+						
+						<h:inputText id="codigo"/>
+						<h:inputText id="quantidade"/>
+					</h:panelGrid>
+				</div>
+				
+				<div class="finalizar">
+					<h:outputLabel><span>Finalizar Venda</span> (ctrl + F)</h:outputLabel>
+				</div>
+				
+				
+			</div>
+			
+			<div class="itens"> 
+				<h:outputLabel value="Itens da venda"/>
+					<div class="tabela">
+						<h:dataTable id="itensVenda" style="scroll:auto" value="#{produtoBean.listAtualDeProdutos}" var="produto">
+							<h:column  headerClass="large-1">
+								<f:facet name="header">Cancel</f:facet>
+									<img src="../imagens/bt_cancel.png"/>
+							</h:column>
+							<h:column headerClass="large-4">
+								<f:facet name="header">Produto</f:facet> 
+								#{produto.descricao}
+							</h:column>
+							<h:column headerClass="large-2">
+								<f:facet name="header">Quantidade</f:facet>
+								#{produto.codigoDeBarras}
+							</h:column>
+							<h:column headerClass="large-2">
+								<f:facet name="header">Valor UN</f:facet>
+								<h:outputLabel value="#{produto.valorDeVenda}" converter="valueConverter"/>
+							</h:column>
+							<h:column headerClass="large-2">
+								<f:facet name="header">Total</f:facet>
+								#{produto.categoria.name}
+							</h:column>
+							
+						</h:dataTable>
+				</div>
+			</div>
+			 
+		</div>
+		
+	
 </h:body>
-￼￼￼￼
 </html>

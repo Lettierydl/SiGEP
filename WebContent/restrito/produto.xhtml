@@ -19,11 +19,19 @@
 
 	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/jquery.js" />
-	<script src="../js/jquery.maskedinput.js" type="text/javascript"></script>
-
-	<link rel="stylesheet"
-		href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
-	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+	<script type="text/javascript" src="../js/jquery.maskedinput.js"/>
+	<script type="text/javascript" src="../js/jquery.mask.js"/>
+	
+	<script type="text/javascript">
+		jQuery(function($){
+			$('.money').mask('000000000,00', {reverse: true});
+			$('.quantidade').mask('000000000,000', {reverse: true});
+		 });
+	</script>
+	
+	
+	
+	
 </h:head>
 
 <h:body>
@@ -65,7 +73,7 @@
 				</h:column>
 				<h:column headerClass="large-2">
 					<f:facet name="header">Valor de Venda</f:facet>
-					#{produto.valorDeVenda}
+					<h:outputLabel value="#{produto.valorDeVenda}" converter="valueConverter"/>
 				</h:column>
 				<h:column headerClass="large-2">
 					<f:facet name="header">Categoria</f:facet>
@@ -73,7 +81,8 @@
 				</h:column>
 				<h:column headerClass="large-2">
 					<f:facet name="header">Quantidade em Estoque</f:facet>
-					#{produto.quantidadeEmEstoque} #{produto.descricaoUnidade.name}
+					<h:outputLabel value="#{produto.quantidadeEmEstoque}"  converter="quantidadeConverter"/>
+					#{produto.descricaoUnidade.name}
 				</h:column>
 				<h:column  headerClass="large-1">
 					<f:facet name="header">Editar</f:facet>
@@ -109,17 +118,18 @@
 							<div class="large-6 columns" id="coluna2" align="right">
 								<h:panelGrid columns="4" >
 										<h:outputLabel value="Valor:" for="editValorV" />
-										<h:inputText id="editValorV" title="Valor de Venda" maxlength="11" value="#{produtoBean.editProduto.valorDeVenda}"  styleClass="campo-medio" />
+										<h:inputText id="editValorV" title="Valor de Venda" maxlength="11" 
+										value="#{produtoBean.editProduto.valorDeVenda}"  styleClass="campo-medio money" converter="valueConverter" />
 									
 										<h:outputLabel value="Compra:" for="editValorC" />
-										<h:inputText id="editValorC" title="Valor de Compra"  maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio" />
+										<h:inputText id="editValorC" title="Valor de Compra"  maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio money" converter="valueConverter" />
 									
 										
 										<h:outputLabel value="Quantidade:" for="editQuantidade" />
-										<h:inputText id="editQuantidade" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio" title="Quantidade atual em estoque"/>
+										<h:inputText id="editQuantidade" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Quantidade atual em estoque"/>
 									
 										<h:outputLabel value="Limite:" for="editLimite" />
-										<h:inputText id="editLimite" maxlength="11" value="#{produtoBean.editProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio" title="Limime mínimo permitido em estoque"/>
+										<h:inputText id="editLimite" maxlength="11" value="#{produtoBean.editProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter" title="Limime mínimo permitido em estoque"/>
 									
 											
 										
@@ -131,7 +141,7 @@
 										
 								</h:panelGrid>
 							</div>
-							<script>maskValor('editValorV');maskValor('editValorC');maskQuantidade('editQuantidade');</script>
+							
 							</div>
 							<div class="row">
 								<h:commandButton styleClass="bt-cadastrar" value="Salvar" actionListener="#{produtoBean.editarProduto}" />
@@ -172,17 +182,16 @@
 							<div class="large-6 columns" id="coluna2" align="right">
 								<h:panelGrid columns="4" >
 										<h:outputLabel value="Valor:" for="inputValorV" />
-										<h:inputText id="inputValorV" title="Valor de Venda" maxlength="11" value="#{produtoBean.newProduto.valorDeVenda}"  styleClass="campo-medio" />
+										<h:inputText id="inputValorV" title="Valor de Venda" maxlength="11" value="#{produtoBean.newProduto.valorDeVenda}"  styleClass="campo-medio money" converter="valueConverter" />
 									
 										<h:outputLabel value="Compra:" for="inputValorC" />
-										<h:inputText id="inputValorC" title="Valor de Compra"  maxlength="11" value="#{produtoBean.newProduto.valorDeCompra}"  styleClass="campo-medio" />
+										<h:inputText id="inputValorC" title="Valor de Compra"  maxlength="11" value="#{produtoBean.newProduto.valorDeCompra}"  styleClass="campo-medio money"  converter="valueConverter" />
 									
-										
 										<h:outputLabel value="Quantidade:" for="inputQuantidade" />
-										<h:inputText id="inputQuantidade" maxlength="11" value="#{produtoBean.newProduto.quantidadeEmEstoque}"  styleClass="campo-medio" title="Quantidade atual em estoque"/>
+										<h:inputText id="inputQuantidade" maxlength="11" value="#{produtoBean.newProduto.quantidadeEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Quantidade atual em estoque"/>
 									
 										<h:outputLabel value="Limite:" for="inputLimite" />
-										<h:inputText id="inputLimite" maxlength="11" value="#{produtoBean.newProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio" title="Limime mínimo permitido em estoque"/>
+										<h:inputText id="inputLimite" maxlength="11" value="#{produtoBean.newProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Limime mínimo permitido em estoque"/>
 									
 											
 										
@@ -194,7 +203,7 @@
 										
 								</h:panelGrid>
 							</div>
-							<script>maskValor('inputValorV');maskValor('inputValorC');maskQuantidade('inputQuantidade');</script>
+							
 							</div>
 							<div class="row">
 								<h:commandButton styleClass="bt-cadastrar" value="Cadastrar" actionListener="#{produtoBean.cadastrarProduto}" />

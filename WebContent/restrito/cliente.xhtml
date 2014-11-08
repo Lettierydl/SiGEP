@@ -17,11 +17,19 @@
 		href="http://fonts.googleapis.com/css?family=Dosis" />
 
 	
-	<script type="text/javascript" src="../js/componentes.js" />
+	
 	<script type="text/javascript" src="../js/jquery.js" />
-	<script type="text/javascript" src="../js/jquery.maskedinput.js" />
+	<script src="http://digitalbush.com/wp-content/uploads/2013/01/jquery.maskedinput-1.3.1.min_.js" type="text/javascript"/>
+	<script type="text/javascript" src="../js/componentes.js" />
 	
-	
+	<script>
+		jQuery(function($){
+			$('.CPFMask').mask("999.999.999-99");
+			$('.DateMask').mask("99/99/9999");
+			$('.TelMask').mask("(99) 9999-9999");
+		});
+	</script>
+							
 	
 </h:head>
 
@@ -60,7 +68,7 @@
 					</h:column>
 					<h:column headerClass="large-1">
 						<f:facet name="header">Debito</f:facet>
-						#{cliente.debito}
+						<h:outputLabel value="#{cliente.debito}"  converter="valueConverter"/>
 					</h:column>
 					<h:column headerClass="large-2">
 						<f:facet name="header">Telefones</f:facet>
@@ -93,20 +101,20 @@
 									<h:inputText id="nomeEdit" value="#{clienteBean.editCliente.nome}" styleClass="campo-grande" title="Nome do cliente"/>
 									
 									<h:outputLabel value="CPF:" for="CPFEdit" />
-									<h:inputText id="CPFEdit" value="#{clienteBean.editCliente.cpf}" styleClass="campo-grande" />
+									<h:inputText id="CPFEdit" value="#{clienteBean.editCliente.cpf}" styleClass="campo-grande CPFMask" />
 	
 									<h:outputLabel value="Nascimento:" for="dataEdit" />
-									<h:inputText id="dataEdit" value="#{clienteBean.editCliente.dataDeNascimentoDate}" styleClass="campo-grande"><f:convertDateTime pattern="dd/MM/yyyy" /></h:inputText>
+									<h:inputText id="dataEdit" value="#{clienteBean.editCliente.dataDeNascimentoDate}" styleClass="campo-grande DateMask"><f:convertDateTime pattern="dd/MM/yyyy" /></h:inputText>
 								</h:panelGrid>
 								</div>
 								
 								<div class="large-6 columns" id="coluna2" align="right">
 									<h:panelGrid columns="2" >
 										<h:outputLabel value="Cel:" for="celEdit" />
-										<h:inputText id="celEdit" maxlength="14" value="#{clienteBean.editCliente.celular}"  styleClass="campo-grande" />
+										<h:inputText id="celEdit" maxlength="14" value="#{clienteBean.editCliente.celular}"  styleClass="campo-grande TelMask" />
 									
 										<h:outputLabel value="Tel:" for="telEdit" />
-										<h:inputText id="telEdit" maxlength="14" value="#{clienteBean.editCliente.telefone}"  styleClass="campo-grande" />
+										<h:inputText id="telEdit" maxlength="14" value="#{clienteBean.editCliente.telefone}"  styleClass="campo-grande TelMask" />
 									
 										<h:outputLabel value="Endereço:" for="enderecoEdit" />
 										<h:inputText id="enderecoEdit" maxlength="300" value="#{clienteBean.editCliente.endereco}"  styleClass="campo-grande" p:placeholder="Rua Rita Pereira de Almeida, nº512, Brasilia"/>
@@ -114,7 +122,6 @@
 									</h:panelGrid>
 								</div>
 								
-								<script>maskCPF('CPFEdit');maskData('dataEdit');maskTelefone('telEdit');maskTelefone('celEdit');</script>
 								</div>
 								<div class="row">
 									<h:commandButton styleClass="bt-cadastrar" value="Salvar" actionListener="#{clienteBean.editarCliente()}" />
@@ -139,20 +146,20 @@
 								<h:inputText id="inputNome" value="#{clienteBean.newCliente.nome}" styleClass="campo-grande" />
 								
 								<h:outputLabel value="CPF:" for="inputCPF" />
-								<h:inputText id="inputCPF" value="#{clienteBean.newCliente.cpf}" styleClass="campo-grande" />
+								<h:inputText id="inputCPF" value="#{clienteBean.newCliente.cpf}" styleClass="campo-grande CPFMask" />
 
 								<h:outputLabel value="Nascimento:" for="inputDataDeNascimento" />
-								<h:inputText id="inputDataDeNascimento" value="#{clienteBean.newCliente.dataDeNascimentoDate}" styleClass="campo-grande"><f:convertDateTime pattern="dd/MM/yyyy" /></h:inputText>
+								<h:inputText id="inputDataDeNascimento" value="#{clienteBean.newCliente.dataDeNascimentoDate}" styleClass="campo-grande DateMask"><f:convertDateTime pattern="dd/MM/yyyy" /></h:inputText>
 							</h:panelGrid>
 							</div>
 							
 							<div class="large-6 columns" id="coluna2" align="right">
 								<h:panelGrid columns="2" >
 									<h:outputLabel value="Cel:" for="inputCel" />
-									<h:inputText id="inputCel" maxlength="14" value="#{clienteBean.newCliente.celular}"  styleClass="campo-grande" />
+									<h:inputText id="inputCel" maxlength="14" value="#{clienteBean.newCliente.celular}"  styleClass="campo-grande TelMask" />
 								
 									<h:outputLabel value="Tel:" for="inputTel" />
-									<h:inputText id="inputTel" maxlength="14" value="#{clienteBean.newCliente.telefone}"  styleClass="campo-grande" />
+									<h:inputText id="inputTel" maxlength="14" value="#{clienteBean.newCliente.telefone}"  styleClass="campo-grande TelMask" />
 								
 									<h:outputLabel value="Endereço:" for="inputEndereco" />
 									<h:inputText id="inputEndereco" maxlength="300" value="#{clienteBean.newCliente.endereco}"  styleClass="campo-grande" p:placeholder="Rua Rita Pereira de Almeida, nº512, Brasilia"/>
@@ -160,7 +167,6 @@
 								</h:panelGrid>
 							</div>
 							
-							<script>maskCPF('inputCPF');maskData('inputDataDeNascimento');maskTelefone('inputTel');maskTelefone('inputCel');</script>
 							</div>
 							<div class="row">
 								<h:commandButton styleClass="bt-cadastrar" value="Cadastrar" actionListener="#{clienteBean.cadastrarCliente()}" />

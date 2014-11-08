@@ -5,13 +5,20 @@
 	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-	<title>SiGEP</title>
+	
+	<title>Cloud Sistem</title>
+
+	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="../foundation/js/vendor/modernizr.js"></script>
+	
 	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
-	<link rel="stylesheet" type="text/css"
-		href="http://fonts.googleapis.com/css?family=Dosis" />
-	<script type="text/javascript" charset="utf-8"
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" />
+	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
+	
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Dosis" />
+	
+	<script type="text/javascript" src="../js/jquery.js" />
 	<script type="text/javascript" src="../js/componentes.js" />
+	
 </h:head>
 
 <h:body>
@@ -20,8 +27,6 @@
 
 
 	<div class="content">
-
-
 
 		<div class="tabbable">
 			<ul class="nav nav-tabs navbarsuperior" id="myTab">
@@ -79,7 +84,7 @@
 							<h:column>
 								<f:facet name="header">Pagar</f:facet>
 								
-								</h:commandButton>
+								<h:commandButton/>
 							</h:column>
 						</h:dataTable>
 
@@ -218,6 +223,12 @@
 		
 
 	</div>
+	
+	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
+	<script src="../foundation/js/foundation.min.js"></script>
+	<script>
+		$(document).foundation();
+	</script>
 </h:body>
 
 

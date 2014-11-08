@@ -39,16 +39,39 @@ function maskDatepicker(idCampo) {
 function maskData(idCampo) {
 	$("#" + idCampo).mask("99/99/9999");
 }
-function maskValor(idCampo){
-	
-}
-function maskQuantidade(idCampo){
-	
-}
+
 function maskCPF(idCampo) {
 	$("#" + idCampo).mask("999.999.999-99");
 }
 
 function maskTelefone(idCampo) {
-	$("#" + idCampo).mask("(99)9999-9999");
+	$("#" + idCampo).mask("(99) 9999-9999");
+}
+
+
+function requestFullScreen() {
+	var element = document.body;
+	// Supports most browsers and their versions.
+	var requestMethod = element.requestFullScreen
+			|| element.webkitRequestFullScreen
+			|| element.mozRequestFullScreen
+			|| element.msRequestFullscreen;
+
+	if (requestMethod) { // Native full screen.
+		requestMethod.call(element);
+	} else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+		var wscript = new ActiveXObject("WScript.Shell");
+		if (wscript !== null) {
+			wscript.SendKeys("{F11}");
+		}
+	}
+	
+	if (document.exitFullscreen) {
+	    document.exitFullscreen();
+	}else if (document.mozCancelFullScreen) {
+	    document.mozCancelFullScreen();
+	}
+	else if (document.webkitCancelFullScreen) {
+	    document.webkitCancelFullScreen();
+	}
 }

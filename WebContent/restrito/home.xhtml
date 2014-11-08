@@ -3,12 +3,25 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
 <h:head>
-	<title>SiGEP</title>
-	<link type="text/css" rel="stylesheet" href="../css/home.css" />
+	<title>Cloud Sistem</title>
 	<link rel="stylesheet" type="text/css"
 		href="http://fonts.googleapis.com/css?family=Dosis" />
+
+
+	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="../foundation/js/vendor/modernizr.js"></script>
+	
+	<link type="text/css" rel="stylesheet" href="../css/home.css" />
+
+	<script type="text/javascript" src="../js/jquery.js" />
+
+	<link rel="stylesheet"
+		href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+
 </h:head>
 
 <h:body>
@@ -19,20 +32,20 @@
 			</div>
 		</div>
 		<div class="barra_inferior">
-			<div>
-
-				<span class="ajuda">#{msgs.ajuda}</span>
-
-				<div class="menu-usuario" >
-					<span class="logado">#{funcionarioBean.funcionarioLogado.nome}</span>
-					<ul class="submenu">
-						<li><a href="funcionario.jsf">minha conta</a></li>
-						<li><a href="logoff.jsf">sair</a></li>
-					</ul>
+				<div>
+					<span class="ajuda">#{msgs.ajuda}</span>
+					<div class="menu-usuario"  data-dropdown="hover1" data-options="is_hover:true">
+						
+						<a class="logado">#{funcionarioBean.funcionarioLogado.nome}</a>
+						
+							<ul id="hover1" class="submenu f-dropdown" data-dropdown-content="hover1">
+								<li><a href="funcionario.jsf">minha conta</a></li>
+								<li><a href="logoff.jsf">sair</a></li>
+							</ul>
+						
+					</div>
 				</div>
-				
 			</div>
-		</div>
 	</div>
 
 	<div class="content">
@@ -48,5 +61,14 @@
 			</div>
 		</ui:insert>
 	</div>
+
+	
+
+	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
+	<script src="../foundation/js/foundation.min.js"></script>
+	<script>
+		$(document).foundation();
+	</script>
+
 </h:body>
 </html>

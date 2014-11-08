@@ -9,8 +9,8 @@
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.user" value="root" />
-			<property name="javax.persistence.jdbc.password" value="mysql" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/sigep" />
+			<property name="javax.persistence.jdbc.password" value="" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/cloudsistem" />
 			
 			<property name="hibernate.show_sql" value="false"/>
 			<property name="hibernate.use_sql_comments" value="false"/>

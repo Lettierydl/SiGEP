@@ -194,7 +194,7 @@ public class ControllerEstoqueTest {
 		assertNull(c.getPromocaoValida());
 	}
 	
-	
+	/*
 	@Test(expected = PromocaoValidaJaExistente.class)
 	public void creatVariasPromocaosValidasAoProduto() throws PromocaoValidaJaExistente, PromocaoInvalida {
 		createProdutoTest();
@@ -208,6 +208,7 @@ public class ControllerEstoqueTest {
 		p2.setProduto(c);
 		ce.create(p2);
 	}
+	*/
 	
 	@Test(expected = PromocaoInvalida.class)
 	public void creatUmaPromocaoInvalidaAoProduto() throws PromocaoValidaJaExistente, PromocaoInvalida {
