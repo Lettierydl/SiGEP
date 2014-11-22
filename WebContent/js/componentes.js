@@ -22,7 +22,7 @@ function focus(idCampo) {
 	alert(idCampo);
 }
 
-// Abrir modal foundation
+//Abrir modal foundation
 function abrirModa(idModal) {
 	$( "#"+idModal ).foundation('reveal', 'open');
 }
@@ -64,9 +64,7 @@ function requestFullScreen() {
 		if (wscript !== null) {
 			wscript.SendKeys("{F11}");
 		}
-	}
-	
-	if (document.exitFullscreen) {
+	}else if (document.exitFullscreen) {
 	    document.exitFullscreen();
 	}else if (document.mozCancelFullScreen) {
 	    document.mozCancelFullScreen();

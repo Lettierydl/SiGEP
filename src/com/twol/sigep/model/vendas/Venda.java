@@ -1,4 +1,6 @@
 package com.twol.sigep.model.vendas;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -7,6 +9,9 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -63,7 +68,11 @@ public class Venda implements Comparable<Venda>{
     @Column(nullable = false)
     private boolean paga = false;
 
-    /**
+    @Enumerated(EnumType.STRING)
+    private FormaDePagamento formaDePagamento;
+
+
+	/**
      */
     @ManyToOne
     @JoinColumn(updatable=true)
@@ -72,7 +81,7 @@ public class Venda implements Comparable<Venda>{
     
     /**
      */
-    @OneToMany(orphanRemoval = true, mappedBy = "venda" , cascade={CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.DETACH,CascadeType.REFRESH})
+    @OneToMany(orphanRemoval = true, mappedBy = "venda" , cascade={CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.DETACH,CascadeType.REFRESH}, fetch=FetchType.EAGER)
     @ForeignKey(name = "itens_da_venda")
 	@OnDelete(action=OnDeleteAction.CASCADE)
     @Fetch(FetchMode.SUBSELECT)
@@ -100,6 +109,14 @@ public class Venda implements Comparable<Venda>{
 
 	public void setDia(Calendar dia) {
 		this.dia = dia;
+	}
+	
+    public FormaDePagamento getFormaDePagamento() {
+		return formaDePagamento;
+	}
+
+	public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
+		this.formaDePagamento = formaDePagamento;
 	}
 
 	public Funcionario getFuncionario() {
@@ -163,6 +180,7 @@ public class Venda implements Comparable<Venda>{
 	 */
 	public void acrescentarPartePagaDaVenda(double partePagaDaVenda) {
 		this.partePaga += partePagaDaVenda;
+		this.partePaga = new BigDecimal(partePaga).setScale(5, RoundingMode.HALF_UP).doubleValue();
 		if(partePagaDaVenda >= getTotalComDesconto()){
 			setPaga(true);
 		}
@@ -202,12 +220,13 @@ public class Venda implements Comparable<Venda>{
 			item.setVenda(this);
 			this.desconto += item.getDesconto();
 			this.total += item.getTotal();
+			total = new BigDecimal(total).setScale(5, RoundingMode.HALF_UP).doubleValue();
 		}
 	}
 	
 	/**
 	 * @see Este metodo so deve ser utilizado pelo ControllerVenda.removerItemDeVenda(item)
-	 * @see Deve ser atualizado a venda e removido o ItemDeVenda do banco logo em seguida
+	 * @see Deve ser removido o ItemDeVenda do banco e logo em seguida chamar esse método para atualizar a venda
 	 * @param item que existe nesta venda
 	 */
 	public void removeItemDeVenda(ItemDeVenda item){
@@ -215,7 +234,7 @@ public class Venda implements Comparable<Venda>{
 			//atualizar o index
 			this.desconto -= item.getDesconto();
 			this.total -= item.getTotal();
-			item.setVenda(null);
+			total = new BigDecimal(total).setScale(5, RoundingMode.HALF_UP).doubleValue();
 		}
 	}
 	

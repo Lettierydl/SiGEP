@@ -2,7 +2,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
 
 
 <h:head>
@@ -12,9 +13,6 @@
 	<script src="../foundation/js/vendor/modernizr.js"></script>
 
 	<link type="text/css" rel="stylesheet" href="../css/venda.css" />
-
-	<link rel="stylesheet" type="text/css"
-		href="http://fonts.googleapis.com/css?family=Dosis" />
 
 	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/jquery.js" />
@@ -36,10 +34,11 @@
 			$('.quantidade').mask('000000000,000', {
 				reverse : true
 			});
+			$('#codigo').focus();
 
 		});
 	</script>
-	
+
 
 </h:head>
 
@@ -56,69 +55,128 @@
 			
 		</div>
 		
+		<h:form prependId="false">
 		<div class="descricao">
 			<div class="dimensao">
-				<h:outputLabel value="Nome do Produto" styleClass="produto"/> <br/>
-				<h:outputLabel styleClass="calculo">2 x R$ 2,50 = <span>R$ 5,00</span></h:outputLabel>
+				<h:outputLabel value="#{vendaBean.ultimoItemVendido.produto.descricao}" styleClass="produto"/> <br/>
+					<h:outputLabel styleClass="calculo">
+					<h:outputLabel value="#{vendaBean.ultimoItemVendido.quantidade}" converter="valueUnidadeConverter"/> x 
+					<h:outputLabel value="#{vendaBean.ultimoItemVendido.valorProduto}" converter="valueConverter"/> = 
+					<span><h:outputLabel value="#{vendaBean.ultimoItemVendido.total}" converter="valueConverter"/></span>
+				</h:outputLabel>
 			</div>
 		</div>
 		<div class = "footer">
 			
 			<div class="formulario">
+			
 				<h:outputLabel value="Total"/>
 				<div class="total">
-					<h:outputLabel value="R$ 238,90"/>
+					<h:outputLabel value="#{vendaBean.total}"  converter="valueConverter"/>
 				</div>
 				
 				<div class="campos">
 					<h:panelGrid columns="2">
-						<h:outputLabel value="Código de brras ou nome" for="codigo" />
-						<h:outputLabel value="Quantidade" for="quantidade" />
+						<h:outputLabel value="Código de barras ou nome" for="codigo" />
+						<h:outputLabel value="Quantidade" for="quantidade"/>
 					
+					    
+					    <h:inputText id="codigo" value="#{vendaBean.codigo}" styleClass="codigo"
+							valueChangeListener="#{vendaBean.digitado}" p:onkeypress="if(event.keyCode == 13){document.getElementById('submit').click();}">
+							<pi:ajax event="keyup" update="quantidade"/>
+						</h:inputText>
 						
-						<h:inputText id="codigo"/>
-						<h:inputText id="quantidade"/>
+						
+					    
+					    <h:inputText id="quantidade"  value="#{vendaBean.quantidade}"  converter="valueUnidadeConverter"
+					    p:onkeypress="if(event.keyCode == 13){document.getElementById('codigo').focus();}"/>
+					    
+					    <h:commandButton id="submit" action="#{vendaBean.verificarProduto}" style="display:none;">
+					    </h:commandButton> 
+					   
 					</h:panelGrid>
 				</div>
+					
 				
 				<div class="finalizar">
 					<h:outputLabel><span>Finalizar Venda</span> (ctrl + F)</h:outputLabel>
-				</div>
-				
+				</div>	
 				
 			</div>
 			
 			<div class="itens"> 
 				<h:outputLabel value="Itens da venda"/>
 					<div class="tabela">
-						<h:dataTable id="itensVenda" style="scroll:auto" value="#{produtoBean.listAtualDeProdutos}" var="produto">
+						
+						<h:dataTable id="itensVenda" style="scroll:auto" value="#{vendaBean.itens}" var="item">
 							<h:column  headerClass="large-1">
 								<f:facet name="header">Cancel</f:facet>
+								<pi:commandLink   actionListener="#{vendaBean.removerItem(item)}" rendered="true" update="@all">
 									<img src="../imagens/bt_cancel.png"/>
+								</pi:commandLink>
+								
 							</h:column>
 							<h:column headerClass="large-4">
 								<f:facet name="header">Produto</f:facet> 
-								#{produto.descricao}
+								<h:outputLabel value="#{item.produto.descricao}"/>
 							</h:column>
 							<h:column headerClass="large-2">
 								<f:facet name="header">Quantidade</f:facet>
-								#{produto.codigoDeBarras}
+								<h:outputLabel value="#{item.quantidade}"  converter="quantidadeConverter"/>
 							</h:column>
 							<h:column headerClass="large-2">
 								<f:facet name="header">Valor UN</f:facet>
-								<h:outputLabel value="#{produto.valorDeVenda}" converter="valueConverter"/>
+								<h:outputLabel value="#{item.valorProduto}"  converter="valueConverter"/>
 							</h:column>
 							<h:column headerClass="large-2">
 								<f:facet name="header">Total</f:facet>
-								#{produto.categoria.name}
+								<h:outputLabel value="#{item.total}"  converter="valueConverter"/>
 							</h:column>
 							
 						</h:dataTable>
+						
 				</div>
 			</div>
 			 
 		</div>
+		</h:form>
 		
+		<div id="modalVendasPendentes" class="reveal-modal modal" data-reveal="modalVendasPendentes">
+			<h2>Vendas pendentes</h2>
+			<h:outputLabel value="Existe #{vendaBean.pendentes.size()} vendas pendestes" /><br/>
+			<h:outputLabel value="Selecione a venda que deseja recuperar:" />
+			
+			<div class="tabela">
+					<h:dataTable id="vendasPendentes" style="scroll:auto" value="#{vendaBean.pendentes}" var="vend">
+						<h:column  headerClass="large-1">
+							<f:facet name="header">Id</f:facet>
+							#{vend.id}
+						</h:column>
+						<h:column headerClass="large-2">
+							<f:facet name="header">Dia</f:facet>
+							<h:outputLabel value="#{vend.dia}" converter="calendarConverter"></h:outputLabel>
+						</h:column>
+						<h:column headerClass="large-3">
+							<f:facet name="header">Funcionario</f:facet>
+							#{vend.funcionario.nome}
+						</h:column>
+						<h:column headerClass="large-2">
+							<f:facet name="header">Total</f:facet>
+							<h:outputLabel value="#{vend.total}" converter="valueConverter"/>
+						</h:column>
+					</h:dataTable>
+				</div>
+					
+				<a class="close-reveal-modal">&#215;</a>
+		</div><!-- fim modal Edit -->
+		
+		
+	
+	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
+	<script src="../foundation/js/foundation.min.js"></script>
+	<script>
+		$(document).foundation();
+	</script>
 	
 </h:body>
 </html>

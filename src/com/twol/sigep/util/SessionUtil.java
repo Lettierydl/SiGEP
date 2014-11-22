@@ -41,9 +41,13 @@ public class SessionUtil {
     }
     
     public static Funcionario getFuncionarioLogado() {
-    	Funcionario funcionario = (Funcionario) obterSession().getAttribute(
-                            KEY_USUARIO_LOGADO);
-            return funcionario;
+    	try{
+    		Funcionario funcionario = (Funcionario) obterSession().getAttribute(
+                    KEY_USUARIO_LOGADO);
+    		return funcionario;
+    	}catch(NullPointerException ne){
+    		return null;
+    	}
     }
 	
     public static void redirecionarParaPage(String page) throws IOException {

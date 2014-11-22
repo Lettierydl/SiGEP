@@ -138,4 +138,39 @@ public class FindProduto {
 		return produtos;
 	}
 
+	public static Produto produtoComCodigoEDescricao(String nomeOuCodigo) {
+		Persistencia.restartConnection();
+		String stringQuery = "select p FROM Produto as p where p.codigoDeBarras = :cod or p.descricao = :desc";
+		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
+		query.setParameter("desc", nomeOuCodigo);
+		query.setParameter("cod", nomeOuCodigo);
+		
+		Produto produto =  (Produto) query.getSingleResult();
+		return produto;
+	}
+
+	public static List<String> drecricaoProdutoQueIniciam(String descricao) {
+		String stringQuery = "select p.descricao FROM Produto as p where LOWER(p.descricao) LIKE LOWER(:descricao) ";
+		
+		Persistencia.restartConnection();
+		
+		Query query = Persistencia.em.createQuery(stringQuery, String.class);
+		query.setParameter("descricao", descricao+ "%");
+		
+		List<String> descricoes = (List<String>) query.getResultList();
+		return descricoes;
+	}
+	
+	public static List<String> codigoProdutoQueIniciam(String codigo) {
+		String stringQuery = "select p.codigoBarras FROM Produto as p where LOWER(p.codigoBarras) LIKE LOWER(:codigoBarras) ";
+		
+		Persistencia.restartConnection();
+		
+		Query query = Persistencia.em.createQuery(stringQuery, String.class);
+		query.setParameter("codigoBarras", codigo+ "%");
+		
+		List<String> codigos = (List<String>) query.getResultList();
+		return codigos;
+	}
+
 }

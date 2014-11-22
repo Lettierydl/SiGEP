@@ -296,7 +296,8 @@ public class ControllerVendaTest {
 	
 	@Test
 	public void removerUmItemDaVendaTest() throws EntidadeNaoExistenteException, Exception {
-		Venda v = iniciarVendaESalvarNoBanco();
+		ve.iniciarNovaVenda();
+		Venda v = ve.getAtual();
 		int n = 5;
 		for(int j = 0 ; j<n ; j++){
 			ItemDeVenda i = iniciarItemDeVendaInformacoesAleatorias(iniciarProdutoESalvarNoBanco());
@@ -305,14 +306,14 @@ public class ControllerVendaTest {
 		}
 		assertEquals(FindVenda.vendaId(v.getId()).getItensDeVenda().size() , n);
 		ItemDeVenda ir = FindVenda.vendaId(v.getId()).getItensDeVenda().get(0);
-		v.removeItemDeVenda(ir);
-		ve.edit(v);
+		ve.removerItem(ir);
 		assertFalse(FindVenda.vendaId(v.getId()).getItensDeVenda().contains(ir) );
 	}
 	
 	@Test
 	public void removerItemDaVendaEVerificarValorTest() throws EntidadeNaoExistenteException, Exception {
-		Venda v = iniciarVendaESalvarNoBanco();
+		ve.iniciarNovaVenda();
+		Venda v = ve.getAtual();
 		int n = 5;
 		double d= 0;
 		double t = 0;
@@ -327,8 +328,7 @@ public class ControllerVendaTest {
 		assertEquals(FindVenda.vendaId(v.getId()).getItensDeVenda().size() , n);
 		
 		ItemDeVenda ir = FindVenda.vendaId(v.getId()).getItensDeVenda().get(0);
-		v.removeItemDeVenda(ir);
-		ve.edit(v);
+		ve.removerItem(ir);
 		
 		assertFalse(FindVenda.vendaId(v.getId()).getItensDeVenda().contains(ir) );
 		assertEquals(FindVenda.vendaId(v.getId()).getDesconto() , d-ir.getDesconto(),0);	

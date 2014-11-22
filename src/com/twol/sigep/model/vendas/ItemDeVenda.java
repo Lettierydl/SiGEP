@@ -21,8 +21,15 @@ import com.twol.sigep.util.OperacaoStringUtil;
 
 @Table(name = "item_de_venda")
 @Entity
-public class ItemDeVenda {
+public class ItemDeVenda  implements Comparable<ItemDeVenda>{
 
+	public ItemDeVenda(){}
+	
+	public ItemDeVenda(Produto p, double quantidade){
+		this.setQuantidade(quantidade);
+		this.setProduto(p);
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
@@ -97,6 +104,9 @@ public class ItemDeVenda {
 
 	public void setQuantidade(double quantidade) {
 		this.quantidade = quantidade;
+		if(this.produto!=null){
+			setValores(this.produto);
+		}
 	}
 
 	public double getValorProduto() {
@@ -161,18 +171,7 @@ public class ItemDeVenda {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(desconto);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + indice;
-		result = prime * result + ((produto == null) ? 0 : produto.hashCode());
-		temp = Double.doubleToLongBits(quantidade);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(total);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(valorProduto);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((venda == null) ? 0 : venda.hashCode());
+		result = prime * result + id;
 		return result;
 	}
 
@@ -185,31 +184,14 @@ public class ItemDeVenda {
 		if (getClass() != obj.getClass())
 			return false;
 		ItemDeVenda other = (ItemDeVenda) obj;
-		if (Double.doubleToLongBits(desconto) != Double
-				.doubleToLongBits(other.desconto))
-			return false;
-		if (indice != other.indice)
-			return false;
-		if (produto == null) {
-			if (other.produto != null)
-				return false;
-		} else if (!produto.equals(other.produto))
-			return false;
-		if (Double.doubleToLongBits(quantidade) != Double
-				.doubleToLongBits(other.quantidade))
-			return false;
-		if (Double.doubleToLongBits(total) != Double
-				.doubleToLongBits(other.total))
-			return false;
-		if (Double.doubleToLongBits(valorProduto) != Double
-				.doubleToLongBits(other.valorProduto))
-			return false;
-		if (venda == null) {
-			if (other.venda != null)
-				return false;
-		} else if (!venda.equals(other.venda))
+		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(ItemDeVenda o) {
+		return Integer.compare(o.id, id);
 	}
 	
 	

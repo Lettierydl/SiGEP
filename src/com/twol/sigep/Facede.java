@@ -17,11 +17,13 @@ import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.LoginIncorretoException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
+import com.twol.sigep.model.exception.VariasVendasPendentesException;
 import com.twol.sigep.model.exception.VendaPendenteException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
+import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.Persistencia;
@@ -41,6 +43,9 @@ public class Facede {
 		pagam = new ControllerPagamento(Persistencia.emf);
 		vend = new ControllerVenda(Persistencia.emf);
 		lg = new ControllerLogin();
+		
+		Funcionario logado = SessionUtil.getFuncionarioLogado();
+		vend.setLogado(logado);
 	}
 
 	public void adicionarCliente(Cliente c) {
@@ -163,6 +168,14 @@ public class Facede {
 	public List<Produto> buscarProdutoPorDescricaoOuCodigoQueInicia(String descricaoOuCodigo){
 		return FindProduto.produtosQueDescricaoOuCodigoDeBarrasIniciam(descricaoOuCodigo);
 	}
+	
+	public List<String> buscarDescricaoProdutoPorDescricaoQueInicia(String descricao){
+		return FindProduto.drecricaoProdutoQueIniciam(descricao);
+	}
+	
+	public List<String> buscarCodigoProdutoPorCodigoQueInicia(String codigo){
+		return FindProduto.codigoProdutoQueIniciam(codigo);
+	}
 
 	public Produto buscarProdutoPorId(int idProduto) {
 		return FindProduto.produtoComId(idProduto);
@@ -171,7 +184,11 @@ public class Facede {
 	public Produto buscarProdutoPorCodigo(String codigo) {
 		return FindProduto.produtoComCodigoDeBarras(codigo);
 	}
-
+	
+	public Produto buscarProdutoPorDescricaoOuCodigo(String nomeOuCodigo) {
+		return  FindProduto.produtoComCodigoEDescricao(nomeOuCodigo);
+	}
+	
 	/*
 	 * Negocio
 	 */
@@ -218,6 +235,18 @@ public class Facede {
 	public void inicializarVenda() throws VendaPendenteException {
 		vend.iniciarNovaVenda();
 	}
+	
+	public void addItemAVenda(ItemDeVenda it) throws EntidadeNaoExistenteException, Exception {
+		vend.addItem(it);
+	}
+	
+	public void removerItemDaVenda(ItemDeVenda it) throws EntidadeNaoExistenteException, Exception {
+		vend.removerItem(it);
+	}
+	
+	public Venda getVendaAtual(){
+		return vend.getAtual();
+	}
 
 	/**
 	 * Metodo utilizado para finalizar a venda atual<br/>
@@ -233,6 +262,10 @@ public class Facede {
 		return vend.finalizarVendaAVista(valorPago);
 	}
 
+	public Venda recuperarVendaPendente() throws VariasVendasPendentesException, EntidadeNaoExistenteException{
+		return vend.recuperarVendaPendente();
+	}
+	
 	public List<Pagamento> getListaPagamentoHoje() {
 		return FindPagamento.pagamentosDeHoje();
 	}

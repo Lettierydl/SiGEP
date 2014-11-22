@@ -116,15 +116,20 @@ public class ControllerVenda {
 			em.getTransaction().begin();
 			try {
 				em.getReference(Venda.class, item.getVenda().getId());
-				em.getReference(ItemDeVenda.class, item.getId());
+				item = em.getReference(ItemDeVenda.class, item.getId());
 			} catch (EntityNotFoundException enfe) {
 				throw new EntidadeNaoExistenteException(
 						"O Item de venda com código " + item.getId()
 								+ " não existe.");
 			}
-			Venda v = item.getVenda();
-			v.removeItemDeVenda(item);
-			em.merge(v);
+			
+			item.setVenda(null);
+			em.merge(item);
+			em.getTransaction().commit();
+			
+			em = getEntityManager();
+			em.getTransaction().begin();
+			item = em.getReference(ItemDeVenda.class, item.getId());
 			em.remove(item);
 			em.getTransaction().commit();
 		} finally {
@@ -268,6 +273,7 @@ public class ControllerVenda {
 		List<Venda> pendentes = new FindVenda()
 				.getVendasNaoFinalizadasPorFuncionario(logado);
 		if(pendentes.size()==1){
+			atual = pendentes.get(0);
 			return pendentes.get(0);
 		}else if(pendentes.size() > 1){
 			throw new VariasVendasPendentesException(pendentes);
@@ -275,7 +281,21 @@ public class ControllerVenda {
 			throw new EntidadeNaoExistenteException();
 		}
 	}
+
+	public Venda getAtual() {
+		return this.atual;
+	}
+
+	public void addItem(ItemDeVenda it) throws EntidadeNaoExistenteException, Exception {
+		atual.addItemDeVenda(it);
+		this.edit(atual);
+	}
 	
+	public void removerItem(ItemDeVenda it) throws EntidadeNaoExistenteException, Exception {
+		atual.removeItemDeVenda(it);
+		destroy(it);
+		edit(atual);
+	}
 	
 	
 
