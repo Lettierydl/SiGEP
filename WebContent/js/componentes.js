@@ -27,6 +27,11 @@ function abrirModa(idModal) {
 	$( "#"+idModal ).foundation('reveal', 'open');
 }
 
+//Feixar modal foundation
+function fecharModal(idModal) {
+	$( "#"+idModal ).foundation('reveal', 'close');
+}
+
 function maskDatepicker(idCampo) {
 	maskData(idCampo);
 	$("#" + idCampo).datepicker({

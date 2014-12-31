@@ -2,16 +2,22 @@ package com.twol.sigep.util;
 
 import java.io.IOException;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.twol.sigep.model.pessoas.Funcionario;
+import com.twol.sigep.model.vendas.Venda;
 
 public class SessionUtil {
 
 	public static final String KEY_USUARIO_LOGADO = "USUARIO_LOGADO";
+	public static final String KEY_VENDA_ATUAL = "VENDA_ATUAL";
+	public static final String KEY_VENDA_A_FINALIZAR = "VENDA_A_FINALIZAR";
+	public static final String KEY_NEXT_PAGE = "NEXT_PAGE";
+	public static final String KEY_NEXT_MESAGEM = "NEXT_MESAGEM";
 	public static final String PAGE_PRINCIPAL = "restrito/home.jsf";
 	public static final String PAGE_INICIAL = "/CloudSistem/";
 	
@@ -50,8 +56,50 @@ public class SessionUtil {
     	}
     }
 	
+    
+    public static void putVendaAtual(Venda venda){
+    	obterSession().setAttribute(KEY_VENDA_ATUAL, venda);
+    }
+    
+    public static Venda getVendaAtual() throws NullPointerException{
+    	return (Venda) obterSession().getAttribute(KEY_VENDA_ATUAL);
+    }
+    
+    public static void putVendaAFinalizar(Venda venda){
+    	obterSession().setAttribute(KEY_VENDA_A_FINALIZAR, venda);
+    }
+    
+    public static Venda getVendaAFinalizar() throws NullPointerException{
+    	return (Venda) obterSession().getAttribute(KEY_VENDA_A_FINALIZAR);
+    }
+    
+    public static void removerVendaAFinalizar(){
+    	obterSession().removeAttribute(KEY_VENDA_A_FINALIZAR);
+    }
+    
+    public static String getNextPage(){
+    	return (String) obterSession().getAttribute(KEY_NEXT_PAGE);
+    }
+    
+    public static void putNextPage(String url){
+    	obterSession().setAttribute(KEY_NEXT_PAGE, url);
+    }
+    
+    public static FacesMessage getNextMensagem(){
+    	return (FacesMessage) obterSession().getAttribute(KEY_NEXT_MESAGEM);
+    }
+    
+    public static void removerNextMensagem(){
+    	obterSession().removeAttribute(KEY_NEXT_MESAGEM);
+    }
+    
+    public static void putNextMensagem(FacesMessage msg){
+    	obterSession().setAttribute(KEY_NEXT_MESAGEM, msg);
+    }
+    
     public static void redirecionarParaPage(String page) throws IOException {
 		obterResponse().sendRedirect(page);
 	}
+    
 	
 }

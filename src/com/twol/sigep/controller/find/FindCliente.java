@@ -113,6 +113,22 @@ public class FindCliente {
 		List<Cliente> Clientes = (List<Cliente>) query.getResultList();
 		return Clientes;
 	}
+	
+	public static Cliente clientesQueNomeOuCPFIqualA(
+			String nomeOuCpf) {
+		String stringQuery = "select c FROM Cliente as c ";
+		stringQuery += "where LOWER(c.nome) = LOWER(:nome) or " +
+							 "LOWER(c.cpf) = LOWER(:cpf)";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Cliente.class);
+		
+		query.setParameter("nome", nomeOuCpf);
+		query.setParameter("cpf", nomeOuCpf);
+		
+		Cliente cliente = (Cliente) query.getSingleResult();
+		return cliente;
+	}
 
 	public static List<String> nomeClientesQueNomeInicia(String nome) {
 		String stringQuery = "select c.nome FROM Cliente as c ";

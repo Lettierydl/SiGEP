@@ -15,7 +15,6 @@
 	<link type="text/css" rel="stylesheet" href="../css/venda.css" />
 
 	<script type="text/javascript" src="../js/componentes.js" />
-	<script type="text/javascript" src="../js/jquery.js" />
 	<script type="text/javascript" src="../js/jquery.maskedinput.js" />
 	<script type="text/javascript" src="../js/jquery.mask.js" />
 
@@ -24,7 +23,7 @@
 
 
 	<script>
-				jQuery(function($) {
+		jQuery(function($) {
 			$('.CPFMask').mask("999.999.999-99");
 			$('.DateMask').mask("99/99/9999");
 			$('.TelMask').mask("(99) 9999-9999");
@@ -37,25 +36,44 @@
 			$('#codigo').focus();
 
 		});
+		
+		$(document).ready(function(){
+		    $('#formulario').bind('keydown',function(e){
+		    	if(e.keyCode == 32){
+				    e.preventDefault();
+					//$("#itens").css("display", "none");
+				}
+			});
+		});	
+		
 	</script>
+	
+	<h:form>
+		<pi:remoteCommand name="verificarPendentes" actionListener="#{vendaBean.verificarVendasPendentes}"/>
+	</h:form>
 
 
 </h:head>
 
-<h:body>
-
+<h:body onload="verificarPendentes();">
+					
 		<div class="top">
 			<h:commandButton id = "full" onclick="requestFullScreen();" image="../imagens/fullscreen.svg" styleClass="br-fullscrean"/> 
 			<div class="dimensao">
 				<img src="../imagens/logo.png" class="logo" />
 				<h:outputLabel value="Vendas" styleClass="titulo"/>
+				
+				<div class="home">
+					<a href="home.jsf" > <img src="../imagens/home_ico.png" /></a>
+				</div>
+				
 				<h:outputLabel value="Mercadinho Popular" styleClass="nome"/>
-			
+				
 			</div>
-			
 		</div>
 		
-		<h:form prependId="false">
+		<h:form prependId="false" id="formPrincipal">
+		
 		<div class="descricao">
 			<div class="dimensao">
 				<h:outputLabel value="#{vendaBean.ultimoItemVendido.produto.descricao}" styleClass="produto"/> <br/>
@@ -68,50 +86,60 @@
 		</div>
 		<div class = "footer">
 			
-			<div class="formulario">
+			<div class="formulario" id="formulario">
 			
 				<h:outputLabel value="Total"/>
 				<div class="total">
 					<h:outputLabel value="#{vendaBean.total}"  converter="valueConverter"/>
 				</div>
 				
+				
 				<div class="campos">
+					<pi:remoteCommand name="enterkey" actionListener="#{vendaBean.verificarProduto()}" update="@form"/>
+					
 					<h:panelGrid columns="2">
-						<h:outputLabel value="Código de barras ou nome" for="codigo" />
+						<h:outputLabel value="Código de barras ou nome" for="codigo"  />
 						<h:outputLabel value="Quantidade" for="quantidade"/>
 					
-					    
-					    <h:inputText id="codigo" value="#{vendaBean.codigo}" styleClass="codigo"
-							valueChangeListener="#{vendaBean.digitado}" p:onkeypress="if(event.keyCode == 13){document.getElementById('submit').click();}">
+						<pi:autoComplete p:id="codigo" id="codigo" value="#{vendaBean.codigo}" styleClass="codigo_autocomplet" p:class="codigo_autocomplet"
+						completeMethod="#{vendaBean.completMetodo}" valueChangeListener="#{vendaBean.digitado}"  
+						var="cod" onkeypress="if(event.keyCode == 13){enterkey();return false;}">
+						
 							<pi:ajax event="keyup" update="quantidade"/>
-						</h:inputText>
-						
-						
+							
+							<pi:column selectionMode="single" headerClass="large-4">
+				                <h:outputText value="#{cod}"/>
+				            </pi:column>
+							
+						</pi:autoComplete>
+
 					    
-					    <h:inputText id="quantidade"  value="#{vendaBean.quantidade}"  converter="valueUnidadeConverter"
+					    <h:inputText   id="quantidade"  value="#{vendaBean.quantidade}"  converter="valueUnidadeConverter"
 					    p:onkeypress="if(event.keyCode == 13){document.getElementById('codigo').focus();}"/>
 					    
-					    <h:commandButton id="submit" action="#{vendaBean.verificarProduto}" style="display:none;">
-					    </h:commandButton> 
+					   	 <pi:focus for="codigo" />
 					   
 					</h:panelGrid>
 				</div>
 					
+				<div class="finalizar" >
+					<h:commandLink actionListener="#{vendaBean.finalizarVenda('finalizar_a_vista.jsf')}"><span>À Vista</span> (ctrl + V)</h:commandLink>
+				</div>
 				
-				<div class="finalizar">
-					<h:outputLabel><span>Finalizar Venda</span> (ctrl + F)</h:outputLabel>
+				<div class="finalizar" >
+				<h:commandLink actionListener="#{vendaBean.finalizarVenda('finalizar_a_prazo.jsf')}"><span>À Prazo</span> (ctrl + Z)</h:commandLink>
 				</div>	
 				
 			</div>
 			
-			<div class="itens"> 
-				<h:outputLabel value="Itens da venda"/>
+			<div class="itens" id="itens"> 
+				<h:outputLabel value="Itens da venda" />
 					<div class="tabela">
 						
 						<h:dataTable id="itensVenda" style="scroll:auto" value="#{vendaBean.itens}" var="item">
 							<h:column  headerClass="large-1">
-								<f:facet name="header">Cancel</f:facet>
-								<pi:commandLink   actionListener="#{vendaBean.removerItem(item)}" rendered="true" update="@all">
+								<f:facet name="header">Cancelar</f:facet>
+								<pi:commandLink   actionListener="#{vendaBean.setRemoverItem(item)}" rendered="true" update="@form">
 									<img src="../imagens/bt_cancel.png"/>
 								</pi:commandLink>
 								
@@ -137,9 +165,34 @@
 						
 				</div>
 			</div>
-			 
+			<pi:hotkey bind="ctrl+v" actionListener="#{vendaBean.finalizarVenda('finalizar_a_vista.jsf')}" />
+		    <pi:hotkey bind="ctrl+z" actionListener="#{vendaBean.finalizarVenda('finalizar_a_prazo.jsf')}"/>
+		    
 		</div>
+		    
+		    
+			<pi:remoteCommand name="removeritem" actionListener="#{vendaBean.removerItem()}" update="@form"/>
+			<pi:remoteCommand name="naoremoveritem" actionListener="#{vendaBean.cancelarItemRemovido()}" update="@form"/>
+			<pi:growl id="growl" life="5000" />  
 		</h:form>
+		
+		
+		<div id="modalRemoverItem" class="reveal-modal modal_pequeno" data-reveal="modalRemoverItem">
+			<h2>Remover Item</h2>
+			<br/>
+			
+				<h:outputLabel value="Tem certeza que deseja remover o Item?"/>
+				<br/>
+				<h:commandButton value="Remover" onclick="removeritem();" styleClass="botao"/>
+				<h:commandButton value="Cancelar" onclick="naoremoveritem();" styleClass="botao"/>
+					
+			<a class="close-reveal-modal">&#215;</a>
+		</div><!-- fim modal remover item -->
+		
+		
+		
+		
+		
 		
 		<div id="modalVendasPendentes" class="reveal-modal modal" data-reveal="modalVendasPendentes">
 			<h2>Vendas pendentes</h2>
@@ -154,7 +207,7 @@
 						</h:column>
 						<h:column headerClass="large-2">
 							<f:facet name="header">Dia</f:facet>
-							<h:outputLabel value="#{vend.dia}" converter="calendarConverter"></h:outputLabel>
+							<h:outputLabel value="#{vend.dia}" converter="calendarDateTimeConverter"></h:outputLabel>
 						</h:column>
 						<h:column headerClass="large-3">
 							<f:facet name="header">Funcionario</f:facet>
@@ -164,15 +217,16 @@
 							<f:facet name="header">Total</f:facet>
 							<h:outputLabel value="#{vend.total}" converter="valueConverter"/>
 						</h:column>
+						<h:column headerClass="large-2">
+							<f:facet name="header">Excluir</f:facet>
+							<h:commandButton value="Excluir" actionListener="#{vendaBean.removerVendaPendete(vend)}"/>
+						</h:column>
 					</h:dataTable>
 				</div>
 					
-				<a class="close-reveal-modal">&#215;</a>
 		</div><!-- fim modal Edit -->
 		
-		
 	
-	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script>
 		$(document).foundation();

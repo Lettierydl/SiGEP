@@ -20,12 +20,12 @@ import com.twol.sigep.util.SessionUtil;
  */
 @WebFilter("/restrito/*")
 public class WebFiltro implements Filter {
-
+	
+	
 	/**
 	 * Default constructor.
 	 */
 	public WebFiltro() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -48,10 +48,25 @@ public class WebFiltro implements Filter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		if(funcionarioLogado == null){
 			httpResponse.sendRedirect(SessionUtil.PAGE_INICIAL);
+			httpRequest.getSession().setAttribute(SessionUtil.KEY_NEXT_PAGE, httpRequest.getRequestURI());
 			return;
 		}
+		
+		if(httpRequest.getSession().getAttribute(SessionUtil.KEY_NEXT_PAGE) != null){
+			if(httpRequest.getSession().getAttribute(SessionUtil.KEY_VENDA_A_FINALIZAR) == null && httpRequest.getSession().getAttribute(SessionUtil.KEY_NEXT_PAGE).toString().contains("finalizar")){
+				httpResponse.sendRedirect("venda.jsf");
+				httpRequest.getSession().removeAttribute(SessionUtil.KEY_NEXT_PAGE);
+			}else{
+				httpResponse.sendRedirect((String) httpRequest.getSession().getAttribute(SessionUtil.KEY_NEXT_PAGE));
+				httpRequest.getSession().removeAttribute(SessionUtil.KEY_NEXT_PAGE);
+			}
+			
+		}
+		
+	
 		
 		chain.doFilter(httpRequest, response);
 	}

@@ -1,5 +1,6 @@
 package com.twol.sigep.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -11,22 +12,26 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import com.twol.sigep.controller.find.FindVenda;
+import com.twol.sigep.model.configuracoes.ConfiguracaoDeVenda;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.ProdutoABaixoDoEstoqueException;
 import com.twol.sigep.model.exception.VariasVendasPendentesException;
 import com.twol.sigep.model.exception.VendaPendenteException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Funcionario;
+import com.twol.sigep.model.vendas.FormaDePagamento;
 import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
+import com.twol.sigep.util.SessionUtil;
 
 public class ControllerVenda {
 
 	private EntityManagerFactory emf = null;
 	private Venda atual;
 	private Funcionario logado;
-	
+
 	public ControllerVenda(EntityManagerFactory emf) {
 		this.emf = emf;
 	}
@@ -86,6 +91,32 @@ public class ControllerVenda {
 		}
 	}
 
+	public void edit(ItemDeVenda item) throws EntidadeNaoExistenteException,
+			Exception {
+		EntityManager em = null;
+		try {
+			em = getEntityManager();
+			em.find(ItemDeVenda.class, item.getId());
+
+			em.getTransaction().begin();
+			item = em.merge(item);
+			em.getTransaction().commit();
+		} catch (Exception ex) {
+			try {
+				em.find(ItemDeVenda.class, item.getId());
+			} catch (EntityNotFoundException enfe) {
+				throw new EntidadeNaoExistenteException(
+						"O Item de venda com o código " + item.getId()
+								+ " não existe.");
+			}
+			throw ex;
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
 	public void destroy(Venda Venda) throws EntidadeNaoExistenteException {
 		EntityManager em = null;
 		try {
@@ -122,16 +153,19 @@ public class ControllerVenda {
 						"O Item de venda com código " + item.getId()
 								+ " não existe.");
 			}
-			
-			item.setVenda(null);
-			em.merge(item);
-			em.getTransaction().commit();
-			
-			em = getEntityManager();
-			em.getTransaction().begin();
-			item = em.getReference(ItemDeVenda.class, item.getId());
-			em.remove(item);
-			em.getTransaction().commit();
+
+			try {
+				item.setVenda(null);
+				em.merge(item);
+				em.getTransaction().commit();
+
+				em = getEntityManager();
+				em.getTransaction().begin();
+				item = em.getReference(ItemDeVenda.class, item.getId());
+				em.remove(item);
+				em.getTransaction().commit();
+			} catch (EntityNotFoundException en) {
+			}
 		} finally {
 			if (em != null) {
 				em.close();
@@ -188,7 +222,7 @@ public class ControllerVenda {
 	public void setLogado(Funcionario logado) {
 		this.logado = logado;
 	}
-	
+
 	/**
 	 * Verifica quais vendas podem ser pagas<br/>
 	 * Se não puder pagar uma venda completa é acrescentado uma parte paga na
@@ -228,10 +262,11 @@ public class ControllerVenda {
 	/*
 	 * Metodos de operações em venda
 	 */
-	
+
 	/**
 	 * 
-	 * @throws VendaPendenteException se existir uma venda atual sem ser encerrada
+	 * @throws VendaPendenteException
+	 *             se existir uma venda atual sem ser encerrada
 	 */
 	public void iniciarNovaVenda() throws VendaPendenteException {
 		if (atual == null) {
@@ -243,42 +278,137 @@ public class ControllerVenda {
 			throw new VendaPendenteException();
 		}
 	}
-	
+
 	/**
-	 * Inicia uma nova venda vazia
-	 * @exception EntidadeNaoExistenteException se a venda atual for vazia
+	 * 
+	 * @exception EntidadeNaoExistenteException
+	 *                se a venda atual for vazia
 	 */
-	public double finalizarVendaAVista(double valorPago) throws EntidadeNaoExistenteException, Exception{
-		edit(atual);
-		double troco = valorPago - atual.getTotalComDesconto();
-		atual = null;
-		return troco;
+	public void finalizarVendaAVista(Venda v)
+			throws EntidadeNaoExistenteException, Exception {
+		v.setFormaDePagamento(FormaDePagamento.A_Vista);
+		v.setPaga(true);
+		v.setPartePagaDaVenda(v.getTotal());
+		edit(v);
+		double valor = retirarItensDoEstoque(v);
+		if (valor != v.getTotal()) {
+			System.err.println("venda com valor errado");
+			// colocar no relatorio do final do dia
+		}
 	}
-	
-	
-	/**
-	 * @retur Retorna o valor que deve acrecentar ao debito do cliente
-	 * @see ControllerPessoa.edit(Cliente c) deve ser chamado logo em seguida
-	 *      para atualizar o debito do cliente.
-	 */
-	public double finalizarVendaAPrazo(Cliente cliente) throws EntidadeNaoExistenteException, Exception{
-		atual.setCliente(cliente);
-		edit(atual);
-		double debito = atual.getTotalComDesconto();
-		atual = null;
-		return debito;
+
+	//retorna o que deve ser acrecentado a conta do cliente
+	public synchronized double finalizarVendaAPrazo(Venda v, Cliente c , double partePaga)
+			throws EntidadeNaoExistenteException, Exception {
+		v.setFormaDePagamento(FormaDePagamento.A_Prazo);
+		v.setPaga(false);
+		v.setPartePagaDaVenda(partePaga);
+		v.setCliente(c);
+		edit(v);
+		double valor = retirarItensDoEstoque(v);
+		if (valor != v.getTotal()) {
+			System.err.println("venda com valor errado");
+			// colocar no relatorio do final do dia
+		}
+		double credito = v.getTotal() - v.getPartePagaDaVenda();
+		if(credito < 0){
+			System.err.println("venda com valor errado");
+			return 0;
+		}else{
+			return credito;
+		}
 	}
-	
-	public Venda recuperarVendaPendente() throws VariasVendasPendentesException, EntidadeNaoExistenteException {
+
+	private synchronized double retirarItensDoEstoque(Venda atual)
+			throws EntidadeNaoExistenteException, Exception {
+		double valor = 0;
+		ControllerEstoque ce = new ControllerEstoque(emf);
+		for (ItemDeVenda it : atual.getItensDeVenda()) {
+			try {
+				valor += it.getTotal();
+				it.getProduto().removerQuantidadeDeEstoque(it.getQuantidade());
+			} catch (ProdutoABaixoDoEstoqueException e) {
+				// colocar alguma mensagem no relatorio do final do dia
+			} finally {
+				ce.edit(it.getProduto());
+			}
+
+		}
+		return valor;
+	}
+
+	public Venda recuperarVendaPendente() throws EntidadeNaoExistenteException,
+			Exception {
 		List<Venda> pendentes = new FindVenda()
 				.getVendasNaoFinalizadasPorFuncionario(logado);
-		if(pendentes.size()==1){
+		if (pendentes.size() == 1) {
 			atual = pendentes.get(0);
 			return pendentes.get(0);
-		}else if(pendentes.size() > 1){
-			throw new VariasVendasPendentesException(pendentes);
-		}else{
+		} else if (pendentes.size() > 1) {
+			List<Venda> newPendentes = new ArrayList<Venda>();
+			for (Venda p : pendentes) {
+				if (null != ConfiguracaoDeVenda.getInstance()
+						.getRegistroUsoDeVenda(SessionUtil.obterSession())) {// e
+																				// a
+																				// venda
+																				// da
+																				// session
+																				// atual
+					atual = p;
+					atual.setDia(Calendar.getInstance());
+					edit(atual);
+				} else if (ConfiguracaoDeVenda.getInstance().contensId(
+						p.getId())) {// esta no map
+					// essa venda ta sendo usada por outro caixa
+				} else if (p.getTotal() == 0) {// venda criada sem utilidade
+					destroy(p);
+				} else {// vendas pendentes que tem valor e nao estavam na
+						// sessao de ninquem
+					newPendentes.add(p);
+				}
+			}
+			throw new VariasVendasPendentesException(newPendentes);
+		} else {
 			throw new EntidadeNaoExistenteException();
+		}
+	}
+
+	public void setAtualComVendaPendenteTemporariamente() {
+		Venda melhor_escolha = null;
+		List<Venda> pendentes = new FindVenda()
+				.getVendasNaoFinalizadasPorFuncionario(logado);
+		for (Venda v : pendentes) {
+			if (melhor_escolha == null) {
+				melhor_escolha = v;
+			} else if (melhor_escolha.getTotal() > v.getTotal()) {
+				melhor_escolha = v;
+			}
+		}
+		atual = melhor_escolha;
+	}
+
+	public void selecionarVendaPendente(int id_venda)
+			throws EntidadeNaoExistenteException, Exception {
+		List<Venda> pendentes = new FindVenda()
+				.getVendasNaoFinalizadasPorFuncionario(logado);
+		for (Venda v : pendentes) {
+			if (id_venda == v.getId()) {
+				atual = v;
+				atual.setDia(Calendar.getInstance());
+				edit(atual);
+				return;
+			}
+		}
+	}
+
+	public void removerVendaPendente(Venda v)
+			throws EntidadeNaoExistenteException {
+		List<Venda> pendentes = new FindVenda()
+				.getVendasNaoFinalizadasPorFuncionario(logado);
+		if (pendentes.contains(v)) {
+			destroy(v);
+		} else {
+			System.err.println("Erro linha 340 metodo removerVendaPendente");
 		}
 	}
 
@@ -286,17 +416,23 @@ public class ControllerVenda {
 		return this.atual;
 	}
 
-	public void addItem(ItemDeVenda it) throws EntidadeNaoExistenteException, Exception {
+	public void atualizarDataVendaAtual() throws EntidadeNaoExistenteException,
+			Exception {
+		this.atual.setDia(Calendar.getInstance());
+		this.edit(atual);
+	}
+
+	public void addItem(ItemDeVenda it) throws EntidadeNaoExistenteException,
+			Exception {
 		atual.addItemDeVenda(it);
 		this.edit(atual);
 	}
-	
-	public void removerItem(ItemDeVenda it) throws EntidadeNaoExistenteException, Exception {
+
+	public void removerItem(ItemDeVenda it)
+			throws EntidadeNaoExistenteException, Exception {
 		atual.removeItemDeVenda(it);
-		destroy(it);
 		edit(atual);
+		destroy(it);
 	}
-	
-	
 
 }

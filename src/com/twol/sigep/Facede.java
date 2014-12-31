@@ -69,6 +69,10 @@ public class Facede {
 		return FindCliente.listCelientes();
 	}
 
+	public Cliente buscarClientePorCPFOuNomeIqualA(String cpfOuNome){
+		return FindCliente.clientesQueNomeOuCPFIqualA(cpfOuNome);
+	}
+	
 	public List<Cliente> buscarClientePorCPFOuNomeQueIniciam(String cpfOuNome) {
 		return FindCliente.clientesQueNomeOuCPFIniciam(cpfOuNome);
 	}
@@ -247,23 +251,53 @@ public class Facede {
 	public Venda getVendaAtual(){
 		return vend.getAtual();
 	}
-
+	
+	public void atualizarDataVendaAtual() throws EntidadeNaoExistenteException, Exception{
+		vend.atualizarDataVendaAtual();
+	}
+	
 	/**
-	 * Metodo utilizado para finalizar a venda atual<br/>
+	 * Metodo utilizado para finalizar uma venda a vista<br/>
 	 * 
-	 * @return Retorna o troco do cliente
-	 * @param Valor
-	 *            que o cliente pagou
+	 * 
+	 * @param A venda a ser finalizada
 	 * @throws Exception
 	 * @throws EntidadeNaoExistenteException
 	 */
-	public double finalizarVendaAVista(double valorPago)
+	public void finalizarVendaAVista(Venda v)
 			throws EntidadeNaoExistenteException, Exception {
-		return vend.finalizarVendaAVista(valorPago);
+		vend.finalizarVendaAVista(v);
+	}
+	
+	/**
+	 * Metodo utilizado para finalizar uma venda a prazo<br/>
+	 * 
+	 * @return Retorna o valor da conta do cliente
+	 * @param Venda e Valor que o cliente pagou
+	 * @throws Exception
+	 * @throws EntidadeNaoExistenteException
+	 */
+	public double finalizarVendaAprazo(Venda v, Cliente c, double partePaga)
+			throws EntidadeNaoExistenteException, Exception {
+		c.acrecentarDebito(vend.finalizarVendaAPrazo(v, c, partePaga));
+		pes.edit(c);
+		return c.getDebito();
 	}
 
-	public Venda recuperarVendaPendente() throws VariasVendasPendentesException, EntidadeNaoExistenteException{
+	public Venda recuperarVendaPendente() throws VariasVendasPendentesException, EntidadeNaoExistenteException, Exception{
 		return vend.recuperarVendaPendente();
+	}
+	
+	public void selecionarVendaPendente(int idVenda) throws  EntidadeNaoExistenteException, Exception{
+		vend.selecionarVendaPendente(idVenda);
+	}
+	
+	public void removerVendaPendente(Venda v) throws EntidadeNaoExistenteException{
+		vend.removerVendaPendente(v);
+	}
+	
+	public void setAtualComVendaPendenteTemporariamente(){
+		vend.setAtualComVendaPendenteTemporariamente();
 	}
 	
 	public List<Pagamento> getListaPagamentoHoje() {

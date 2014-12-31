@@ -35,6 +35,7 @@
 		<param-name>primefaces.skin</param-name>
 		<param-value>none</param-value>
 	</context-param>
+
 	<listener>
 		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>

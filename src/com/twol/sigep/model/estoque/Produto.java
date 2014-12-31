@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.twol.sigep.model.exception.ProdutoABaixoDoEstoqueException;
 import com.twol.sigep.model.exception.PromocaoInvalida;
 import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
 
@@ -175,6 +176,14 @@ public class Produto{
 			}
 		}
 		return null;
+	}
+	
+	//esse metododeve ser chamado apenas pelo controller venda
+	public void removerQuantidadeDeEstoque(double quantidade) throws ProdutoABaixoDoEstoqueException{
+		this.quantidadeEmEstoque -= quantidade;
+		if(this.quantidadeEmEstoque > 0 ){
+			throw new ProdutoABaixoDoEstoqueException();
+		}
 	}
 
 	//apenas quem deve usar esse metodo �� o Promocao.setProduto(Produto)
