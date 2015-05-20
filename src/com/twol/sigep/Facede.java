@@ -2,6 +2,7 @@ package com.twol.sigep;
 
 import java.util.List;
 
+import com.twol.sigep.controller.ControllerConfiguracao;
 import com.twol.sigep.controller.ControllerEstoque;
 import com.twol.sigep.controller.ControllerLogin;
 import com.twol.sigep.controller.ControllerPagamento;
@@ -12,8 +13,10 @@ import com.twol.sigep.controller.find.FindFuncionario;
 import com.twol.sigep.controller.find.FindPagamento;
 import com.twol.sigep.controller.find.FindProduto;
 import com.twol.sigep.controller.find.FindVenda;
+import com.twol.sigep.model.configuracoes.PermissaoFuncionario;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.FuncionarioNaoAutorizadoException;
 import com.twol.sigep.model.exception.LoginIncorretoException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
@@ -42,13 +45,16 @@ public class Facede {
 		pes = new ControllerPessoa(Persistencia.emf);
 		pagam = new ControllerPagamento(Persistencia.emf);
 		vend = new ControllerVenda(Persistencia.emf);
+		new ControllerConfiguracao(Persistencia.emf);
 		lg = new ControllerLogin();
 		
 		Funcionario logado = SessionUtil.getFuncionarioLogado();
 		vend.setLogado(logado);
 	}
 
-	public void adicionarCliente(Cliente c) {
+	public void adicionarCliente(Cliente c) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.CADASTRAR_CLIENTES);
 		pes.create(c);
 	}
 
@@ -80,10 +86,14 @@ public class Facede {
 	public List<String> buscarNomeClientePorNomeQueInicia(String nome) {
 		return FindCliente.nomeClientesQueNomeInicia(nome);
 	}
+	
+	public Cliente buscarClientePorNome(String nome) {
+		return FindCliente.clienteComNome(nome);
+	}
 
 	// Verificar necessidade
 	public Cliente buscarClientePorCPF(String cpf) {
-		return FindCliente.clientesComCPF(cpf);
+		return FindCliente.clienteComCPF(cpf);
 	}
 
 	public void adicionarDependente(Dependente d) {
@@ -108,7 +118,9 @@ public class Facede {
 	}
 
 	public void adicionarFuncionario(Funcionario f, String senha,
-			TipoDeFuncionario tipoDeFuncionario) throws SenhaIncorretaException {
+			TipoDeFuncionario tipoDeFuncionario) throws SenhaIncorretaException, FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.CADASTRAR_FUNCIONARIO);
 		lg.atribuirSenhaETipoAoFuncionario(f, senha, tipoDeFuncionario);
 		pes.create(f);
 	}
@@ -120,6 +132,18 @@ public class Facede {
 	
 	public List<Funcionario> buscarFuncionarioPorNomeQueInicia(String nome) {
 		return FindFuncionario.funcionariosQueNomeInicia(nome);
+	}
+	
+	public Funcionario buscarFuncionarioPorNome(String nome) {
+		return FindFuncionario.funcionarioComNome(nome);
+	}
+	
+	public Funcionario buscarFuncionarioPorCPF(String cpf) {
+		return FindFuncionario.funcionarioComCPF(cpf);
+	}
+	
+	public Funcionario buscarFuncionarioPorLogin(String login) {
+		return FindFuncionario.funcionarioComLogin(login);
 	}
 	
 	public Funcionario buscarFuncionarioPorId(int id) {
@@ -148,7 +172,9 @@ public class Facede {
 	/*
 	 * Metodos de produto
 	 */
-	public void adicionarProduto(Produto p) {
+	public void adicionarProduto(Produto p) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.CADASTRAR_PRODUTO);
 		est.create(p);
 	}
 
@@ -313,11 +339,19 @@ public class Facede {
 	}
 
 	public double adicionarPagamento(Pagamento pagamento)
-			throws ParametrosInvalidosException {
+			throws EntidadeNaoExistenteException, ParametrosInvalidosException, Exception {
+		Cliente c = FindCliente.clienteComId(pagamento.getCliente().getId());
+		double troco= 0;
+		if(c.getDebito() < pagamento.getValor()){
+			troco = c.getDebito() - pagamento.getValor();
+			pagamento.setValor(c.getDebito());
+		}
 		pagam.create(pagamento);
-		// falta chamar o outro metodo de venda
-		// falta atualizar o debito do cliente
-		return 0;
+		vend.abaterValorDoPagamentoNaVenda(pagamento);
+		c.diminuirDebito(pagamento.getValor());
+		pes.edit(c);
+		
+		return troco;
 	}
 
 	public List<Venda> getListaVendasNaoPagasDeHoje() {
@@ -331,5 +365,18 @@ public class Facede {
 	public List<Venda> buscarVendaNaoPagaDoCliente(Cliente cliente) {
 		return FindVenda.vendasNaoPagaDoCliente(cliente);
 
+	}
+	
+	public boolean getValor(String chave, TipoDeFuncionario tipo){
+		return ControllerConfiguracao.getValor(chave, tipo);
+	}
+	
+	public void putValor(String chave, boolean valor,
+			TipoDeFuncionario tipo){
+		ControllerConfiguracao.putValor(chave, valor, tipo);
+	}
+	
+	public void permissoesDeFuncionariosDefalt(){
+		PermissaoFuncionario.configuracoesDefalt();
 	}
 }

@@ -10,6 +10,7 @@ import javax.persistence.criteria.Root;
 import com.twol.sigep.controller.find.FindVenda;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
@@ -29,7 +30,8 @@ public class ControllerPagamento {
 	/*
 	 * Pagamento
 	 */
-	public void create(Pagamento pagamento) {
+	public void create(Pagamento pagamento) throws ParametrosInvalidosException {
+		regrasDeUmPagamento(pagamento);
 		EntityManager em = null;
 		try {
 			em = getEntityManager();
@@ -124,27 +126,14 @@ public class ControllerPagamento {
 			em.close();
 		}
 	}
-
 	
-	//isso deve ficar em controllerVenda
-	public void abaterValorDoPagamentoNaVenda(Pagamento p){
-		Cliente c = p.getCliente();
-		double valorRestante = p.getValor(); 
-		for(Venda v : FindVenda.vendasNaoPagaDoCliente(c)){
-			if(valorRestante == 0){//ja pagou a venda
-				break;
-			}
-			if(v.getValorNaoPagoDaVenda() > valorRestante){//paga parte da venda
-				v.acrescentarPartePagaDaVenda(valorRestante);
-				valorRestante = 0;
-				//atualizarVenda
-				break;
-			}else{//paga venda toda, pode sobrar resto pra outras vendas ou nao
-				valorRestante -= v.getValorNaoPagoDaVenda();
-				v.acrescentarPartePagaDaVenda(v.getValorNaoPagoDaVenda());
-			}
+	private void regrasDeUmPagamento(Pagamento p) throws ParametrosInvalidosException{
+		if(p.getValor() < 0){//pagamentos nao podem ter o valor negativo
+			throw new ParametrosInvalidosException("Pagamento com valor negativo");
+		}else if(p.getCliente() == null){
+			throw new ParametrosInvalidosException("Pagamento sem cliente");
 		}
-		//logo em seguida deve diminuir o debito do cliente com o valor do pagamento
+		
 	}
 
 }

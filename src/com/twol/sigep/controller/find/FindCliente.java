@@ -163,7 +163,7 @@ public class FindCliente {
 		return c;
 	}
 	
-	public static Cliente clientesComNome(
+	public static Cliente clienteComNome(
 			String nome) {
 		if (nome == null || nome.length() == 0)
 			throw new IllegalArgumentException(
@@ -178,7 +178,7 @@ public class FindCliente {
 		return cliente;
 	}
 	
-	public static Cliente clientesComCPF(
+	public static Cliente clienteComCPF(
 			String cpf) {
 		if (cpf == null || cpf.length() == 0)
 			throw new IllegalArgumentException(

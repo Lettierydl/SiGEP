@@ -25,7 +25,7 @@ public class Funcionario {
 	
     /**
      */
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nome;
     
     @Column(nullable = false, unique = true, length = 50)
@@ -44,7 +44,7 @@ public class Funcionario {
 
     /**
      */
-    @Column(nullable = false, length = 11)
+    @Column(nullable = false, length = 11, unique = true)
     private String cpf;
     
     /**

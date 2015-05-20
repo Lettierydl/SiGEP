@@ -3,18 +3,19 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
+	
 <h:head>
 	<title>Cloud Sistem</title>
 	
-	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Dosis"/>
 	<link type="text/css" rel="stylesheet" href="css/login.css" />
 </h:head>
 <h:body id="body">
 	<div class="logo">
 		<img src="imagens/logo.png" />
 	</div>
-	<h:form>
+	<h:form id="form">
 		<div class="formulario">
 			<h:inputText id="login" required="true" maxlength="50"
 				value="#{loginBean.login}" requiredMessage="Login inválido" p:placeholder="nome de usuário" >
@@ -29,5 +30,6 @@
 				value="entrar" class="entrar" />
 		</div>
 	</h:form>
+	<pi:focus for="form:login"/>
 </h:body>
 </html>

@@ -20,6 +20,10 @@ public class SessionUtil {
 	public static final String KEY_NEXT_MESAGEM = "NEXT_MESAGEM";
 	public static final String PAGE_PRINCIPAL = "restrito/home.jsf";
 	public static final String PAGE_INICIAL = "/CloudSistem/";
+	public static final String PAGE_PAGAMENTO = "pagamento.jsf";
+	public static final String PAGE_CLIENTE = "cliente.jsf";
+	public static final String PAGE_PRODUTO = "produto.jsf";
+	public static final String PAGE_FUNCIONARIO = "funcionario.jsf";
 	
 	
 
@@ -80,7 +84,7 @@ public class SessionUtil {
     public static String getNextPage(){
     	return (String) obterSession().getAttribute(KEY_NEXT_PAGE);
     }
-    
+   
     public static void putNextPage(String url){
     	obterSession().setAttribute(KEY_NEXT_PAGE, url);
     }
@@ -95,6 +99,10 @@ public class SessionUtil {
     
     public static void putNextMensagem(FacesMessage msg){
     	obterSession().setAttribute(KEY_NEXT_MESAGEM, msg);
+    }
+    
+    public static void exibirMensagem(FacesMessage msg){
+    	FacesContext.getCurrentInstance().addMessage(null, msg);
     }
     
     public static void redirecionarParaPage(String page) throws IOException {

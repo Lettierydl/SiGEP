@@ -36,10 +36,10 @@ public class Produto{
 	@Column(nullable = false, unique = true, length = 13)
 	private String codigoDeBarras;
 
-	@Column(nullable = false)
+	@Column(nullable = false, unique=true)
 	private String descricao;
 	
-
+	
 	@Column(nullable = false, precision = 2)
 	private double valorDeCompra;
 

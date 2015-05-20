@@ -1,3 +1,20 @@
+@CHARSET "UTF-8";
+
+@font-face {
+	font-family: DosisSemiBold;
+	src: url("../fonts/DosisSemiBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: DosisExtraBold;
+	src: url("../fonts/DosisExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: Dosis;
+	src: url("../fonts/DosisRegular.ttf") format("truetype");
+}
+
 
 .modal {
 	position: absolute;
@@ -7,6 +24,11 @@
 .modal_pequeno{
 	position: absolute;
 	width: 55%;
+}
+
+.modal_complementar{
+	position: absolute;
+	width: 35%;
 }
 
 .formulario  table{
@@ -63,6 +85,24 @@
 	font-size: 17px;
 	font-family: "Dosis";
 	line-height: 2.922;
+	border-style: groove;
+	
+	color: rgb(143, 143, 143);
+	padding-left: 20px;
+	border-bottom-style:1.5px dashed rgba(238, 238, 238, 1);
+	box-shadow: 0.1px 2.0px 0px 0px rgba(218, 217, 217, 0.392);
+	box-shadow: 3px 3px 1px 0px rgba(238, 238, 238, 1);
+}
+
+.formulario textarea{
+	float: left;
+	height: 150px;
+	width: 93%;
+	margin-bottom:20px;
+	
+	/*font*/
+	font-size: 17px;
+	font-family: "Dosis";
 	border-style: groove;
 	
 	color: rgb(143, 143, 143);

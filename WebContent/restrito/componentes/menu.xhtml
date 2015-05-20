@@ -7,19 +7,6 @@
 	xmlns:pi="http://primefaces.org/ui">
 <h:head>
 	<title>Cloud Sistem</title>
-	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
-	<link rel="stylesheet" type="text/css"
-		href="http://fonts.googleapis.com/css?family=Dosis" />
-
-
-	<link rel="stylesheet" href="../foundation/css/foundation.css" />
-	<script src="../foundation/js/vendor/modernizr.js"></script>
-
-	<script type="text/javascript" src="../js/jquery.js" />
-
-	<link rel="stylesheet"
-		href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
-	<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
 </h:head>
 
@@ -36,7 +23,8 @@
 							<a href="home.jsf" /> <img src="../imagens/home_ico.png" /> <span>home</span>
 						</div>
 						<div class="botao_impar" id="venda">
-							<a href="venda.jsf"  /> <img src="../imagens/venda_ico.png" /> <span>venda</span>
+							<a href="venda.jsf" /> <img src="../imagens/venda_ico.png" />
+							<span>venda</span>
 						</div>
 						<div class="botao_par" id="pagamento">
 							<a href="pagamento.jsf" /> <img
@@ -64,24 +52,43 @@
 			<div class="barra_inferior">
 				<div>
 					<span class="ajuda">#{msgs.ajuda}</span>
-					<div class="menu-usuario"  data-dropdown="hover1" data-options="is_hover:true">
-						
+					<div class="menu-usuario" data-dropdown="hover1"
+						data-options="is_hover:true">
+
 						<a class="logado">#{funcionarioBean.funcionarioLogado.nome}</a>
-						
-							<ul id="hover1" class="submenu f-dropdown" data-dropdown-content="hover1">
-								<li><a href="funcionario.jsf">minha conta</a></li>
-								<li><a href="logoff.jsf">sair</a></li>
-							</ul>
-						
+
+						<ul id="hover1" class="submenu f-dropdown"
+							data-dropdown-content="hover1">
+							<li><a href="funcionario.jsf">minha conta</a></li>
+							<li><a onclick="abrirModa('modalLogoff');">sair</a></li>
+						</ul>
+
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
-		<script src="../foundation/js/foundation/foundation.dropdown.js"></script>
-		<script src="../foundation/js/foundation.min.js"></script>
-		
+
+
+		<div id="modalLogoff" class="reveal-modal modal_pequeno"
+			data-reveal="modalLogoff">
+			<h2>Sair do sistema</h2>
+			<br />
+
+			<h:outputLabel value="Tem certeza que deseja sair do sistema?" />
+			<br />
+			<h:form >
+				<h:commandButton value="Sair" actionListener="#{logoffBean.logoff}"
+					styleClass="botao" />
+				<h:commandButton value="Cancelar" actionListener="#{logoffBean.nao}"
+					styleClass="botao" />
+			</h:form>
+			<a class="close-reveal-modal">&#215;</a>
+		</div>
+		<!-- fim modal remover item -->
+
+
+
 	</ui:composition>
 
 </h:body>

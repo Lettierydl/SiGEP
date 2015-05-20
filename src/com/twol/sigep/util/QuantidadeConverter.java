@@ -17,7 +17,11 @@ public class QuantidadeConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {
-		return new DecimalFormat("0.000").format(arg2);
+		if(arg2.toString() != "0.0"){
+			return new DecimalFormat("0.000").format(arg2);
+		}else{
+			return  "0";
+		}
 	}
 
 }

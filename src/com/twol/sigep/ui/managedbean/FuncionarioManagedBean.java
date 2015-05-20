@@ -2,6 +2,7 @@ package com.twol.sigep.ui.managedbean;
 
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
@@ -10,10 +11,12 @@ import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.FuncionarioNaoAutorizadoException;
 import com.twol.sigep.model.exception.LoginIncorretoException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
+import com.twol.sigep.util.SessionUtil;
 @ViewScoped
 @ManagedBean(name = "funcionarioBean")
 public class FuncionarioManagedBean {
@@ -37,15 +40,16 @@ public class FuncionarioManagedBean {
 	}
 
 	public void cadastrarFuncionario(){
-		try{
-			validarInformacoesCadastrais(newFuncionario);
-		}catch(Exception e){
-			return;
-		}
 		try {
 			f.adicionarFuncionario(newFuncionario, senha, tipoDoFuncionario);
 		} catch (SenhaIncorretaException e) {
 			e.printStackTrace();
+		} catch (FuncionarioNaoAutorizadoException e) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						e.getMessage(),
+						e.getMessage()));
+			return;
 		}
 		newFuncionario = new Funcionario();
 		listAtualDeFuncionarios = f.getFuncionarios();

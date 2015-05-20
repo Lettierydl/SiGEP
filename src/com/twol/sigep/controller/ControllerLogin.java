@@ -35,20 +35,17 @@ public class ControllerLogin {
 	}
 
 	public void logoff() {
-		if (logado != null) {
 			SessionUtil.putFuncionarioLogado(null);
 			logado = null;
-			//registrar logoff em algum canto
-		}
 	}
 	
 	
 	public void atribuirSenhaETipoAoFuncionario(Funcionario f, String senha, TipoDeFuncionario tipoDeFuncionario) throws SenhaIncorretaException{
-		if(f.getSenha()==null){
+		if(f.getSenha() == null){
 			f.setSenha(this.criptografar(senha));
 			f.setTipoDeFuncionario(tipoDeFuncionario);
 		}else{
-			throw new SenhaIncorretaException("Senha j�� cadastrada para este funcionario");
+			throw new SenhaIncorretaException("Senha já cadastrada para este funcionario");
 		}
 	}
 	

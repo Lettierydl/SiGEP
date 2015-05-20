@@ -53,6 +53,9 @@ function maskTelefone(idCampo) {
 	$("#" + idCampo).mask("(99) 9999-9999");
 }
 
+function alerta(mensagem){
+	alert(mensagem);
+}
 
 function requestFullScreen() {
 	var element = document.body;

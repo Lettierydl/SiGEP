@@ -163,16 +163,18 @@ body .dimensao {
 	width: 239px;
 }
 
-#codigo_panel {
+
+#nomeCliente_panel ul, #codigo_panel ul{
+	width: 100%;
 	background-color: white;
 }
 
-#codigo_panel table{
-	width: 100%;
+#nomeCliente_panel li:hover, #codigo_panel li:hover{
+	background-color: #3CABC6;
 }
 
-#codigo_panel tr:hover{
-	background-color: #f7f7f7;
+.ui-state-highlight{
+	background-color: #3CABC6;
 }
 
 .botao {

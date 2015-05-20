@@ -1,7 +1,28 @@
-@CHARSET "US-ASCII";
+@CHARSET "UTF-8";
+
+@font-face {
+	font-family: DosisSemiBold;
+	src: url("../fonts/DosisSemiBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: DosisExtraBold;
+	src: url("../fonts/DosisExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: Dosis;
+	src: url("../fonts/DosisRegular.ttf") format("truetype");
+}
 
 *, *:before, *:after {
     box-sizing: content-box;
+}
+
+a{
+	color:#008CBA;
+	line-height: inherit;
+	text-decoration: none;
 }
 
 .logo {

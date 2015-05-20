@@ -15,40 +15,16 @@
 	<link type="text/css" rel="stylesheet" href="../css/venda.css" />
 
 	<script type="text/javascript" src="../js/componentes.js" />
-	<script type="text/javascript" src="../js/jquery.maskedinput.js" />
-	<script type="text/javascript" src="../js/jquery.mask.js" />
-
-
-
-
-
-	<script>
-		jQuery(function($) {
-			$('.CPFMask').mask("999.999.999-99");
-			$('.DateMask').mask("99/99/9999");
-			$('.TelMask').mask("(99) 9999-9999");
-			$('.money').mask('000000000,00', {
-				reverse : true
-			});
-			$('.quantidade').mask('000000000,000', {
-				reverse : true
-			});
-			$('#codigo').focus();
-
-		});
-		
-		$(document).ready(function(){
-		    $('#formulario').bind('keydown',function(e){
-		    	if(e.keyCode == 32){
-				    e.preventDefault();
-					//$("#itens").css("display", "none");
-				}
-			});
-		});	
-		
-	</script>
+	<script type="text/javascript" src="../js/numeric.js" />
 	
-	<h:form>
+	<script type="text/javascript">
+		jQuery(function($){
+			$(".quantidade").numeric({ decimal : ",",  negative : false, scale: 3 });
+		 });
+	</script>
+
+	
+	<h:form rendered="false">
 		<pi:remoteCommand name="verificarPendentes" actionListener="#{vendaBean.verificarVendasPendentes}"/>
 	</h:form>
 
@@ -77,7 +53,7 @@
 		<div class="descricao">
 			<div class="dimensao">
 				<h:outputLabel value="#{vendaBean.ultimoItemVendido.produto.descricao}" styleClass="produto"/> <br/>
-					<h:outputLabel styleClass="calculo">
+				<h:outputLabel styleClass="calculo">
 					<h:outputLabel value="#{vendaBean.ultimoItemVendido.quantidade}" converter="valueUnidadeConverter"/> x 
 					<h:outputLabel value="#{vendaBean.ultimoItemVendido.valorProduto}" converter="valueConverter"/> = 
 					<span><h:outputLabel value="#{vendaBean.ultimoItemVendido.total}" converter="valueConverter"/></span>
@@ -101,21 +77,16 @@
 						<h:outputLabel value="Código de barras ou nome" for="codigo"  />
 						<h:outputLabel value="Quantidade" for="quantidade"/>
 					
-						<pi:autoComplete p:id="codigo" id="codigo" value="#{vendaBean.codigo}" styleClass="codigo_autocomplet" p:class="codigo_autocomplet"
-						completeMethod="#{vendaBean.completMetodo}" valueChangeListener="#{vendaBean.digitado}"  
-						var="cod" onkeypress="if(event.keyCode == 13){enterkey();return false;}">
-						
-							<pi:ajax event="keyup" update="quantidade"/>
-							
-							<pi:column selectionMode="single" headerClass="large-4">
-				                <h:outputText value="#{cod}"/>
-				            </pi:column>
-							
-						</pi:autoComplete>
-
+					
+					<pi:autoComplete p:id="codigo" id="codigo" value="#{vendaBean.codigo}" styleClass="codigo_autocomplet"
+					completeMethod="#{vendaBean.completMetodo}" valueChangeListener="#{vendaBean.digitado}"  onkeypress="if(event.keyCode == 13){enterkey();return false;}">
+						<pi:ajax event="keyup" update="quantidade"/>
+					</pi:autoComplete>
+					
+					
 					    
 					    <h:inputText   id="quantidade"  value="#{vendaBean.quantidade}"  converter="valueUnidadeConverter"
-					    p:onkeypress="if(event.keyCode == 13){document.getElementById('codigo').focus();}"/>
+					    p:onkeypress="if(event.keyCode == 13){document.getElementById('codigo').focus();}" styleClass="quantidade"/>
 					    
 					   	 <pi:focus for="codigo" />
 					   
@@ -173,7 +144,7 @@
 		    
 			<pi:remoteCommand name="removeritem" actionListener="#{vendaBean.removerItem()}" update="@form"/>
 			<pi:remoteCommand name="naoremoveritem" actionListener="#{vendaBean.cancelarItemRemovido()}" update="@form"/>
-			<pi:growl id="growl" life="5000" />  
+			<pi:growl id="growl" life="3000" />  
 		</h:form>
 		
 		

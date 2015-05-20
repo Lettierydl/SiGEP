@@ -13,6 +13,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
+import org.primefaces.context.RequestContext;
+
 import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Cliente;
@@ -44,6 +46,18 @@ public class FinalizarManagedBean {
 		}
 	}
 
+	public void verificarCliente(){
+		try{
+		f.buscarClientePorNome(nomeCliente);
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Selecione um cliente cadastrado","Cliente não selecionado")));
+			return;// nenhum produto encontrado
+		}
+		RequestContext.getCurrentInstance().execute(
+				"setFocoESelecionaValorPago();");
+	}
+	
+	
 	public List<Cliente> getClientes() {
 		return f.getListaClientes();
 	}
@@ -131,21 +145,23 @@ public class FinalizarManagedBean {
 
 	public String getTroco() {
 		if ((this.pago - aFinalizar.getTotal()) > 0) {
-			return new DecimalFormat("0.00").format(this.pago
-					- aFinalizar.getTotal());
+			return new DecimalFormat("0.00").format(this.pago - aFinalizar.getTotal());
 		}
 		return "0,00";
 	}
 
 	public String getPago() {
-		return new DecimalFormat("0.00").format(this.pago);
+		if(this.pago != 0){
+			return new DecimalFormat("0.00").format(this.pago);
+		}
+		return "0";
 	}
 
 	public void setPago(String pago) {
 		try {
-			this.pago = Double.valueOf(pago.replace(".", "").replace(" ", "")
-					.replace(",", "."));
+			this.pago = Double.valueOf(pago.replace(".", "").replace(" ", "").replace(",", "."));
 		} catch (NumberFormatException ne) {
+			SessionUtil.putNextMensagem(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Formato de valor errado","Formato errado"));
 			this.pago = 0;
 		}
 	}
@@ -195,7 +211,10 @@ public class FinalizarManagedBean {
 	}
 
 	public String getPartePaga() {
-		return new DecimalFormat("0.00").format(partePaga);
+		if(this.partePaga != 0){
+			return new DecimalFormat("0.00").format(this.partePaga);
+		}
+		return "0";
 	}
 
 	public void setPartePaga(String partePaga) {

@@ -29,7 +29,7 @@ public class Cliente {
 	
 	/**
      */
-	@Column(nullable = false, precision = 2)
+	@Column(nullable = false, precision = 2, unique = true)
 	private String nome;
 
 	/**
@@ -41,7 +41,7 @@ public class Cliente {
 	/**
 	 * sem a mascara
      */
-	@Column(nullable = true, length = 11)
+	@Column(nullable = true, length = 11, unique = true)
 	private String cpf;
 
 	/**

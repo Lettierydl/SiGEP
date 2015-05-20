@@ -16,6 +16,7 @@ import com.twol.sigep.controller.find.FindCliente;
 import com.twol.sigep.controller.find.FindFuncionario;
 import com.twol.sigep.controller.find.FindPagamento;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
@@ -45,7 +46,7 @@ public class ControllerPagamentoTest {
 		return p;
 	}
 	
-	private Pagamento iniciarPagamentoESalvarNoBanco(){
+	private Pagamento iniciarPagamentoESalvarNoBanco() throws ParametrosInvalidosException{
 		Pagamento p = iniciarPagamentoInformacoesAleatorias(valor);
 		pa.create(p);
 		return p;
@@ -77,7 +78,7 @@ public class ControllerPagamentoTest {
 	 * Pagamento
 	 */
 	@Test
-	public void createPagamentoTest() {
+	public void createPagamentoTest() throws ParametrosInvalidosException {
 		Pagamento p = iniciarPagamentoInformacoesAleatorias(valor);
 		pa.create(p);
 		assertEquals(FindPagamento.pagamentoId(p.getId()), p);
@@ -92,14 +93,14 @@ public class ControllerPagamentoTest {
 	}
 	
 	@Test(expected=NoResultException.class )
-	public void destroyClienteTest() throws EntidadeNaoExistenteException  {
+	public void destroyClienteTest() throws EntidadeNaoExistenteException, ParametrosInvalidosException  {
 		Pagamento p = iniciarPagamentoESalvarNoBanco();
 		pa.destroy(p);
 		FindPagamento.pagamentoId(p.getId());
 	}
 	
 	@Test
-	public void removeAllPagamentoTest() {
+	public void removeAllPagamentoTest() throws ParametrosInvalidosException {
 		for(int i =0; i>5;i++){
 			Pagamento p = iniciarPagamentoInformacoesAleatorias(valor*i);
 			pa.create(p);
@@ -112,7 +113,7 @@ public class ControllerPagamentoTest {
 	 * Relacionamento Pagamento Cliente 
 	 */
 	@Test
-	public void createPagamentoComClienteTest() {
+	public void createPagamentoComClienteTest() throws ParametrosInvalidosException {
 		Cliente c = iniciarClienteInformacoesAleatorias(nome);
 		pe.create(c);
 		Pagamento p = iniciarPagamentoInformacoesAleatorias(valor);
@@ -152,7 +153,7 @@ public class ControllerPagamentoTest {
 	 * Relacionamento Pagamento Funcionario 
 	 */
 	@Test
-	public void createPagamentoComFuncionarioTest() {
+	public void createPagamentoComFuncionarioTest() throws ParametrosInvalidosException {
 		Funcionario c = iniciarFuncionarioInformacoesAleatorias(nome);
 		pe.create(c);
 		Pagamento p = iniciarPagamentoInformacoesAleatorias(valor);

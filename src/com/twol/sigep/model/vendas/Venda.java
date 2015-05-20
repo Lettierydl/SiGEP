@@ -181,7 +181,7 @@ public class Venda implements Comparable<Venda>{
 	public void acrescentarPartePagaDaVenda(double partePagaDaVenda) {
 		this.partePaga += partePagaDaVenda;
 		this.partePaga = new BigDecimal(partePaga).setScale(5, RoundingMode.HALF_UP).doubleValue();
-		if(partePagaDaVenda >= getTotalComDesconto()){
+		if(this.partePaga >= getTotalComDesconto()){
 			setPaga(true);
 		}
 	}

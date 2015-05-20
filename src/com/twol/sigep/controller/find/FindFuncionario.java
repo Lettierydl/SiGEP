@@ -142,6 +142,20 @@ public class FindFuncionario {
 		return Funcionario;
 	}
 	
+	public static Funcionario funcionarioComCPF(String cpf) {
+		if (cpf == null || cpf.length() == 0)
+			throw new IllegalArgumentException(
+					"������ necess������rio um nome v������lido");
+		Persistencia.restartConnection();
+		Query q = Persistencia.em
+				.createQuery(
+						"select o from Funcionario as o where o.cpf = :cpf",
+						Funcionario.class);
+		q.setParameter("cpf", cpf);
+		Funcionario Funcionario = (Funcionario) q.getSingleResult();
+		return Funcionario;
+	}
+	
 	public static Funcionario funcionarioComLoginESenha
 	(String login, String senha){
 		Persistencia.restartConnection();

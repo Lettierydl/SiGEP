@@ -15,16 +15,12 @@
 	<link type="text/css" rel="stylesheet" href="../css/venda.css" />
 
 	<script type="text/javascript" src="../js/componentes.js" />
-	<script type="text/javascript" src="../js/jquery.maskedinput.js" />
-	<script type="text/javascript" src="../js/jquery.mask.js" />
-
-
-	<script>
-		jQuery(function($) {
-			$('.money').mask('000000000,00', {
-				reverse : true
-			});
-		});
+	<script type="text/javascript" src="../js/numeric.js" />
+	
+	<script type="text/javascript">
+		jQuery(function($){
+			$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
+		 });
 	</script>
 
 </h:head>
@@ -67,9 +63,9 @@
 						<h:outputLabel value="Troco: " for="troco" />
 
 						<h:inputText id="valorPago" value="#{finalBean.pago}"
-							styleClass="money"
 							valueChangeListener="#{finalBean.modificValorPago}"
-							maxlength="10" title="Valor à vista pago pelo cliente">
+							maxlength="10" title="Valor à vista pago pelo cliente"
+							styleClass="money">
 							<f:ajax event="keyup" render="troco" />
 						</h:inputText>
 
@@ -92,7 +88,7 @@
 					</h:commandLink>
 				</div>
 
-				<pi:focus for="valorPago" />
+				<pi:focus for="valorPago" minSeverity=""/>
 
 			</div>
 			<!-- final coluna direita -->
@@ -167,6 +163,8 @@
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script>
 		$(document).foundation();
+		document.getElementById("valorPago").select();
+		document.getElementById("valorPago").focus();
 	</script>
 
 </h:body>

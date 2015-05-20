@@ -121,11 +121,20 @@ public class VendaManagedBean {
 		try {
 			p = f.buscarProdutoPorDescricaoOuCodigo(codigo);
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(
-					null,(new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "Produto ( "+codigo+" ) não cadastrado",
-							"Produto Invalido")));
+			FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Produto ( " + codigo + " ) não cadastrado","Produto Invalido")));
 			return;// nenhum produto encontrado
+		}
+		
+		if (quantidade == 0) {
+			FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Quantidade não pode ser zero","Quantidade Invalida")));
+			quantidade = 1;
+			RequestContext.getCurrentInstance().update("@all");
+			return;
+		} else if (quantidade < 0) {
+			FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Quantidade não pode negativa","Quantidade Invalida")));
+			quantidade = 1;
+			RequestContext.getCurrentInstance().update("quantidade");
+			return;
 		}
 		addItemAVenda(p, quantidade);
 		codigo = "";
@@ -217,9 +226,11 @@ public class VendaManagedBean {
 				e.printStackTrace();
 			}
 			SessionUtil.redirecionarParaPage(uri);
-		}else{
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Não há itens nessa venda",
-					"Venda Vazia"));
+		} else {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Não há itens nessa venda", "Venda Vazia"));
 		}
 	}
 

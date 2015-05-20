@@ -107,8 +107,8 @@ public class FindVenda {
 
 	public static List<Venda> vendasNaoPagaDeHoje() {
 		String stringQuery = "select v FROM Venda as v ";
-		stringQuery += "WHERE v.paga = false and day(v.dia) = day(curdate()) and v.dia >= curdate()"
-				+ " order by v.dia DESC ";
+		stringQuery += "WHERE v.paga = false and day(v.dia) = day(curdate()) and v.dia >= curdate() "
+				+ "and v.cliente != null order by v.dia DESC ";
 
 		Persistencia.restartConnection();
 		Query query = Persistencia.em.createQuery(stringQuery, Venda.class);

@@ -1,6 +1,20 @@
-@CHARSET "US-ASCII";
 @IMPORT url("default.css");
+@CHARSET "UTF-8";
 
+@font-face {
+	font-family: DosisSemiBold;
+	src: url("../fonts/DosisSemiBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: DosisExtraBold;
+	src: url("../fonts/DosisExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: Dosis;
+	src: url("../fonts/DosisRegular.ttf") format("truetype");
+}
 
 .botoes {
 	position: relative;
@@ -18,6 +32,32 @@
 .botoes a img:HOVER {
 	opacity: 0.9;
 }
+
+
+.modal_pequeno{
+	position: absolute;
+	max-width: 250px;
+	min-width: 240px;
+}
+
+.botao {
+    position: relative;
+    float: left;
+    display: block;
+    width: 90px;
+    border: medium none;
+    height: 50px;
+    background-color: #3CABC6;
+    box-shadow: 1.5px 2.598px 0px 0px rgba(218, 217, 217, 0.392);
+    cursor: pointer;
+    margin-right: 10px;
+    margin-top: 10px;
+    font-family: DosisSemiBold;
+    font-size: 14px;
+    color: #FFF;
+}
+
+
 
 
 @-webkit-keyframes fadeIn {

@@ -48,13 +48,13 @@ public class ControllerClienteTest {
 	public void createClienteTest() {
 		Cliente p = iniciarClienteInformacoesAleatorias(nome);
 		pe.create(p);
-		assertEquals(FindCliente.clientesComNome(nome), p);
+		assertEquals(FindCliente.clienteComNome(nome), p);
 	}
 	
 	@Test
 	public void editClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteTest();
-		Cliente p = FindCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clienteComNome(nome);
 		p.setNome("Cliente Alterado");
 		pe.edit(p);
 		assertEquals(FindCliente.clienteComId(p.getId()).getNome(), p.getNome());
@@ -63,9 +63,9 @@ public class ControllerClienteTest {
 	@Test(expected=NoResultException.class )
 	public void destroyClienteTest() throws EntidadeNaoExistenteException  {
 		createClienteTest();
-		Cliente p = FindCliente.clientesComNome(nome);
+		Cliente p = FindCliente.clienteComNome(nome);
 		pe.destroy(p);
-		FindCliente.clientesComNome(nome);
+		FindCliente.clienteComNome(nome);
 	}
 	
 	@Test

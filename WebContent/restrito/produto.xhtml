@@ -13,19 +13,14 @@
 	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
 	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
 
-	<link rel="stylesheet" type="text/css"
-		href="http://fonts.googleapis.com/css?family=Dosis" />
-
 
 	<script type="text/javascript" src="../js/componentes.js" />
-	<script type="text/javascript" src="../js/jquery.js" />
-	<script type="text/javascript" src="../js/jquery.maskedinput.js"/>
-	<script type="text/javascript" src="../js/jquery.mask.js"/>
+	<script type="text/javascript" src="../js/numeric.js" />
 	
 	<script type="text/javascript">
 		jQuery(function($){
-			$('.money').mask('000000000,00', {reverse: true});
-			$('.quantidade').mask('000000000,000', {reverse: true});
+			$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
+			$(".quantidade").numeric({ decimal : ",",  negative : false, scale: 3 });
 		 });
 	</script>
 	
@@ -39,6 +34,8 @@
 	<script>ativarMenuBotoes("produto");</script>
 
 	<div class="content">
+		<pi:growl id="growl" life="6000" autoUpdate="true"/>
+		
 		<h4 class="titulo-tabela">Produtos</h4>
 		
 		<h:form prependId="false">
@@ -100,7 +97,9 @@
 							<div class="large-5 columns" id="coluna1">
 							<h:panelGrid columns="2" >
 								<h:outputLabel value="Código:" for="editCodigo" />
-								<h:inputText id="editCodigo"  maxlength="13" value="#{produtoBean.editProduto.codigoDeBarras}" styleClass="campo-grande" title="Código de Barras"/>
+								<h:inputText id="editCodigo"  maxlength="13" value="#{produtoBean.editProduto.codigoDeBarras}" styleClass="campo-grande" title="Código de Barras" validatorMessage="Código com formato errado">
+									<f:validateRegex pattern="[0-9]*" />
+								</h:inputText>
 								
 								<h:outputLabel value="Descrição:" for="editDescricao" />
 								<h:inputText id="editDescricao" value="#{produtoBean.editProduto.descricao}" styleClass="campo-grande" />
@@ -118,18 +117,20 @@
 							<div class="large-6 columns" id="coluna2" align="right">
 								<h:panelGrid columns="4" >
 										<h:outputLabel value="Valor:" for="editValorV" />
-										<h:inputText id="editValorV" title="Valor de Venda" maxlength="11" 
-										value="#{produtoBean.editProduto.valorDeVenda}"  styleClass="campo-medio money" converter="valueConverter" />
+										<pi:inputText id="editValorV" title="Valor de Venda" maxlength="11" 
+										value="#{produtoBean.editProduto.valorDeVenda}"    placeholder="0,00" styleClass="campo-medio money" converter="valueConverter" >
+										</pi:inputText>
 									
 										<h:outputLabel value="Compra:" for="editValorC" />
-										<h:inputText id="editValorC" title="Valor de Compra"  maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio money" converter="valueConverter" />
+										<pi:inputText id="editValorC" title="Valor de Compra"   placeholder="0,00" maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio money" converter="valueConverter" />
 									
 										
 										<h:outputLabel value="Quantidade:" for="editQuantidade" />
-										<h:inputText id="editQuantidade" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Quantidade atual em estoque"/>
+										<pi:inputText id="editQuantidade"  placeholder="0,000" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio" converter="quantidadeConverter"  title="Quantidade atual em estoque">
+										</pi:inputText>
 									
 										<h:outputLabel value="Limite:" for="editLimite" />
-										<h:inputText id="editLimite" maxlength="11" value="#{produtoBean.editProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter" title="Limime mínimo permitido em estoque"/>
+										<pi:inputText id="editLimite"   placeholder="0,000" maxlength="11" value="#{produtoBean.editProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter" title="Limime mínimo permitido em estoque"/>
 									
 											
 										
@@ -164,10 +165,15 @@
 							<div class="large-5 columns" id="coluna1">
 							<h:panelGrid columns="2" >
 								<h:outputLabel value="Código:" for="inputCodigo" />
-								<h:inputText id="inputCodigo"  maxlength="13" value="#{produtoBean.newProduto.codigoDeBarras}" styleClass="campo-grande" title="Código de Barras"/>
+								<h:inputText id="inputCodigo"  maxlength="13" value="#{produtoBean.newProduto.codigoDeBarras}"
+								styleClass="campo-grande" title="Código de Barras" required="true" validator="produtoValidation" validatorMessage="Código com formato errado">
+									<f:validateRegex pattern="[0-9]*" />
+								
+								</h:inputText>
 								
 								<h:outputLabel value="Descrição:" for="inputDescricao" />
-								<h:inputText id="inputDescricao" value="#{produtoBean.newProduto.descricao}" styleClass="campo-grande" />
+								<h:inputText id="inputDescricao" value="#{produtoBean.newProduto.descricao}" 
+								styleClass="campo-grande" required="true" validator="produtoValidation" />
 								
 								<h:outputLabel value="Categoria:" for="inputCategoria" />
 								<h:selectOneMenu styleClass="combobox" id="inputCategoria" value="#{produtoBean.newProduto.categoria}"  >
@@ -182,16 +188,16 @@
 							<div class="large-6 columns" id="coluna2" align="right">
 								<h:panelGrid columns="4" >
 										<h:outputLabel value="Valor:" for="inputValorV" />
-										<h:inputText id="inputValorV" title="Valor de Venda" maxlength="11" value="#{produtoBean.newProduto.valorDeVenda}"  styleClass="campo-medio money" converter="valueConverter" />
+										<pi:inputText id="inputValorV" title="Valor de Venda"  placeholder="0,00" maxlength="11" value="#{produtoBean.newProduto.valorDeVenda}"  styleClass="campo-medio money" converter="valueConverter" required="true"/>
 									
 										<h:outputLabel value="Compra:" for="inputValorC" />
-										<h:inputText id="inputValorC" title="Valor de Compra"  maxlength="11" value="#{produtoBean.newProduto.valorDeCompra}"  styleClass="campo-medio money"  converter="valueConverter" />
+										<pi:inputText id="inputValorC" title="Valor de Compra"  placeholder="0,00" maxlength="11" value="#{produtoBean.newProduto.valorDeCompra}"  styleClass="campo-medio money"  converter="valueConverter" />
 									
 										<h:outputLabel value="Quantidade:" for="inputQuantidade" />
-										<h:inputText id="inputQuantidade" maxlength="11" value="#{produtoBean.newProduto.quantidadeEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Quantidade atual em estoque"/>
+										<pi:inputText id="inputQuantidade" placeholder="0,000" maxlength="11" value="#{produtoBean.newProduto.quantidadeEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Quantidade atual em estoque"/>
 									
 										<h:outputLabel value="Limite:" for="inputLimite" />
-										<h:inputText id="inputLimite" maxlength="11" value="#{produtoBean.newProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Limime mínimo permitido em estoque"/>
+										<pi:inputText id="inputLimite" maxlength="11"   placeholder="0,000" value="#{produtoBean.newProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Limime mínimo permitido em estoque"/>
 									
 											
 										
@@ -222,10 +228,16 @@
 	</div> <!-- Fim content -->
 
 	
-	<script type="text/javascript" src="../foundation/js/vendor/jquery.js" />
 	<script src="../foundation/js/foundation.min.js"></script>
-	<script>
+	<script type="text/javascript">
 		$(document).foundation();
+		
+		jQuery(function($){
+			$(".quantidade").val("");
+			$(".money").val("");
+			
+		 });
+	
 	</script>
 	
 </h:body>

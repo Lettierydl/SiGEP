@@ -15,22 +15,16 @@
 	<link type="text/css" rel="stylesheet" href="../css/venda.css" />
 
 	<script type="text/javascript" src="../js/componentes.js" />
-	<script type="text/javascript" src="../js/jquery.maskedinput.js" />
-	<script type="text/javascript" src="../js/jquery.mask.js" />
 
-
-	<script>
-		jQuery(function($) {
-			$('.money').mask('000000000,00', {
-				reverse : true,
-				placeholder : "0,00"
-			});
-		});
+	<script type="text/javascript">
+		function setFocoESelecionaValorPago() {
+			document.getElementById('finalizarVenda').focus();
+		}
 	</script>
 
 </h:head>
 
-<h:body >
+<h:body>
 
 	<div class="top">
 		<h:commandButton id="full" onclick="requestFullScreen();"
@@ -61,7 +55,7 @@
 					<h:outputLabel value="#{finalBean.total}"
 						converter="valueConverter" />
 				</div>
-				
+
 				<h:outputLabel value="SubTotal" />
 				<div class="total">
 					<h:outputLabel value="#{finalBean.subTotal}" id="subTotal"
@@ -70,26 +64,29 @@
 
 
 				<div class="campos">
-						
-						<h:outputLabel value="Cliente" for="nomeCliente" />
-						
-						<pi:autoComplete id="nomeCliente" value="#{finalBean.nomeCliente}"
-							completeMethod="#{finalBean.completNomeCliente}" var="cli"
-							title="Nome do cliente">
-							
-							<pi:column selectionMode="single" headerClass="large-4">
-				                <h:outputText value="#{cli.nome}"/>
-				            </pi:column>
-						</pi:autoComplete>
-						
-						<h:outputLabel value="Parte Paga" for="valorPago" />
 
-						<h:inputText id="valorPago" value="#{finalBean.partePaga}"
-							styleClass="money"
-							valueChangeListener="#{finalBean.modificValorPago}"
-							maxlength="10" title="Parte da venda paga à vista pelo cliente">
-							<f:ajax event="keyup" render=":subTotal" />
-						</h:inputText>
+					<pi:remoteCommand name="enterkey"
+						actionListener="#{finalBean.verificarCliente()}"  />
+
+					<h:outputLabel value="Cliente" for="nomeCliente" />
+
+					<pi:autoComplete p:id="nomeCliente" id="nomeCliente"
+						value="#{finalBean.nomeCliente}"
+						completeMethod="#{finalBean.completNomeCliente}"
+						title="Nome do cliente"
+						onkeypress="if(event.keyCode == 13){enterkey();return false;}">
+					</pi:autoComplete>
+
+
+
+					<h:outputLabel value="Parte Paga" for="valorPago" />
+
+					<h:inputText id="valorPago" value="#{finalBean.partePaga}"
+						valueChangeListener="#{finalBean.modificValorPago}" maxlength="10"
+						title="Parte da venda paga à vista pelo cliente"
+						onkeypress="if(event.keyCode == 13){setFocoESelecionaValorPago();return false;}">
+						<f:ajax event="keyup" render=":subTotal" />
+					</h:inputText>
 				</div>
 
 
@@ -107,7 +104,7 @@
 					</h:commandLink>
 				</div>
 
-				<pi:focus for="nomeCliente" />
+				
 
 			</div>
 			<!-- final coluna direita -->
@@ -163,13 +160,14 @@
 
 		<h2>Remover Item</h2>
 		<br />
-		<h:form prependId="false" >
+		<h:form prependId="false">
 			<h:outputLabel value="Tem certeza que deseja cancelar a Venda?" />
 			<br />
-			<h:commandButton value="Deletar" id="removerVenda" actionListener="#{finalBean.cancelarVenda}"
-				 styleClass="botao"   title="Remover venda do sistema"/>
-			
-			
+			<h:commandButton value="Deletar" id="removerVenda"
+				actionListener="#{finalBean.cancelarVenda}" styleClass="botao"
+				title="Remover venda do sistema" />
+
+
 			<h:commandButton value="Cancelar"
 				p:onclick="fecharModal('modalCancelarVenda');" styleClass="botao" />
 		</h:form>
@@ -183,6 +181,9 @@
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script>
 		$(document).foundation();
+
+		document.getElementById("nomeCliente").select();
+		document.getElementById("nomeCliente").focus();
 	</script>
 
 </h:body>
