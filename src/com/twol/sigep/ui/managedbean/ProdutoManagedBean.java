@@ -7,7 +7,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.validator.ValidatorException;
 
 import org.primefaces.context.RequestContext;
 
@@ -39,7 +38,9 @@ public class ProdutoManagedBean {
 		try {
 			f.adicionarProduto(newProduto);
 		} catch (FuncionarioNaoAutorizadoException fe) {
-			SessionUtil.exibirMensagem(new FacesMessage(FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe.getMessage()));
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
+							.getMessage()));
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,13 +97,58 @@ public class ProdutoManagedBean {
 
 	public void editarProduto() {
 		try {
+			Produto oud = f.buscarProdutoPorId(editProduto.getId());
+			if (!oud.getCodigoDeBarras()
+					.equals(editProduto.getCodigoDeBarras())) {// modificou
+				try {
+					f.buscarProdutoPorCodigo(editProduto.getCodigoDeBarras());
+					SessionUtil.exibirMensagem((new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Já existe um produto com o código "
+									+ editProduto.getCodigoDeBarras(),
+							"Já existe um produto com o código "
+									+ editProduto.getCodigoDeBarras())));
+					editProduto.setCodigoDeBarras(oud.getCodigoDeBarras());
+					editProduto.setDescricao(oud.getDescricao());
+					return;
+				} catch (Exception ep) {
+				}// ok nao existe
+			}
+			if (!oud.getDescricao().equals(editProduto.getDescricao())) {// modificou
+				try {
+					f.buscarProdutoPorDescricao(editProduto.getDescricao());
+					SessionUtil.exibirMensagem((new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Já existe um produto com a descrição "
+									+ editProduto.getDescricao(),
+							"Já existe um produto com a descrição "
+									+ editProduto.getDescricao())));
+					editProduto.setDescricao(oud.getDescricao());
+					return;
+				} catch (Exception ep) {
+				}// ok nao existe
+			}
 			f.atualizarProduto(editProduto);
+		} catch (FuncionarioNaoAutorizadoException fe) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
+							.getMessage()));
+			return;
 		} catch (EntidadeNaoExistenteException e) {
+			SessionUtil.exibirMensagem((new FacesMessage(
+					FacesMessage.SEVERITY_FATAL,
+					"Reveja a conexão com o servidor",
+					"Reveja a conexão com o servidor")));
 			e.printStackTrace();
 		} catch (Exception e) {
+			SessionUtil.exibirMensagem((new FacesMessage(
+					FacesMessage.SEVERITY_FATAL,
+					"Formulário com informações inválidas",
+					"Formulário com informações inválidas")));
 			e.printStackTrace();
+		}finally{
+			RequestContext.getCurrentInstance().update("@all");
 		}
-		RequestContext.getCurrentInstance().update("@all");
 	}
 
 	public CategoriaProduto[] getCategorias() {

@@ -1,3 +1,4 @@
+addPtBrCalendar();
 
 
 function ativarMenuBotoes(titulo) {
@@ -22,14 +23,14 @@ function focus(idCampo) {
 	alert(idCampo);
 }
 
-//Abrir modal foundation
+// Abrir modal foundation
 function abrirModa(idModal) {
-	$( "#"+idModal ).foundation('reveal', 'open');
+	$("#" + idModal).foundation('reveal', 'open');
 }
 
-//Feixar modal foundation
+// Feixar modal foundation
 function fecharModal(idModal) {
-	$( "#"+idModal ).foundation('reveal', 'close');
+	$("#" + idModal).foundation('reveal', 'close');
 }
 
 function maskDatepicker(idCampo) {
@@ -53,7 +54,7 @@ function maskTelefone(idCampo) {
 	$("#" + idCampo).mask("(99) 9999-9999");
 }
 
-function alerta(mensagem){
+function alerta(mensagem) {
 	alert(mensagem);
 }
 
@@ -61,8 +62,7 @@ function requestFullScreen() {
 	var element = document.body;
 	// Supports most browsers and their versions.
 	var requestMethod = element.requestFullScreen
-			|| element.webkitRequestFullScreen
-			|| element.mozRequestFullScreen
+			|| element.webkitRequestFullScreen || element.mozRequestFullScreen
 			|| element.msRequestFullscreen;
 
 	if (requestMethod) { // Native full screen.
@@ -72,12 +72,45 @@ function requestFullScreen() {
 		if (wscript !== null) {
 			wscript.SendKeys("{F11}");
 		}
-	}else if (document.exitFullscreen) {
-	    document.exitFullscreen();
-	}else if (document.mozCancelFullScreen) {
-	    document.mozCancelFullScreen();
+	} else if (document.exitFullscreen) {
+		document.exitFullscreen();
+	} else if (document.mozCancelFullScreen) {
+		document.mozCancelFullScreen();
+	} else if (document.webkitCancelFullScreen) {
+		document.webkitCancelFullScreen();
 	}
-	else if (document.webkitCancelFullScreen) {
-	    document.webkitCancelFullScreen();
-	}
+}
+
+function addPtBrCalendar() {
+	PrimeFaces.locales['pt'] = {
+		closeText : 'Fechar',
+		prevText : 'Anterior',
+		nextText : 'Próximo',
+		currentText : 'Começo',
+		monthNames : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio',
+				'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro',
+				'Dezembro' ],
+		monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul',
+				'Ago', 'Set', 'Out', 'Nov', 'Dez' ],
+		dayNames : [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+				'Sexta', 'Sábado' ],
+		dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb' ],
+		dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+		weekHeader : 'Semana',
+		firstDay : 1,
+		isRTL : false,
+		showMonthAfterYear : false,
+		yearSuffix : '',
+		timeOnlyTitle : 'Só Horas',
+		timeText : 'Tempo',
+		hourText : 'Hora',
+		minuteText : 'Minuto',
+		secondText : 'Segundo',
+		currentText : 'Data Atual',
+		ampm : false,
+		month : 'Mês',
+		week : 'Semana',
+		day : 'Dia',
+		allDayText : 'Todo Dia'
+	};
 }

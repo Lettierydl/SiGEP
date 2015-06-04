@@ -54,6 +54,12 @@ public class ItemDeVenda  implements Comparable<ItemDeVenda>{
 	 */
 	@Column(nullable = false, precision = 2)
 	private double valorProduto;
+	
+	/**
+	 * Valor que o produto foi comprado quando aconteceu a venda
+	 */
+	@Column(nullable = false, precision = 2)
+	private double valorCompraProduto;
 
 	/**
 	 * Total da venda Sem contabilizar o desconto da promoção
@@ -164,6 +170,7 @@ public class ItemDeVenda  implements Comparable<ItemDeVenda>{
 	// deve ser utilizado apenas quando for setar o produto pela primeira vez
 	private void setValores(Produto p) {
 		valorProduto = p.getValorDeVenda();
+		valorCompraProduto = p.getValorDeCompra();
 		total = (quantidade * valorProduto);
 	}
 

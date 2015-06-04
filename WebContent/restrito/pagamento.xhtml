@@ -2,6 +2,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:pi="http://primefaces.org/ui">
 
 <h:head>
@@ -17,7 +18,13 @@
 
 	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/numeric.js" />
-
+		
+	<script type="text/javascript">
+		jQuery(function($){
+			$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
+			$(".quantidade").numeric({ decimal : ",",  negative : false, scale: 3 });
+		 });
+	</script>
 
 </h:head>
 
@@ -37,8 +44,10 @@
 					Pagamentos</a></li>
 			<li class="tab-title"><a href="#historico">Histórico de
 					Pagamentos</a></li>
+			<li class="tab-title"><a href="#dividas">Adicionar Dívida</a></li>
 		</ul>
 		<div class="tabs-content" id="tabs">
+
 			<div class="content active" id="aRealizar">
 				<div class="container" align="center">
 					<div class="subtabela">
@@ -55,6 +64,7 @@
 
 
 							<pi:autoComplete id="nomeCliente" styleClass="campo grade left"
+								p:class="campo grade left"
 								value="#{pagamentoBean.nomeClienteParaVenda}"
 								completeMethod="#{pagamentoBean.completNomeCliente}"
 								title="Nome do cliente" placeholder="Nome do Cliente"
@@ -65,13 +75,11 @@
 								<f:ajax event="keyup"
 									listener="#{pagamentoBean.modificarListaAtualDeVendasPeloCliente}"
 									render=":tableVed :info" />
-
-
 							</pi:autoComplete>
 
 
 							<h:panelGroup id="info">
-								<div class="info">
+								<div class="info" align="right">
 
 									<div class="debito" align="left">
 										<h:outputLabel id="saldoInfo" value="Débito:   "
@@ -130,35 +138,35 @@
 
 
 							<h:dataTable id="tableVed" styleClass="tabela"
-								value="#{pagamentoBean.listAtualDeVenda}" var="venda">
+								value="#{pagamentoBean.listAtualDeVenda}" var="pagavel">
 								<f:facet name="header">
-									<h4 align="center">Vendas não pagas</h4>
+									<h4 align="center">Pagamentos à realizar</h4>
 								</f:facet>
 								<h:column headerClass="large-2">
 									<f:facet name="header">Data</f:facet>
-									<h:outputLabel value="#{venda.dia.time}">
+									<h:outputLabel value="#{pagavel.dia.time}">
 										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
 											timeZone="GMT-03:00" />
 									</h:outputLabel>
 								</h:column>
 								<h:column headerClass="large-3">
 									<f:facet name="header">Cliente</f:facet> 
-																#{venda.cliente.nome}
+																#{pagavel.cliente.nome}
 								</h:column>
 								<h:column headerClass="large-1">
-									<f:facet name="header">Valor da Venda</f:facet>
-									<h:outputLabel value="#{venda.totalComDesconto}"
+									<f:facet name="header">Valor</f:facet>
+									<h:outputLabel value="#{pagavel.total}"
 										converter="valueConverter" />
 								</h:column>
 								<h:column headerClass="large-1">
 									<f:facet name="header">Valor Restante</f:facet>
-									<h:outputLabel value="#{venda.valorNaoPagoDaVenda}"
+									<h:outputLabel value="#{pagavel.valorNaoPago}"
 										converter="valueConverter" />
 								</h:column>
 								<h:column headerClass="large-1">
 									<f:facet name="header">Pagar</f:facet>
 									<h:selectBooleanCheckbox
-										value="#{pagamentoBean.checked[venda.id]}">
+										value="#{pagamentoBean.checked[pagavel]}">
 										<f:ajax event="click" execute="@form"
 											listener="#{pagamentoBean.vendaSelecionada}" />
 									</h:selectBooleanCheckbox>
@@ -205,19 +213,9 @@
 						</div>
 						<!-- fim modal -->
 
-
-
-
-
-
-
 					</div>
 				</div>
 			</div>
-
-
-
-
 
 			<!-- Tab historico -->
 			<div class="content" id="historico">
@@ -286,6 +284,52 @@
 			</div>
 			<!-- fim div historico -->
 
+			<div class="content" id="dividas">
+
+
+				<div class="container" align="center">
+					<div class="subtabela">
+
+						<h:form id="formDivi" prependId="false" >
+
+
+							<div class="campo left" >
+								<pi:autoComplete id="nomeClienteDiv" style="widget: 350px;"
+									styleClass="grade" 
+									value="#{pagamentoBean.nomeClienteDivida}"
+									completeMethod="#{pagamentoBean.completNomeClienteDivida}"
+									title="Nome do cliente" placeholder="Nome do Cliente">
+								</pi:autoComplete>
+
+
+								<pi:inputText id="textOBSDivida" 
+									value="#{pagamentoBean.newDivida.descricao}"
+									placeholder="Descrição da dívida"
+									title="Observações ou descrição da dívida">
+								</pi:inputText>
+								
+								
+								<pi:inputText id="valorDivida" title="Valor da dívida" styleClass="money"
+									placeholder="0,00" value="#{pagamentoBean.newDivida.total}" converter="valueConverter"/>
+
+							</div>
+							
+							<div class="formulario">
+							
+							<h:commandButton value="Salvar" actionListener="#{pagamentoBean.cadastrarDivida()}"
+									styleClass="bt-cadastrar" style="margin-top: 30px"/>
+							</div>		
+									
+
+
+						</h:form>
+
+
+
+					</div>
+				</div>
+
+			</div>
 
 		</div>
 

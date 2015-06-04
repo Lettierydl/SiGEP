@@ -10,6 +10,7 @@ import javax.faces.event.ValueChangeEvent;
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
+import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.FuncionarioNaoAutorizadoException;
 import com.twol.sigep.model.pessoas.Cliente;
@@ -36,10 +37,9 @@ public class ClienteManagedBean {
 		try {
 			f.adicionarCliente(newCliente);
 		} catch (FuncionarioNaoAutorizadoException fe) {
-			SessionUtil
-					.exibirMensagem(new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
-									.getMessage()));
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
+							.getMessage()));
 			return;
 		} catch (Exception e) {
 			SessionUtil.exibirMensagem(new FacesMessage(
@@ -90,13 +90,58 @@ public class ClienteManagedBean {
 
 	public void editarCliente() {
 		try {
+			Cliente oud = f.buscarClientePorId(editCliente.getId());
+			if (!oud.getNome().equals(editCliente.getNome())) {// modificou
+				try {
+					f.buscarClientePorNome(editCliente.getNome());
+					SessionUtil.exibirMensagem((new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Já existe um cliente com o nome "
+									+ editCliente.getNome(),
+							"Já existe um cliente com o nome "
+									+ editCliente.getNome())));
+					editCliente.setNome(oud.getNome());
+					editCliente.setCpf(oud.getCpf());
+					return;
+				} catch (Exception ep) {
+				}// ok nao existe
+			}
+			if (!oud.getCpf().equals(editCliente.getCpf())) {// modificou
+				try {
+					f.buscarClientePorCPF(editCliente.getCpf());
+					SessionUtil.exibirMensagem((new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Já existe um cliente com o CPF "
+									+ editCliente.getCpf(),
+							"Já existe um cliente com o CPF "
+									+ editCliente.getCpf())));
+					editCliente.setCpf(oud.getCpf());
+					return;
+				} catch (Exception ep) {
+				}// ok nao existe
+			}
 			f.atualizarCliente(editCliente);
+		} catch (FuncionarioNaoAutorizadoException fe) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
+							.getMessage()));
+			return;
 		} catch (EntidadeNaoExistenteException e) {
+			SessionUtil.exibirMensagem((new FacesMessage(
+					FacesMessage.SEVERITY_FATAL,
+					"Reveja a conexão com o servidor",
+					"Reveja a conexão com o servidor")));
 			e.printStackTrace();
 		} catch (Exception e) {
+			SessionUtil.exibirMensagem((new FacesMessage(
+					FacesMessage.SEVERITY_FATAL,
+					"Formulário com informações inválidas",
+					"Formulário com informações inválidas")));
 			e.printStackTrace();
+		} finally {
+
+			RequestContext.getCurrentInstance().update("@all");
 		}
-		RequestContext.getCurrentInstance().update("@all");
 	}
 
 	public String getNomePesquisa() {

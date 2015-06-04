@@ -2208,7 +2208,7 @@ ul.pagination {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 1004;
+  z-index: 999;
   left: 0; }
 
 .reveal-modal {
@@ -2218,7 +2218,7 @@ ul.pagination {
   top: 0;
   visibility: hidden;
   width: 100%;
-  z-index: 1005;
+  z-index: 1000;
   left: 0;
   background-color: #FFFFFF;
   padding: 1.875rem;

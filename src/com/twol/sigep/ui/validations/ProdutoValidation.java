@@ -27,7 +27,6 @@ public class ProdutoValidation implements Validator {
 						"Produto já cadastrado com o código " + cod));
 			} catch (NoResultException nre) {
 			}
-			
 
 		}
 		if (arg1.getId().equals("inputDescricao")) {
@@ -42,6 +41,7 @@ public class ProdutoValidation implements Validator {
 			}
 
 		}
+
 	}
 
 }

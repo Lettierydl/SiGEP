@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
+<h:head>
+	<title>Cloud Sistem</title>
+
+</h:head>
+
+
+
+<h:body>
+	<ui:composition>
+
+		<h:form id="formEnt">
+			<div class="row">
+
+				<h:panelGrid columns="3">
+					<h:outputLabel value="De" for="deEntrada" />
+					<h:outputLabel value="Até" for="ateEntrada" />
+
+					<span />
+
+
+					<pi:calendar id="deEntrada" value="#{relatBean.diaInicioEnt}"
+						p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy"
+						mindate="#{relatBean.minDia}" maxdate="#{relatBean.maxDia}"
+						navigator="true" mask="true" placeholder="#{relatBean.maxDia}"
+						converter="calendarConverter" immediate="true" />
+
+					<pi:calendar id="ateEntrada" value="#{relatBean.diaFimEnt}"
+						p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy"
+						mindate="#{relatBean.minDia}" maxdate="#{relatBean.maxDia}"
+						navigator="true" mask="true" placeholder="#{relatBean.maxDia}"
+						converter="calendarConverter" immediate="true" />
+
+
+					<pi:commandButton actionListener="#{relatBean.criarEntrada()}"
+						value="Gerar" styleClass="botao" update="@form"
+						title="Gerar informações com as novas datas" />
+
+				</h:panelGrid>
+			</div>
+
+			<div class="row ">
+				<h:panelGroup layout="div" id="entradaDeC">
+					<div class="large-5 columns">
+						<pi:chart type="donut" style="width:400px;height:300px"
+							model="#{relatBean.entrada}" responsive="true"/>
+					</div>
+
+					<div class="large-5 columns">
+
+						<table class="tabela2">
+							<thead>
+								<tr>
+									<th class="large-1">Vendas à vista</th>
+									<th class="large-1">Pagamentos</th>
+									
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr>
+									<td><h:outputLabel value="#{relatBean.valEntrada[0]}"
+											converter="valueConverter"
+											title="Valor recebido por vendas à vista" /></td>
+											
+									<td><h:outputLabel value="#{relatBean.valEntrada[1]}"
+											converter="valueConverter"
+											title="Valor recebido por pagamentos realizados" /></td>
+								</tr>
+
+								<tr>
+									<th><h:outputLabel value="Total em caixa: " /></th>
+
+									<td><h:outputLabel
+											value="#{relatBean.valEntrada[0] + relatBean.valEntrada[1]}"
+											converter="valueConverter" title="Total em caixa" /></td>
+								</tr>
+
+							</tbody>
+						</table>
+
+
+					</div>
+
+				</h:panelGroup>
+			</div>
+		</h:form>
+	</ui:composition>
+
+</h:body>
+</html>

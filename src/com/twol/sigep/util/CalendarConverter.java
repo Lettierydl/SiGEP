@@ -3,6 +3,7 @@ package com.twol.sigep.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -27,8 +28,8 @@ public class CalendarConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {
-		Calendar c = (Calendar) arg2;
-		return new SimpleDateFormat("dd/MM/yyyy").format(c.getTime());
+		Date c = (Date) arg2;
+		return new SimpleDateFormat("dd/MM/yyyy").format(c);
 	}
 
 }

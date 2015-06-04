@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
+<h:head>
+	<title>Cloud Sistem</title>
+
+</h:head>
+
+
+
+<h:body>
+	<ui:composition>
+		<h:form id="formGeral">
+			<div class="row">
+
+				<h:panelGrid columns="3">
+					<h:outputLabel value="De" for="deGeral" />
+					<h:outputLabel value="Até" for="ateGeral" />
+
+					<span />
+
+
+					<pi:calendar id="deGeral" value="#{relatBean.diaInicioGer}"
+						p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy"
+						mindate="#{relatBean.minDia}" maxdate="#{relatBean.maxDia}"
+						navigator="true" mask="true" placeholder="#{relatBean.maxDia}"
+						converter="calendarConverter" immediate="true" />
+
+					<pi:calendar id="ateGeral" value="#{relatBean.diaFimGer}"
+						p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy"
+						mindate="#{relatBean.minDia}" maxdate="#{relatBean.maxDia}"
+						navigator="true" mask="true" placeholder="#{relatBean.maxDia}"
+						converter="calendarConverter" immediate="true" />
+
+				<h:panelGroup>
+					<pi:commandButton
+						actionListener="#{relatBean.gerarRelatorioBalancoProdutosPDF()}" ajax="false"
+						value="Gerar PDF" styleClass="botao" update="@all" onclick="PrimeFaces.monitorDownload(start, stop);"
+						title="Gerar relatorio geral de produtos" >
+						<pi:fileDownload value="#{relatBean.file}" />
+					</pi:commandButton>
+					
+					
+					
+					<pi:commandButton
+						actionListener="#{relatBean.gerarRelatorioBalancoProdutosPlanilha()}" ajax="false"
+						value="Gerar Planilha" styleClass="botao" update="@all" onclick="PrimeFaces.monitorDownload(start, stop);"
+						title="Gerar planilha geral de produtos" >
+						<pi:fileDownload value="#{relatBean.filePlanilha}" />
+					</pi:commandButton>
+				</h:panelGroup>
+
+				</h:panelGrid>
+
+			</div>
+		<div class="row ">
+			
+			
+			
+
+		</div>
+
+
+		</h:form>
+	</ui:composition>
+
+</h:body>
+</html>

@@ -87,72 +87,6 @@
 				</h:column>
 			</h:dataTable>
 			
-			
-			<div id="modalEdit" class="reveal-modal modal" data-reveal="modalEdit">
-				<h2>Editar produto</h2>
-				<h:form id="formEdit"  prependId="false">
-							<div class="formulario">
-								<div class="row">
-						
-							<div class="large-5 columns" id="coluna1">
-							<h:panelGrid columns="2" >
-								<h:outputLabel value="Código:" for="editCodigo" />
-								<h:inputText id="editCodigo"  maxlength="13" value="#{produtoBean.editProduto.codigoDeBarras}" styleClass="campo-grande" title="Código de Barras" validatorMessage="Código com formato errado">
-									<f:validateRegex pattern="[0-9]*" />
-								</h:inputText>
-								
-								<h:outputLabel value="Descrição:" for="editDescricao" />
-								<h:inputText id="editDescricao" value="#{produtoBean.editProduto.descricao}" styleClass="campo-grande" />
-								
-								<h:outputLabel value="Categoria:" for="editCategoria" />
-								<h:selectOneMenu styleClass="combobox" id="editCategoria" value="#{produtoBean.editProduto.categoria}"  >
-									<f:selectItems value="#{produtoBean.categorias}" var="categorias" 
-										itemLabel="#{categorias.name}" itemValue="#{categorias}"/>
-								</h:selectOneMenu>
-								
-							</h:panelGrid>
-							</div>
-							
-							
-							<div class="large-6 columns" id="coluna2" align="right">
-								<h:panelGrid columns="4" >
-										<h:outputLabel value="Valor:" for="editValorV" />
-										<pi:inputText id="editValorV" title="Valor de Venda" maxlength="11" 
-										value="#{produtoBean.editProduto.valorDeVenda}"    placeholder="0,00" styleClass="campo-medio money" converter="valueConverter" >
-										</pi:inputText>
-									
-										<h:outputLabel value="Compra:" for="editValorC" />
-										<pi:inputText id="editValorC" title="Valor de Compra"   placeholder="0,00" maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio money" converter="valueConverter" />
-									
-										
-										<h:outputLabel value="Quantidade:" for="editQuantidade" />
-										<pi:inputText id="editQuantidade"  placeholder="0,000" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio" converter="quantidadeConverter"  title="Quantidade atual em estoque">
-										</pi:inputText>
-									
-										<h:outputLabel value="Limite:" for="editLimite" />
-										<pi:inputText id="editLimite"   placeholder="0,000" maxlength="11" value="#{produtoBean.editProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter" title="Limime mínimo permitido em estoque"/>
-									
-											
-										
-										<h:outputLabel value="Unidade:" for="editUnidade" />
-										<h:selectOneMenu styleClass="combobox"  id="editUnidade" value="#{produtoBean.editProduto.descricaoUnidade}"  >
-												<f:selectItems value="#{produtoBean.unidadesProduto}" var="unidade" 
-													itemLabel="#{unidade.name}" itemValue="#{unidade}"/>
-										</h:selectOneMenu>
-										
-								</h:panelGrid>
-							</div>
-							
-							</div>
-							<div class="row">
-								<h:commandButton styleClass="bt-cadastrar" value="Salvar" actionListener="#{produtoBean.editarProduto}" />
-							</div>
-						</div>
-						</h:form>
-					<a class="close-reveal-modal">&#215;</a>
-				</div><!-- fim modal Edit -->
-			
-			
 		</div><!-- fim da tabela -->
 		
 		
@@ -218,6 +152,73 @@
 					</h:form>
 				<a class="close-reveal-modal">&#215;</a>
 			</div><!-- fim do modal -->
+		
+		
+			<div id="modalEdit" class="reveal-modal modal" data-reveal="modalEdit">
+				<h2>Editar produto</h2>
+				<h:form id="formEdit"  prependId="false">
+							<div class="formulario">
+								<div class="row">
+						
+							<div class="large-5 columns" id="coluna1">
+							<h:panelGrid columns="2" >
+								<h:outputLabel value="Código:" for="editCodigo" />
+								<h:inputText id="editCodigo"  maxlength="13" value="#{produtoBean.editProduto.codigoDeBarras}" styleClass="campo-grande" title="Código de Barras" validatorMessage="Código com formato errado" required="true">
+									<f:validateRegex pattern="[0-9]*" />
+								</h:inputText>
+								
+								<h:outputLabel value="Descrição:" for="editDescricao" />
+								<h:inputText id="editDescricao" value="#{produtoBean.editProduto.descricao}" styleClass="campo-grande" required="true"/>
+								
+								<h:outputLabel value="Categoria:" for="editCategoria" />
+								<h:selectOneMenu styleClass="combobox" id="editCategoria" value="#{produtoBean.editProduto.categoria}"  >
+									<f:selectItems value="#{produtoBean.categorias}" var="categorias" 
+										itemLabel="#{categorias.name}" itemValue="#{categorias}"/>
+								</h:selectOneMenu>
+								
+							</h:panelGrid>
+							</div>
+							
+							
+							<div class="large-6 columns" id="coluna2" align="right">
+								<h:panelGrid columns="4" >
+										<h:outputLabel value="Valor:" for="editValorV" />
+										<pi:inputText id="editValorV" title="Valor de Venda" maxlength="11" 
+										value="#{produtoBean.editProduto.valorDeVenda}"    placeholder="0,00" styleClass="campo-medio money" converter="valueConverter" >
+										</pi:inputText>
+									
+										<h:outputLabel value="Compra:" for="editValorC" />
+										<pi:inputText id="editValorC" title="Valor de Compra"   placeholder="0,00" maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio money" converter="valueConverter" />
+									
+										
+										<h:outputLabel value="Quantidade:" for="editQuantidade" />
+										<pi:inputText id="editQuantidade"  placeholder="0,000" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio" converter="quantidadeConverter"  title="Quantidade atual em estoque">
+										</pi:inputText>
+									
+										<h:outputLabel value="Limite:" for="editLimite" />
+										<pi:inputText id="editLimite"   placeholder="0,000" maxlength="11" value="#{produtoBean.editProduto.limiteMinimoEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter" title="Limime mínimo permitido em estoque"/>
+									
+											
+										
+										<h:outputLabel value="Unidade:" for="editUnidade" />
+										<h:selectOneMenu styleClass="combobox"  id="editUnidade" value="#{produtoBean.editProduto.descricaoUnidade}"  >
+												<f:selectItems value="#{produtoBean.unidadesProduto}" var="unidade" 
+													itemLabel="#{unidade.name}" itemValue="#{unidade}"/>
+										</h:selectOneMenu>
+										
+								</h:panelGrid>
+							</div>
+							
+							</div>
+							<div class="row">
+								<h:commandButton styleClass="bt-cadastrar" value="Salvar" actionListener="#{produtoBean.editarProduto}" />
+							</div>
+						</div>
+						</h:form>
+					<a class="close-reveal-modal">&#215;</a>
+				</div><!-- fim modal Edit -->
+		
+		
 		
 		
 		

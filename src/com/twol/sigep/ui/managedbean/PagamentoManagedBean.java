@@ -3,6 +3,7 @@ package com.twol.sigep.ui.managedbean;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,9 @@ import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.pessoas.Cliente;
+import com.twol.sigep.model.vendas.Divida;
 import com.twol.sigep.model.vendas.Pagamento;
+import com.twol.sigep.model.vendas.Pagavel;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.SessionUtil;
 
@@ -28,21 +31,24 @@ public class PagamentoManagedBean {
 	private Facede f;
 
 	private Pagamento newPagamento;
+	private Divida newDivida;
 	private double troco = 0;
 	private String nomeClienteParaVenda = "";
+	private String nomeClienteDivida = "";
 	private String nomeClienteParaHistorico = "";
 
-	private Map<Integer, Boolean> checked = new HashMap<Integer, Boolean>();
+	private Map<Pagavel, Boolean> checked = new HashMap<Pagavel, Boolean>();
 
-	private Venda vendaASerPaga = null;
+	private Pagavel vendaASerPaga = null;
 
 	private List<Pagamento> listAtualDeHistorico;
 
-	private List<Venda> listAtualDeVenda;
+	private List<Pagavel> listAtualDeVenda;
 
 	public PagamentoManagedBean() {
 		f = new Facede();
 		newPagamento = new Pagamento();
+		newDivida = new Divida();
 		listAtualDeHistorico = f.getListaPagamentoHoje();
 	}
 
@@ -84,12 +90,43 @@ public class PagamentoManagedBean {
 		RequestContext.getCurrentInstance().update("@form");
 	}
 
+	public void cadastrarDivida(){
+		Cliente c ;
+		try{
+			 c = f.buscarClientePorNome(nomeClienteDivida);
+		}catch(Exception e){
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Selecione um cliente",
+					"Selecione um cliente"));
+			return;
+		}
+		try{
+			newDivida.setDia(Calendar.getInstance());
+			newDivida.setFuncionario(SessionUtil.getFuncionarioLogado());
+			newDivida.setCliente(c);
+			f.adicionarDivida(newDivida, c);
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_INFO,
+					"Dívida adicionada ao cliente "+ c.getNome(),
+					"Dívida adicionada ao cliente "+ c.getNome()));
+			newDivida = new Divida();
+		}catch(Exception e){
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Reveja o formulário",
+					"Reveja o formulário"));
+		}
+	}
+	
+	
+	
 	public void vendaSelecionada() {
 		double value = 0;
-		for (Venda v : listAtualDeVenda) {
-			if (this.checked.containsKey(v.getId())
-					&& this.checked.get(v.getId())) {
-				value += v.getTotalComDesconto() - v.getPartePagaDaVenda();
+		for (Pagavel v : listAtualDeVenda) {
+			if (this.checked.containsKey(v)
+					&& this.checked.get(v)) {
+				value += v.getTotal() - v.getPartePaga();
 			}
 		}
 		this.newPagamento.setValor(value);
@@ -104,22 +141,26 @@ public class PagamentoManagedBean {
 		List<Cliente> clientes = f
 				.buscarClientePorCPFOuNomeQueIniciam(nomeClienteParaVenda);
 		if (nomeClienteParaVenda.isEmpty()) {
-			listAtualDeVenda = new ArrayList<Venda>();
+			listAtualDeVenda = new ArrayList<Pagavel>();
 			retirarClienteSelecionado();
 		} else if (clientes.size() > 1) {
-			listAtualDeVenda = f.buscarVendasNaoPagasDosClientes(clientes);
+			listAtualDeVenda = f.buscarPagaveisNaoPagosDosClientes(clientes);
 			retirarClienteSelecionado();
 		} else if (clientes.size() == 1) {
 			setClienteSelecionado(clientes.iterator().next());
-			listAtualDeVenda = f.buscarVendaNaoPagaDoCliente(clientes
+			listAtualDeVenda = f.buscarPagaveisNaoPagoDoCliente(clientes
 					.iterator().next());
 		} else {
-			listAtualDeVenda = new ArrayList<Venda>();
+			listAtualDeVenda = new ArrayList<Pagavel>();
 			retirarClienteSelecionado();
 		}
 	}
 
 	public List<Cliente> completNomeClienteHistorico(String nome) {
+		return f.buscarClientePorCPFOuNomeQueIniciam(nome);
+	}
+	
+	public List<Cliente> completNomeClienteDivida(String nome) {
 		return f.buscarClientePorCPFOuNomeQueIniciam(nome);
 	}
 
@@ -154,7 +195,7 @@ public class PagamentoManagedBean {
 		this.newPagamento = newPagamento;
 	}
 
-	public void setListAtualDeVenda(List<Venda> listAtualDeVenda) {
+	public void setListAtualDeVenda(List<Pagavel> listAtualDeVenda) {
 		this.listAtualDeVenda = listAtualDeVenda;
 	}
 
@@ -170,7 +211,7 @@ public class PagamentoManagedBean {
 		return listAtualDeHistorico;
 	}
 
-	public List<Venda> getListAtualDeVenda() {
+	public List<Pagavel> getListAtualDeVenda() {
 		return listAtualDeVenda;
 	}
 
@@ -184,17 +225,17 @@ public class PagamentoManagedBean {
 		RequestContext.getCurrentInstance().update(":pagamanetoForm");
 	}
 
-	public Venda getVendaASerPaga() {
+	public Pagavel getVendaASerPaga() {
 		return vendaASerPaga;
 	}
 
-	public void setVendaASerPaga(Venda vendaASerPaga) {
+	public void setVendaASerPaga(Pagavel vendaASerPaga) {
 		this.vendaASerPaga = vendaASerPaga;
 		setClienteSelecionado(vendaASerPaga.getCliente());
 		setNomeClienteParaVenda(getClienteSelecionado().getNome());
-		if (vendaASerPaga.getTotalComDesconto() <= getClienteSelecionado()
+		if (vendaASerPaga.getTotal() <= getClienteSelecionado()
 				.getDebito()) {
-			this.newPagamento.setValor(vendaASerPaga.getValorNaoPagoDaVenda());
+			this.newPagamento.setValor(vendaASerPaga.getValorNaoPago());
 		} else {
 			this.newPagamento.setValor(vendaASerPaga.getCliente().getDebito());
 		}
@@ -218,11 +259,29 @@ public class PagamentoManagedBean {
 		newPagamento.setValor(0);
 	}
 
-	public Map<Integer, Boolean> getChecked() {
+	public Map<Pagavel, Boolean> getChecked() {
 		return checked;
 	}
 
-	public void setChecked(Map<Integer, Boolean> checked) {
+	public void setChecked(Map<Pagavel, Boolean> checked) {
 		this.checked = checked;
 	}
+
+	public String getNomeClienteDivida() {
+		return nomeClienteDivida;
+	}
+
+	public void setNomeClienteDivida(String nomeClienteDivida) {
+		this.nomeClienteDivida = nomeClienteDivida;
+	}
+
+	public Divida getNewDivida() {
+		return newDivida;
+	}
+
+	public void setNewDivida(Divida newDivida) {
+		this.newDivida = newDivida;
+	}
+	
+	
 }

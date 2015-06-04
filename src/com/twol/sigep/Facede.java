@@ -1,5 +1,8 @@
 package com.twol.sigep;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import com.twol.sigep.controller.ControllerConfiguracao;
@@ -7,12 +10,15 @@ import com.twol.sigep.controller.ControllerEstoque;
 import com.twol.sigep.controller.ControllerLogin;
 import com.twol.sigep.controller.ControllerPagamento;
 import com.twol.sigep.controller.ControllerPessoa;
+import com.twol.sigep.controller.ControllerRelatorios;
 import com.twol.sigep.controller.ControllerVenda;
 import com.twol.sigep.controller.find.FindCliente;
 import com.twol.sigep.controller.find.FindFuncionario;
 import com.twol.sigep.controller.find.FindPagamento;
 import com.twol.sigep.controller.find.FindProduto;
 import com.twol.sigep.controller.find.FindVenda;
+import com.twol.sigep.controller.gerador.GeradorPDF;
+import com.twol.sigep.controller.gerador.GeradorPlanilha;
 import com.twol.sigep.model.configuracoes.PermissaoFuncionario;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
@@ -26,9 +32,12 @@ import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
+import com.twol.sigep.model.vendas.Divida;
 import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Pagamento;
+import com.twol.sigep.model.vendas.Pagavel;
 import com.twol.sigep.model.vendas.Venda;
+import com.twol.sigep.util.MySQLBackup;
 import com.twol.sigep.util.Persistencia;
 import com.twol.sigep.util.SessionUtil;
 
@@ -39,6 +48,9 @@ public class Facede {
 	private ControllerLogin lg;
 	private ControllerPagamento pagam;
 	private ControllerVenda vend;
+	private ControllerRelatorios rel;
+	private GeradorPDF pdf;
+	private GeradorPlanilha pla;
 
 	public Facede() {
 		est = new ControllerEstoque(Persistencia.emf);
@@ -46,7 +58,10 @@ public class Facede {
 		pagam = new ControllerPagamento(Persistencia.emf);
 		vend = new ControllerVenda(Persistencia.emf);
 		new ControllerConfiguracao(Persistencia.emf);
+		rel = new ControllerRelatorios();
 		lg = new ControllerLogin();
+		pdf = new GeradorPDF(rel);
+		pla = new GeradorPlanilha(rel);
 		
 		Funcionario logado = SessionUtil.getFuncionarioLogado();
 		vend.setLogado(logado);
@@ -63,7 +78,9 @@ public class Facede {
 	}
 
 	public void atualizarCliente(Cliente c)
-			throws EntidadeNaoExistenteException, Exception {
+			throws EntidadeNaoExistenteException, FuncionarioNaoAutorizadoException ,Exception {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CLIENTES);
 		pes.edit(c);
 	}
 
@@ -161,7 +178,9 @@ public class Facede {
 	}
 
 	public void atualizarFuncionario(Funcionario f)
-			throws EntidadeNaoExistenteException, Exception {
+			throws EntidadeNaoExistenteException, FuncionarioNaoAutorizadoException,Exception {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_FUNCIONARIO);
 		pes.edit(f);
 	}
 
@@ -183,7 +202,9 @@ public class Facede {
 	}
 
 	public void atualizarProduto(Produto p)
-			throws EntidadeNaoExistenteException, Exception {
+			throws EntidadeNaoExistenteException, FuncionarioNaoAutorizadoException,Exception {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_PRODUTO);
 		est.edit(p);
 	}
 
@@ -213,6 +234,10 @@ public class Facede {
 
 	public Produto buscarProdutoPorCodigo(String codigo) {
 		return FindProduto.produtoComCodigoDeBarras(codigo);
+	}
+	
+	public Produto buscarProdutoPorDescricao(String descricao){
+		return FindProduto.produtoComDescricao(descricao);
 	}
 	
 	public Produto buscarProdutoPorDescricaoOuCodigo(String nomeOuCodigo) {
@@ -309,6 +334,14 @@ public class Facede {
 		pes.edit(c);
 		return c.getDebito();
 	}
+	
+	
+	public void adicionarDivida(Divida d, Cliente c) throws EntidadeNaoExistenteException, Exception{
+		c.acrecentarDebito(d.getTotal());
+		pes.edit(c);
+		vend.create(d);
+	}
+	
 
 	public Venda recuperarVendaPendente() throws VariasVendasPendentesException, EntidadeNaoExistenteException, Exception{
 		return vend.recuperarVendaPendente();
@@ -353,7 +386,8 @@ public class Facede {
 		
 		return troco;
 	}
-
+	
+	
 	public List<Venda> getListaVendasNaoPagasDeHoje() {
 		return FindVenda.vendasNaoPagaDeHoje();
 	}
@@ -367,6 +401,21 @@ public class Facede {
 
 	}
 	
+	
+	
+	public List<Pagavel> buscarPagaveisNaoPagosDosClientes(List<Cliente> clientes) {
+		return FindVenda.pagavelNaoPagoDosClientes(clientes);
+	}
+
+	public List<Pagavel> buscarPagaveisNaoPagoDoCliente(Cliente cliente) {
+		return FindVenda.pagavelNaoPagoDoCliente(cliente);
+
+	}
+	
+	
+	
+	
+	
 	public boolean getValor(String chave, TipoDeFuncionario tipo){
 		return ControllerConfiguracao.getValor(chave, tipo);
 	}
@@ -378,5 +427,56 @@ public class Facede {
 	
 	public void permissoesDeFuncionariosDefalt(){
 		PermissaoFuncionario.configuracoesDefalt();
+	}
+	
+	//balanco
+	public String getMinDiaRegistroVenda(){
+		return rel.getMinDia();
+	}
+	
+	 public double[] getRelatorioDeEntradaDeCaixa(Date diaInicio,
+				Date diaFim) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
+		return rel.getRelatorioDeEntradaDeCaixa(diaInicio, diaFim);
+	 }
+
+	public double[] getRelatorioDeVendas(Date diaInicio, Date diaFim) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
+		return rel.getRelatorioDeVendas(diaInicio, diaFim);
+	}
+
+	public double[] getRelatorioDeProduto(Date diaInicio, Date diaFim) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
+		return rel.getRelatorioProduto(diaInicio, diaFim);
+	}
+	
+	public String gerarPdfRelatorioBalancoProdutos(Date inicio, Date fim) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
+		return pdf.gerarPdfRelatorioBalancoProdutos(inicio, fim);
+	}
+	
+	public String gerarPlanilhaRelatorioBalancoProdutos(Date inicio, Date fim) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
+		return pla.gerarPlanilhaRelatorioBalancoProdutos(inicio, fim);
+	}
+
+	public void resteurarBancoDeDados(File tempFile) throws FuncionarioNaoAutorizadoException, IOException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CONFIGURACOES);
+		MySQLBackup my = new MySQLBackup();
+		my.restore(tempFile);
+	}
+	
+	
+	public String realizarBackupBancoDeDados(File file) throws FuncionarioNaoAutorizadoException, IOException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CONFIGURACOES);
+		MySQLBackup my = new MySQLBackup();
+		return my.dump(file);
 	}
 }

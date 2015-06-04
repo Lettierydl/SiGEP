@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pi="http://primefaces.org/ui">
+<h:head>
+<meta charset="UTF-8" /> 
+<title>Página não encontrada</title>
+
+<link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/css/404.css" />
+
+
+</h:head>
+
+<h:body>
+	
+	<a href="/CloudSistem/restrito/home.jsf" title="Volte para o sistema">
+		<div id="rocket"/>
+	</a>
+
+	<hgroup>
+		<h1>Página não encontrada</h1>
+		<h2>A página que você esta procurando não existe</h2>
+	</hgroup>
+
+	<p class="createdBy">
+		<a href="/CloudSistem/restrito/home.jsf">Voltar para o início</a>
+	</p>
+
+	<script src="#{facesContext.externalContext.requestContextPath}/js/jquery.min.js"></script>
+	<script src="#{facesContext.externalContext.requestContextPath}/js/404.js"></script>
+</h:body>
+</html>

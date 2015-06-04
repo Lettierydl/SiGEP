@@ -10,34 +10,37 @@
 
 </h:head>
 
+
+
 <h:body>
 	<ui:composition>
 		<div id="menu" class="menu">
 
 			<div class="barra_superior">
 				<div>
-					<img src="../imagens/logo.png" class="logo" />
+					<a href="home.jsf" title="Início"><img
+						src="../imagens/logo.png" class="logo" /></a>
 
 					<div class="menu-botoes fadeIn" id="menu-botoes">
-						<div class="botao_par" id="home">
-							<a href="home.jsf" /> <img src="../imagens/home_ico.png" /> <span>home</span>
+						<div class="botao_par" id="venda">
+							<a href="venda.jsf" /> <img src="../imagens/venda_ico.png" /> <span>venda</span>
 						</div>
-						<div class="botao_impar" id="venda">
-							<a href="venda.jsf" /> <img src="../imagens/venda_ico.png" />
-							<span>venda</span>
-						</div>
-						<div class="botao_par" id="pagamento">
+						<div class="botao_impar" id="pagamento">
 							<a href="pagamento.jsf" /> <img
 								src="../imagens/pagamento_ico.png" /> <span>pagamento</span>
-						</div>
-						<div class="botao_impar" id="cliente">
-							<a href="cliente.jsf" /> <img src="../imagens/cliente_ico.png" />
-							<span>cliente</span>
 						</div>
 						<div class="botao_par" id="produto">
 							<a href="produto.jsf" /> <img src="../imagens/produto_ico.png" />
 							<span>produto</span>
 						</div>
+						<div class="botao_impar" id="cliente">
+							<a href="cliente.jsf" /> <img src="../imagens/cliente_ico.png" />
+							<span>cliente</span>
+						</div>
+						<div class="botao_par" id="balanco">
+							<a href="balanco.jsf" /> <img src="../imagens/relatorios_ico.png" /> <span>balanço</span>
+						</div>
+
 						<div class="botao_impar" id="funcionario">
 							<a href="funcionario.jsf" /> <img
 								src="../imagens/funcionario_ico.png" /> <span>funcionário</span>
@@ -77,7 +80,7 @@
 
 			<h:outputLabel value="Tem certeza que deseja sair do sistema?" />
 			<br />
-			<h:form >
+			<h:form>
 				<h:commandButton value="Sair" actionListener="#{logoffBean.logoff}"
 					styleClass="botao" />
 				<h:commandButton value="Cancelar" actionListener="#{logoffBean.nao}"

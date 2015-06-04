@@ -34,7 +34,7 @@ import com.twol.sigep.model.pessoas.Funcionario;
 //@RooJpaActiveRecord(finders = { "findVendasByCliente", "findVendasByDiaBetween", "findVendasByDiaGreaterThanEquals", "findVendasByFormaDePagamento", "findVendasByFuncionario" })
 @Table(name = "venda")
 @Entity
-public class Venda implements Comparable<Venda>{
+public class Venda implements Comparable<Venda>, Pagavel{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -153,7 +153,7 @@ public class Venda implements Comparable<Venda>{
 	/**
 	 * Valor da venda que falta ser pago
      */
-	public double getValorNaoPagoDaVenda(){
+	public double getValorNaoPago(){
 		return getTotalComDesconto() - partePaga;
 	}
 	
@@ -165,11 +165,11 @@ public class Venda implements Comparable<Venda>{
 		this.paga = paga;
 	}
 	
-	public double getPartePagaDaVenda() {
+	public double getPartePaga() {
 		return partePaga;
 	}
 	
-	public void setPartePagaDaVenda(double partePagaDaVenda) {
+	public void setPartePaga(double partePagaDaVenda) {
 		this.partePaga = partePagaDaVenda;
 	}
 
@@ -178,7 +178,7 @@ public class Venda implements Comparable<Venda>{
 	 * Modifica o estado da venda para pago
 	 * @param Valor para ser acrescentado a parte paga da venda
 	 */
-	public void acrescentarPartePagaDaVenda(double partePagaDaVenda) {
+	public void acrescentarPartePaga(double partePagaDaVenda) {
 		this.partePaga += partePagaDaVenda;
 		this.partePaga = new BigDecimal(partePaga).setScale(5, RoundingMode.HALF_UP).doubleValue();
 		if(this.partePaga >= getTotalComDesconto()){

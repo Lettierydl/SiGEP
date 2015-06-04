@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
+<h:head>
+	<title>Cloud Sistem</title>
+
+</h:head>
+
+
+
+<h:body>
+	<ui:composition>
+		<h:form id="formProd">
+			<div class="row">
+
+				<h:panelGrid columns="3">
+					<h:outputLabel value="De" for="deProd" />
+					<h:outputLabel value="Até" for="ateProd" />
+
+					<span />
+
+
+					<pi:calendar id="deProd" value="#{relatBean.diaInicioProd}"
+						p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy"
+						mindate="#{relatBean.minDia}" maxdate="#{relatBean.maxDia}"
+						navigator="true" mask="true" placeholder="#{relatBean.maxDia}"
+						converter="calendarConverter" immediate="true" />
+
+					<pi:calendar id="ateProd" value="#{relatBean.diaFimProd}"
+						p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy"
+						mindate="#{relatBean.minDia}" maxdate="#{relatBean.maxDia}"
+						navigator="true" mask="true" placeholder="#{relatBean.maxDia}"
+						converter="calendarConverter" immediate="true" />
+
+
+					<pi:commandButton actionListener="#{relatBean.criarProduto()}"
+						value="Gerar" styleClass="botao" update="@form"
+						title="Gerar informações com as novas datas" />
+
+				</h:panelGrid>
+
+			</div>
+
+			<div class="row ">
+				<h:panelGroup layout="div" id="infoProd">
+					<div class="large-5 columns">
+						<pi:chart type="bar" style="width:400px;height:300px"
+							model="#{relatBean.produtos}" responsive="true"/>
+					</div>
+
+					<div class="large-5 columns">
+
+						<table class="tabela2">
+							<thead>
+								<tr>
+									<th class="large-1">Total vendido</th>
+									<th class="large-1">Lucro</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr>
+									<td title="Valor total de produtos vendidos"><h:outputLabel
+											value="#{relatBean.valProduto[0]}" converter="valueConverter" /></td>
+
+									<td title="Lucro arecadado dos produtos"><h:outputLabel
+											value="#{relatBean.valProduto[1]}" converter="valueConverter" /></td>
+								</tr>
+
+
+							</tbody>
+						</table>
+
+
+					</div>
+
+				</h:panelGroup>
+			</div>
+
+		</h:form>
+	</ui:composition>
+
+</h:body>
+</html>

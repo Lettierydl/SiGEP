@@ -112,12 +112,12 @@
 	box-shadow: 3px 3px 1px 0px rgba(238, 238, 238, 1);
 }
 
-.formulario .campo-grande {
+.formulario .campo-grande, .formulario .campo-grande input {
 	width: 313px;
 	padding-bottom: 10px;
 }
 
-.formulario .campo-medio {
+.formulario .campo-medio, .formulario .campo-medio inputs {
 	width: 113px;
 	height: 47px;
 }

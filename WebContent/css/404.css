@@ -1,0 +1,100 @@
+@CHARSET "UTF-8";
+
+@font-face {
+	font-family: DosisSemiBold;
+	src: url("../fonts/DosisSemiBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: DosisExtraBold;
+	src: url("../fonts/DosisExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: Dosis;
+	src: url("../fonts/DosisRegular.ttf") format("truetype");
+}
+
+*{
+	margin:0;
+	padding:0;
+}
+
+body{
+	background:url('../imagens/404/bg.png') no-repeat center center #1d1d1d;
+	color:#eee;
+	font-family:'Dosis' ;
+	font-size:13px;
+}
+
+#rocket{
+	width:275px;
+	height:375px;
+	background:url('../imagens/404/rocket.png') no-repeat;
+	margin:10px auto 50px;
+	position:relative;
+}
+
+/*	Two steam classes. */
+
+.steam1,
+.steam2{
+	position:absolute;
+	bottom:78px;
+	left:50px;
+	width:80px;
+	height:80px;
+	background:url('../imagens/404/steam.png') no-repeat;
+	opacity:0.8;
+}
+
+.steam2{
+
+   /*	.steam2 shows the bottom part (dark version)
+	*	of the background image.
+	*/
+
+	background-position:left bottom;
+}
+
+hgroup{
+
+	/* Using the HTML4 hgroup element */
+
+	display:block;
+	margin:0 auto;
+	width:850px;
+	font-family:'Dosis';
+	text-align:center;
+}
+
+h1{
+	color:rgb(60, 171, 198);
+	font-size:60px;
+	}
+
+h2{
+	color:rgb(60, 171, 198);
+	font-size:18px;
+	font-weight:normal;
+}
+
+/* Only Needed For The Demo Page */
+
+p.createdBy{
+	font-size:15px;
+	font-weight:normal;
+	margin:10px;
+	text-align:center;
+	text-shadow:none;
+}
+
+a, a:visited {
+	text-decoration:none;
+	outline:none;
+	color:#97cae6;
+}
+
+a:hover{
+	border-bottom:1px dashed transparent;
+}

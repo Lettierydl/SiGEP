@@ -21,7 +21,6 @@ public class LogoffManagedBean {
 	
 	public void logoff() throws IOException{
 		f.logoff();
-		RequestContext.getCurrentInstance().update("@all");
 		SessionUtil.redirecionarParaPage(SessionUtil.PAGE_INICIAL);
 	}
 	

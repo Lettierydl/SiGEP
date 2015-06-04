@@ -1,0 +1,93 @@
+@CHARSET "UTF-8";
+
+@font-face {
+	font-family: DosisSemiBold;
+	src: url("../fonts/DosisSemiBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: DosisExtraBold;
+	src: url("../fonts/DosisExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: Dosis;
+	src: url("../fonts/DosisRegular.ttf") format("truetype");
+}
+
+body{
+	font-family: "Dosis";
+}
+
+
+
+
+
+.info{
+	width:541px; height:100px;
+	float:left;
+	align: left;
+	margin-left: 10px;
+}
+
+
+.info .value{
+	position:relative;
+	border: 1px dashed aqua;
+	float:left;
+	align: left;
+	margin-left: 5px;
+	top: 1px;
+}
+
+.info .bt-cadastrar{
+	
+	background-color: rgb(50, 37, 48);
+  	box-shadow: 2.5px 4.33px 0px 0px  rgba(218, 217, 217, 0.9);
+  	border-style: none;
+  	width: 100px;
+  	height: 50px;
+  	float:right;
+  	text-align: center;
+  	
+  	/*font*/
+	font-size: 17px;
+	font-family: "Dosis";
+	color: rgb(143, 143, 143);
+	line-height: 2.922;
+	border-style: none;
+	cursor: pointer;
+}
+
+.info .bt-cadastrar:HOVER{
+	background-color: #433441;
+}
+
+
+.campo_medio  {
+	height: 39px;
+	width: 140px;
+	position: relative;
+	top: 1px;
+	
+	margin-right: 20px;
+	margin-left: 20px;
+	margin-bottom:10px;
+	
+	/*font*/
+	font-size: 17px;
+	font-family: "Dosis";
+	line-height: 2.922;
+	border-style: groove;
+	
+	color: rgb(143, 143, 143);
+	padding-left: 20px;
+	border-bottom-style:1.5px dashed rgba(238, 238, 238, 1);
+	box-shadow: 0.1px 2.0px 0px 0px rgba(218, 217, 217, 0.392);
+	box-shadow: 1px 1px 1px 0px rgba(238, 238, 238, 1);
+}
+
+
+#troco{
+	margin-left: -50px;
+}

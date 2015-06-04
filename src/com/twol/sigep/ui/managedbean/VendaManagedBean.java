@@ -3,6 +3,7 @@ package com.twol.sigep.ui.managedbean;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -30,7 +31,12 @@ public class VendaManagedBean {
 	private Facede f;
 	private List<Venda> pendentes;
 	private double quantidade = 1;
+	private double quantidadeProd = 1;
 	private String codigo;
+	private String codigoProd;
+	
+	private static LinkedList<ItemDeVenda> mercadorias;
+	private static double totalMercadorias;
 
 	public VendaManagedBean() {
 		f = new Facede();
@@ -116,6 +122,26 @@ public class VendaManagedBean {
 		// addItemAVenda(p, quantidade);
 	}
 
+	public void inserirProdutoNasMercadorias(){
+		
+		Produto p;
+		try {
+			p = f.buscarProdutoPorDescricaoOuCodigo(codigoProd);
+			ItemDeVenda it = new ItemDeVenda(p, quantidadeProd);
+			mercadorias.addFirst(it);
+			totalMercadorias += it.getTotal();
+			
+			codigoProd = "";
+			quantidadeProd = 1;
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Produto ( " + codigoProd + " ) não cadastrado","Produto Invalido")));
+			
+			return;// nenhum produto encontrado
+		}
+		
+	}
+	
+	
 	public void verificarProduto() {
 		Produto p;
 		try {
@@ -253,5 +279,42 @@ public class VendaManagedBean {
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
+
+	public String getCodigoProd() {
+		return codigoProd;
+	}
+
+	public void setCodigoProd(String codigoProd) {
+		this.codigoProd = codigoProd;
+	}
+
+	public List<ItemDeVenda> getMercadorias() {
+		if(mercadorias == null){
+			mercadorias = new LinkedList<ItemDeVenda>();
+		}
+		return mercadorias;
+	}
+	
+	public double getTotalMercadorias(){
+		if(totalMercadorias == 0 && ! getMercadorias().isEmpty()){
+			double total = 0;
+			for(ItemDeVenda it : mercadorias){
+				total += it.getTotal();
+			}
+			return total;
+		}
+		return totalMercadorias;
+		
+	}
+
+	public double getQuantidadeProd() {
+		return quantidadeProd;
+	}
+
+	public void setQuantidadeProd(double quantidadeProd) {
+		this.quantidadeProd = quantidadeProd;
+	}
+	
+	
 
 }

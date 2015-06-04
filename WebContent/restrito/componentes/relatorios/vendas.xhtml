@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
+<h:head>
+	<title>Cloud Sistem</title>
+
+</h:head>
+
+
+
+<h:body>
+	<ui:composition>
+		<h:form id="formVends">
+			<div class="row">
+
+				<h:panelGrid columns="3">
+					<h:outputLabel value="De" for="deVendas" />
+					<h:outputLabel value="Até" for="ateVendas" />
+
+					<span />
+
+
+					<pi:calendar id="deVendas" value="#{relatBean.diaInicioVend}"
+						p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy"
+						mindate="#{relatBean.minDia}" maxdate="#{relatBean.maxDia}"
+						navigator="true" mask="true" placeholder="#{relatBean.maxDia}"
+						converter="calendarConverter" immediate="true" />
+
+					<pi:calendar id="ateVendas" value="#{relatBean.diaFimVend}"
+						p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy"
+						mindate="#{relatBean.minDia}" maxdate="#{relatBean.maxDia}"
+						navigator="true" mask="true" placeholder="#{relatBean.maxDia}"
+						converter="calendarConverter" immediate="true" />
+
+
+					<pi:commandButton actionListener="#{relatBean.criarVendas()}"
+						value="Gerar" styleClass="botao" update="@form"
+						title="Gerar informações com as novas datas" />
+
+				</h:panelGrid>
+
+			</div>
+
+			<div class="row ">
+				<h:panelGroup layout="div" id="infoVendas">
+					<div class="large-5 columns">
+						<pi:chart type="donut" style="width:400px;height:300px"
+							model="#{relatBean.vendas}" responsive="true"/>
+					</div>
+
+					<div class="large-5 columns">
+
+						<table class="tabela2">
+							<thead>
+								<tr>
+									<th class="large-1">Vendas à vista</th>
+									<th class="large-1">Vendas a Prazo</th>
+									<th class="large-1">Dívidas</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr>
+									<td title="Valor contabilizado por vendas a prazo"><h:outputLabel
+											value="#{relatBean.valVendas[0]}" converter="valueConverter" /></td>
+
+									<td title="Valor contabilizado por vendas à vista"><h:outputLabel
+											value="#{relatBean.valVendas[1]}" converter="valueConverter" /></td>
+								
+										<td title="Valor contabilizado por Dívidas"><h:outputLabel
+											value="#{relatBean.valVendas[2]}" converter="valueConverter" /></td>
+								
+								</tr>
+
+								<tr>
+									<td title="Quantidade de vendas à vista"><h:outputLabel
+											value="#{relatBean.valVendas[3]}"
+											converter="javax.faces.Long" /> Venda<h:outputLabel
+											value="s" rendered="#{relatBean.valVendas[3] != 1}" /></td>
+
+									<td title="Quantidade de vendas a prazo"><h:outputLabel
+											value="#{relatBean.valVendas[4]}"
+											converter="javax.faces.Long" /> Venda<h:outputLabel
+											value="s" rendered="#{relatBean.valVendas[4] != 1}"/></td>
+											
+									<td title="Quantidade de dívidas"><h:outputLabel
+											value="#{relatBean.valVendas[5]}"
+											converter="javax.faces.Long" /> Dívida<h:outputLabel
+											value="s" rendered="#{relatBean.valVendas[5] != 1}"/></td>
+								</tr>
+
+
+
+								<tr>
+									<td/>
+									<th><h:outputLabel value="Total vendido: " /></th>
+
+									<td title="Valor vendido"><h:outputLabel
+											value="#{relatBean.valVendas[0] + relatBean.valVendas[1] + relatBean.valVendas[2]}"
+											converter="valueConverter" /></td>
+								</tr>
+
+							</tbody>
+						</table>
+
+
+					</div>
+
+				</h:panelGroup>
+			</div>
+
+		</h:form>
+	</ui:composition>
+
+</h:body>
+</html>

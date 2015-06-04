@@ -62,6 +62,15 @@
 
 										<th class="large-1">Cadastrar Produto</th>
 
+										<th class="large-1">Alterar Funcionário</th>
+
+										<th class="large-1">Alterar Cliente</th>
+
+										<th class="large-1">Alterar Produto</th>
+
+										<th class="large-1">Vizualizar Relatórios</th>
+
+
 									</tr>
 								</thead>
 								<tbody>
@@ -102,6 +111,49 @@
 										</td>
 
 
+										<td
+											title="Permição não possivel para esse tipo de funcionário">
+											<fieldset class="switch round large" tabindex="0"
+												style="display: none;">
+												<h:selectBooleanCheckbox id="afc"
+													title="Caixa: Cadastrar Funcionário" value="false">
+												</h:selectBooleanCheckbox>
+												<label for="afc"></label>
+
+											</fieldset>
+										</td>
+
+										<td>
+											<fieldset class="switch round large" tabindex="0">
+												<h:selectBooleanCheckbox id="acc"
+													title="Caixa: Alterar Cliente"
+													value="#{confBean.alterarCliCaixa}">
+												</h:selectBooleanCheckbox>
+												<label for="acc"></label>
+											</fieldset>
+										</td>
+
+										<td
+											title="Permição não possivel para esse tipo de funcionário">
+											<fieldset class="switch round large" tabindex="0"
+												style="display: none;">
+												<h:selectBooleanCheckbox id="apc"
+													title="Caixa: Alterar Produto" value="false">
+												</h:selectBooleanCheckbox>
+												<label for="apc"></label>
+											</fieldset>
+										</td>
+
+										<td>
+											<fieldset class="switch round large" tabindex="0">
+												<h:selectBooleanCheckbox id="grc"
+													title="Caixa: Vizualizar Relatórios"
+													value="#{confBean.gerarRelCaixa}">
+												</h:selectBooleanCheckbox>
+												<label for="grc"></label>
+											</fieldset>
+										</td>
+
 									</tr>
 
 									<tr>
@@ -137,6 +189,50 @@
 												<label for="cps"></label>
 											</fieldset>
 										</td>
+
+
+										<td>
+											<fieldset class="switch round large" tabindex="0">
+												<h:selectBooleanCheckbox id="afs"
+													title="Supervisor: Alterar Funcionário"
+													value="#{confBean.alterarFuncSupervisor}">
+												</h:selectBooleanCheckbox>
+												<label for="afs"></label>
+
+											</fieldset>
+										</td>
+
+										<td>
+											<fieldset class="switch round large" tabindex="0">
+												<h:selectBooleanCheckbox id="acs"
+													title="Supervisor: Alterar Cliente"
+													value="#{confBean.alterarCliSupervisor}">
+												</h:selectBooleanCheckbox>
+												<label for="acs"></label>
+											</fieldset>
+										</td>
+
+										<td>
+											<fieldset class="switch round large" tabindex="0">
+												<h:selectBooleanCheckbox id="aps"
+													title="Supervisor: Alterar Produto"
+													value="#{confBean.alterarProdSupervisor}">
+												</h:selectBooleanCheckbox>
+												<label for="aps"></label>
+											</fieldset>
+										</td>
+
+										<td>
+											<fieldset class="switch round large" tabindex="0">
+												<h:selectBooleanCheckbox id="grs"
+													title="Supervisor: Vizualizar Relatórios"
+													value="#{confBean.gerarRelSupervisor}">
+												</h:selectBooleanCheckbox>
+												<label for="grs"></label>
+											</fieldset>
+										</td>
+
+
 
 
 									</tr>
@@ -184,13 +280,43 @@
 
 								<pi:inputText class="grade left"
 									value="#{confBean.nomeEstabelecimento}"
-									placeholder="nome do estabelecimento" 
+									placeholder="nome do estabelecimento"
 									title="Nome do estabelecimento" />
 							</div>
 							<div class="row" style="margin-top: 20px;">
 								<h:commandButton styleClass="bt-cadastrar left" value="Salvar"
 									actionListener="#{confBean.alterarNomeDoEstabalecimento}"
 									title="Salvar novo nome do estabelecimento" />
+							</div>
+
+							<div class="row" style="margin-top: 20px;"
+								title="Restaurar banco de dados do Sistema">
+								<pi:fileUpload styleClass="botao left" label="Restaurar Sistema"
+									fileUploadListener="#{confBean.restoreBancoDeDados}"
+									mode="advanced" dragDropSupport="false" update="messages"
+									fileLimit="3" allowTypes="/(\.|\/)(sql)$/" auto="true"
+									messageTemplate="Arquivo invalido para restaurar banco">
+
+								</pi:fileUpload>
+
+								<pi:growl id="messages" showDetail="true" />
+
+							</div>
+
+
+							<div class="row" style="margin-top: 20px;"
+								title="Realizar backup dos dados do sistema">
+								
+
+								<pi:commandButton
+									actionListener="#{confBean.realizarBackup}"
+									ajax="false" value="Realizar Backup" styleClass="botao left"
+									update="@all"
+									onclick="PrimeFaces.monitorDownload(start, stop);"
+									title="Realizar backup dos dados do sistema">
+									<pi:fileDownload value="#{relatBean.filePlanilha}" />
+								</pi:commandButton>
+
 							</div>
 
 						</h:form>
@@ -204,6 +330,23 @@
 
 		</div>
 
+		<div id="modalRestore" class="reveal-modal modal_pequeno"
+			data-reveal="modalRestore">
+			<h2>Tem certeza que deseja Restaurar o sistema?</h2>
+			<br />
+
+			<h:outputLabel
+				value="Todos os dados atuais do sistema será subistituido pelos dados do Backup selecionado!" />
+			<br />
+			<h:form>
+				<h:commandButton value="Restaurar"
+					actionListener="#{confBean.restaurar}" styleClass="botao" />
+				<h:commandButton value="Cancelar"
+					actionListener="#{confBean.naoRestaurar}" styleClass="botao" />
+			</h:form>
+			<a class="close-reveal-modal">&#215;</a>
+		</div>
+		<!-- fim modal restore -->
 
 	</div>
 

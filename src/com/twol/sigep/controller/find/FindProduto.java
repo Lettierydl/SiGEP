@@ -173,4 +173,14 @@ public class FindProduto {
 		return codigos;
 	}
 
+	public static Produto produtoComDescricao(String descricao) {
+		Persistencia.restartConnection();
+		String stringQuery = "select p FROM Produto as p where p.descricao = :desc";
+		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
+		query.setParameter("desc", descricao);
+		
+		Produto produto =  (Produto) query.getSingleResult();
+		return produto;
+	}
+
 }

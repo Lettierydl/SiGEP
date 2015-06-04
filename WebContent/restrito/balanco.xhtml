@@ -1,0 +1,91 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
+
+<h:head>
+
+	<title>Cloud Sistem</title>
+
+	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="../foundation/js/vendor/modernizr.js"></script>
+
+	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
+	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
+
+	<script type="text/javascript" src="../js/componentes.js" />
+	<script type="text/javascript" src="../js/numeric.js" />
+
+
+</h:head>
+
+<h:body>
+
+
+
+
+	<ui:include src="componentes/menu.xhtml" />
+	<script>
+		ativarMenuBotoes("configuracao");
+	</script>
+
+	<div class="content">
+
+		<pi:growl autoUpdate="true" id="growl" life="6000" />
+
+		<ul class="tabs" data-tab="tabs">
+			<li class="tab-title active"><a href="#entrada">Entrada de
+					Caixa</a></li>
+			<li class="tab-title"><a href="#venda">Relatório de Vendas</a></li>
+			<li class="tab-title"><a href="#saida">Saida de Produtos</a></li>
+			<li class="tab-title"><a href="#geral">Balanço Geral</a></li>
+
+		</ul>
+		<div class="tabs-content" id="tabs">
+			
+				<div class="content active" id="entrada" align="center" >
+					<ui:include src="componentes/relatorios/entradaCaixa.xhtml" />
+				</div>
+
+
+				<div class="content " id="venda" align="center">
+					<ui:include src="componentes/relatorios/vendas.xhtml" />
+				</div>
+
+
+				<div class="content " id="saida" align="center">
+					<ui:include src="componentes/relatorios/produtos.xhtml" />
+				</div>
+
+
+				<div class="content " id="geral" align="center">
+					<ui:include src="componentes/relatorios/geral.xhtml" />
+				</div>
+
+
+
+		</div>
+		<!-- fim de div tabs -->
+
+
+
+	</div>
+
+	<script src="../foundation/js/foundation.min.js"></script>
+	<script type="text/javascript">
+		$(document).foundation();
+		jQuery(function($) {
+			$("#valorPagamentoInput").numeric({
+				decimal : ",",
+				negative : false,
+				scale : 2
+			});
+		});
+	</script>
+
+</h:body>
+
+
+</html>

@@ -1,5 +1,6 @@
 package com.twol.sigep.controller.find;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,10 @@ import javax.persistence.Query;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.model.pessoas.Funcionario;
+import com.twol.sigep.model.vendas.Divida;
 import com.twol.sigep.model.vendas.FormaDePagamento;
 import com.twol.sigep.model.vendas.ItemDeVenda;
+import com.twol.sigep.model.vendas.Pagavel;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.Persistencia;
 
@@ -172,6 +175,62 @@ public class FindVenda {
 		List<Venda> vendas = (List<Venda>) query.getResultList();
 		return vendas;
 	}
+	
+	public static List<Pagavel> pagavelNaoPagoDoCliente(Cliente cliente){
+		List<Pagavel> pag =  new ArrayList<Pagavel>();
+		pag.addAll(dividasNaoPagaDoCliente(cliente));
+		pag.addAll(vendasNaoPagaDoCliente(cliente));
+		return pag;
+	}
+	
+	public static List<Pagavel> pagavelNaoPagoDosClientes(List<Cliente> clientes){
+		List<Pagavel> pag =  new ArrayList<Pagavel>();
+		pag.addAll(dividasNaoPagasDosClientes(clientes));
+		pag.addAll(vendasNaoPagasDosClientes(clientes));
+		return pag;
+	}
+	
+	
+	public static List<Divida> dividasNaoPagaDoCliente(Cliente cliente) {
+		String stringQuery = "select d FROM Divida as d ";
+		stringQuery += "WHERE d.paga = false and d.cliente = :cli"
+				+ " order by d.total , d.dia DESC ";
+
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Divida.class);
+		query.setParameter("cli", cliente);
+
+		@SuppressWarnings("unchecked")
+		List<Divida> dividas = (List<Divida>) query.getResultList();
+		return dividas;
+	}
+	
+	public static List<Divida> dividasNaoPagasDosClientes(List<Cliente> clientes) {
+		String stringQuery = "select d FROM Divida as d ";
+		stringQuery += "WHERE d.paga = false ";
+
+		for (int i = 0; i < clientes.size(); i++) {
+			if (i > 0) {
+				stringQuery += "or d.cliente = :cli" + i + " ";
+			} else {
+				stringQuery += "and ( d.cliente = :cli" + i + " ";
+			}
+		}
+
+		stringQuery += ") order by d.dia DESC ";
+
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Divida.class);
+
+		for (int i = 0; i < clientes.size(); i++) {
+			query.setParameter("cli" + i, clientes.get(i));
+		}
+
+		@SuppressWarnings("unchecked")
+		List<Divida> dividas = (List<Divida>) query.getResultList();
+		return dividas;
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	public static List<Venda> listVendas() {

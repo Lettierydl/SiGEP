@@ -135,9 +135,9 @@ public class ControllerVendaTest {
 	public void editVendaTest() throws EntidadeNaoExistenteException, Exception {
 		createVendaTest();
 		Venda v = iniciarVendaESalvarNoBanco();
-		v.setPartePagaDaVenda(20);
+		v.setPartePaga(20);
 		ve.edit(v);
-		assertEquals( FindVenda.vendaId(v.getId()).getPartePagaDaVenda() , v.getPartePagaDaVenda(),0);
+		assertEquals( FindVenda.vendaId(v.getId()).getPartePaga() , v.getPartePaga(),0);
 	}
 	
 	@Test(expected=NoResultException.class )
@@ -383,7 +383,7 @@ public class ControllerVendaTest {
 		
 		ve.abaterValorDoPagamentoNaVenda(p);
 		
-		assertEquals(FindVenda.vendaId(v.getId()).getPartePagaDaVenda() , v.getTotal(),0);
+		assertEquals(FindVenda.vendaId(v.getId()).getPartePaga() , v.getTotal(),0);
 		assertTrue(FindVenda.vendaId(v.getId()).isPaga());
 	}
 	
@@ -405,7 +405,7 @@ public class ControllerVendaTest {
 		
 		ve.abaterValorDoPagamentoNaVenda(p);
 		
-		assertEquals(FindVenda.vendaId(v.getId()).getPartePagaDaVenda() , restante,0);
+		assertEquals(FindVenda.vendaId(v.getId()).getPartePaga() , restante,0);
 		assertFalse(FindVenda.vendaId(v.getId()).isPaga());
 	}
 	
@@ -432,10 +432,10 @@ public class ControllerVendaTest {
 		
 		ve.abaterValorDoPagamentoNaVenda(p);
 		
-		assertEquals(FindVenda.vendaId(vmenor.getId()).getPartePagaDaVenda() , vmenor.getTotal(),0);
+		assertEquals(FindVenda.vendaId(vmenor.getId()).getPartePaga() , vmenor.getTotal(),0);
 		assertTrue(FindVenda.vendaId(vmenor.getId()).isPaga());
 		
-		assertEquals(FindVenda.vendaId(vmaior.getId()).getPartePagaDaVenda() , vmaior.getTotal()*0.25,0);
+		assertEquals(FindVenda.vendaId(vmaior.getId()).getPartePaga() , vmaior.getTotal()*0.25,0);
 		assertFalse(FindVenda.vendaId(vmaior.getId()).isPaga());
 	}
 	

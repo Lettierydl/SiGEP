@@ -153,9 +153,17 @@
 	box-shadow: 1px 1px 1px 0px rgba(238, 238, 238, 1);
 }
 
-.grade input, .fomulario .grade, .grade {
+.pequeno, .pequeno input{
+	width: 125px;
+	height: 23px;
+	top: 0px;left: 0px;
+}
+
+.grade input{
 	width: 400px;
 }
+
+
 
 .left {
 	float: left;
@@ -230,9 +238,47 @@
 .switch.round {
 	position: relative;
 	width: 10px;
-	left: 75px;
-	top: 25px;
+	left: 10%;
+	top: 50%;
 }
+
+.ui-datepicker {
+	z-index:4005;
+	margin-top:10px;
+	background: #FFF none repeat scroll 0% 0%;
+	width: 220px;
+	-moz-border-radius: 7px; -webkit-border-radius : 7px; border-radius :7px;
+	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.ui-datepicker-calendar, ui-datepicker-calendar table {
+	background: #f2f2f2 none repeat scroll 0% 0%;
+	-moz-border-radius: 7px; -webkit-border-radius : 7px; border-radius :7px;
+	margin-left: 0px !important;
+}
+
+.jqplot-target {/*fonte grafico*/
+    color: #ffffff;
+    font-family: "Dosis",Arial,Helvetica,sans-serif;
+}
+
+table.jqplot-table-legend{
+	color:black;
+	font-family: "Dosis";
+	font-style: bold;
+	
+	background-color: #fdfbff;
+	border: 1px solid #3CABC6;
+}
+
+.ui-button {
+	height: 50px;
+}
+
+.ui-fileupload{
+	width: 180px !important;
+}
+
 
 ::-webkit-input-placeholder {
 	font-size: 17px;

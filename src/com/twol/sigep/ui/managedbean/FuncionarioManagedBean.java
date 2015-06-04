@@ -17,13 +17,13 @@ import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 import com.twol.sigep.util.SessionUtil;
+
 @ViewScoped
 @ManagedBean(name = "funcionarioBean")
 public class FuncionarioManagedBean {
-	
 
 	private Facede f;
-	
+
 	private Funcionario newFuncionario;
 	private Funcionario editFuncionario;
 	private TipoDeFuncionario tipoDoFuncionario = TipoDeFuncionario.Caixa;
@@ -32,85 +32,144 @@ public class FuncionarioManagedBean {
 	private String senhaEdit;
 	private String senhaNewEdit;
 	private List<Funcionario> listAtualDeFuncionarios;
-	
-	public FuncionarioManagedBean(){
+
+	public FuncionarioManagedBean() {
 		f = new Facede();
 		newFuncionario = new Funcionario();
 		listAtualDeFuncionarios = f.getFuncionarios();
 	}
 
-	public void cadastrarFuncionario(){
+	public void cadastrarFuncionario() {
 		try {
 			f.adicionarFuncionario(newFuncionario, senha, tipoDoFuncionario);
 		} catch (SenhaIncorretaException e) {
 			e.printStackTrace();
 		} catch (FuncionarioNaoAutorizadoException e) {
-			SessionUtil.exibirMensagem(new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						e.getMessage(),
-						e.getMessage()));
+			SessionUtil
+					.exibirMensagem(new FacesMessage(
+							FacesMessage.SEVERITY_ERROR, e.getMessage(), e
+									.getMessage()));
 			return;
 		}
 		newFuncionario = new Funcionario();
 		listAtualDeFuncionarios = f.getFuncionarios();
 	}
-	
-	public TipoDeFuncionario[] getTiposFuncionario(){
+
+	public TipoDeFuncionario[] getTiposFuncionario() {
 		return TipoDeFuncionario.values();
 	}
-	
-	public void validarInformacoesCadastrais(Funcionario f){}
-	
-	public List<Funcionario> getListAtualDeFuncionarios(){
-		if(listAtualDeFuncionarios == null || listAtualDeFuncionarios.isEmpty()){
+
+	public void validarInformacoesCadastrais(Funcionario f) {
+	}
+
+	public List<Funcionario> getListAtualDeFuncionarios() {
+		if (listAtualDeFuncionarios == null
+				|| listAtualDeFuncionarios.isEmpty()) {
 			return f.getFuncionarios();
 		}
 		return listAtualDeFuncionarios;
 	}
-	
-	public void modificarListaAtualDeFuncionarioPeloNome(){
-		if(nomePesquisa != null && nomePesquisa.length() != 0){
-			listAtualDeFuncionarios = f.buscarFuncionarioPorNomeQueInicia(nomePesquisa);
+
+	public void modificarListaAtualDeFuncionarioPeloNome() {
+		if (nomePesquisa != null && nomePesquisa.length() != 0) {
+			listAtualDeFuncionarios = f
+					.buscarFuncionarioPorNomeQueInicia(nomePesquisa);
 			RequestContext.getCurrentInstance().update("tabelaFuncionarios");
-		}else{
+		} else {
 			listAtualDeFuncionarios = f.getFuncionarios();
 			RequestContext.getCurrentInstance().update("tabelaFuncionarios");
 		}
 	}
-	
-	public void openEditFuncionario(Funcionario f){
+
+	public void openEditFuncionario(Funcionario f) {
 		this.setEditFuncionario(f);
 		RequestContext.getCurrentInstance().execute("abrirModa('modalEdit');");
 		/*
-		RequestContext.getCurrentInstance().update("formEdit");
-		RequestContext.getCurrentInstance().update("nomeEdit");
-		RequestContext.getCurrentInstance().openDialog("modalEdit");
-		RequestContext.getCurrentInstance().openDialog("#modalEdit");*/
+		 * RequestContext.getCurrentInstance().update("formEdit");
+		 * RequestContext.getCurrentInstance().update("nomeEdit");
+		 * RequestContext.getCurrentInstance().openDialog("modalEdit");
+		 * RequestContext.getCurrentInstance().openDialog("#modalEdit");
+		 */
 	}
-	
-	public void modific(ValueChangeEvent event){
+
+	public void modific(ValueChangeEvent event) {
 		nomePesquisa = (String) event.getNewValue();
 		modificarListaAtualDeFuncionarioPeloNome();
 	}
-	
-	public void editarFuncionario(){
-		if(senhaNewEdit!=null && !senhaNewEdit.isEmpty() ){
+
+	public void editarFuncionario() {
+		if (senhaNewEdit != null && !senhaNewEdit.isEmpty()) {
 			try {
-				f.alterarSenhaDoFuncionario(editFuncionario, senhaEdit, senhaNewEdit);
+				f.alterarSenhaDoFuncionario(editFuncionario, senhaEdit,
+						senhaNewEdit);
 			} catch (SenhaIncorretaException e) {
-				e.printStackTrace();
+				SessionUtil.exibirMensagem((new FacesMessage(
+						FacesMessage.SEVERITY_FATAL, "Senha incorreta",
+						"Senha incorreta")));
 			} catch (LoginIncorretoException e) {
-				e.printStackTrace();
+				SessionUtil.exibirMensagem((new FacesMessage(
+						FacesMessage.SEVERITY_FATAL, "Login incorreto",
+						"Login incorreto")));
 			}
 		}
+
 		try {
+			Funcionario oud = f.buscarFuncionarioPorId(editFuncionario.getId());
+			if (!oud.getNome().equals(editFuncionario.getNome())) {// modificou
+				try {
+					f.buscarFuncionarioPorNome(editFuncionario.getNome());
+					SessionUtil.exibirMensagem((new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Já existe um funcionário com o nome "
+									+ editFuncionario.getNome(),
+							"Já existe um funcionário com o nome "
+									+ editFuncionario.getNome())));
+					editFuncionario.setNome(oud.getNome());
+					editFuncionario.setCpf(oud.getCpf());
+					return;
+				} catch (Exception ep) {
+				}// ok nao existe
+			}
+			if (!oud.getCpf().equals(editFuncionario.getCpf())) {// modificou
+				try {
+					f.buscarFuncionarioPorCPF(editFuncionario.getCpf());
+					SessionUtil.exibirMensagem((new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Já existe um funcionário com o CPF "
+									+ editFuncionario.getCpf(),
+							"Já existe um funcionário com o CPF "
+									+ editFuncionario.getCpf())));
+					editFuncionario.setCpf(oud.getCpf());
+					return;
+				} catch (Exception ep) {
+				}// ok nao existe
+			}
 			f.atualizarFuncionario(editFuncionario);
-		} catch (EntidadeNaoExistenteException e) {
+
+		} catch (FuncionarioNaoAutorizadoException fe) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
+							.getMessage()));
+			return;
+		}
+
+		catch (EntidadeNaoExistenteException e) {
+			SessionUtil.exibirMensagem((new FacesMessage(
+					FacesMessage.SEVERITY_FATAL,
+					"Reveja a conexão com o servidor",
+					"Reveja a conexão com o servidor")));
 			e.printStackTrace();
 		} catch (Exception e) {
+			SessionUtil.exibirMensagem((new FacesMessage(
+					FacesMessage.SEVERITY_FATAL,
+					"Formulário com informações inválidas",
+					"Formulário com informações inválidas")));
 			e.printStackTrace();
+		} finally {
+
+			RequestContext.getCurrentInstance().update("@all");
 		}
-		RequestContext.getCurrentInstance().update("@all");
+
 	}
 
 	public String getSenha() {
@@ -144,8 +203,8 @@ public class FuncionarioManagedBean {
 	public void setTipoDoFuncionario(TipoDeFuncionario tipoDoFuncionario) {
 		this.tipoDoFuncionario = tipoDoFuncionario;
 	}
-	
-	public Funcionario getFuncionarioLogado(){
+
+	public Funcionario getFuncionarioLogado() {
 		return f.getFuncionarioLogado();
 	}
 
@@ -172,6 +231,5 @@ public class FuncionarioManagedBean {
 	public void setSenhaNewEdit(String senhaNewEdit) {
 		this.senhaNewEdit = senhaNewEdit;
 	}
-	
-	
+
 }

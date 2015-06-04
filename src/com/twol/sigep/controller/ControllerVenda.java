@@ -20,9 +20,11 @@ import com.twol.sigep.model.exception.VariasVendasPendentesException;
 import com.twol.sigep.model.exception.VendaPendenteException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.pessoas.Funcionario;
+import com.twol.sigep.model.vendas.Divida;
 import com.twol.sigep.model.vendas.FormaDePagamento;
 import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Pagamento;
+import com.twol.sigep.model.vendas.Pagavel;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.SessionUtil;
 
@@ -59,6 +61,23 @@ public class ControllerVenda {
 		}
 	}
 
+	/*
+	 * Divida
+	 */
+	public void create(Divida divida) {
+		EntityManager em = null;
+		try {
+			em = getEntityManager();
+			em.getTransaction().begin();
+			em.persist(divida);
+			em.getTransaction().commit();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
 	public void edit(Venda venda) throws EntidadeNaoExistenteException,
 			Exception {
 		EntityManager em = null;
@@ -82,6 +101,29 @@ public class ControllerVenda {
 			} catch (EntityNotFoundException enfe) {
 				throw new EntidadeNaoExistenteException("A Venda com código "
 						+ venda.getId() + " não existe.");
+			}
+			throw ex;
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+
+	public void edit(Divida divida) throws EntidadeNaoExistenteException,
+			Exception {
+		EntityManager em = null;
+		try {
+			em = getEntityManager();
+			em.getTransaction().begin();
+			divida = em.merge(divida);
+			em.getTransaction().commit();
+		} catch (Exception ex) {
+			try {
+				em.find(Divida.class, divida.getId());
+			} catch (EntityNotFoundException enfe) {
+				throw new EntidadeNaoExistenteException("A Divida com código "
+						+ divida.getId() + " não existe.");
 			}
 			throw ex;
 		} finally {
@@ -139,6 +181,30 @@ public class ControllerVenda {
 			}
 		}
 	}
+	
+	
+	public void destroy(Divida divida) throws EntidadeNaoExistenteException {
+		EntityManager em = null;
+		try {
+			em = getEntityManager();
+			em.getTransaction().begin();
+			try {
+				divida = em.getReference(Divida.class, divida.getId());
+				divida.getId();
+			} catch (EntityNotFoundException enfe) {
+				throw new EntidadeNaoExistenteException("A Divida com código "
+						+ divida.getId() + " não existe.");
+			}
+
+			em.remove(divida);
+			em.getTransaction().commit();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+	}
+	
 
 	public void destroy(ItemDeVenda item) throws EntidadeNaoExistenteException {
 		EntityManager em = null;
@@ -240,20 +306,28 @@ public class ControllerVenda {
 			throws EntidadeNaoExistenteException, Exception {
 		Cliente c = p.getCliente();
 		double valorRestante = p.getValor();
-		for (Venda v : FindVenda.vendasNaoPagaDoCliente(c)) {
+		List<Pagavel> pagaveis = new ArrayList<Pagavel>();
+		pagaveis.addAll(FindVenda.vendasNaoPagaDoCliente(c));
+		pagaveis.addAll(FindVenda.dividasNaoPagaDoCliente(c));
+		
+		for (Pagavel pag : pagaveis) {
 			if (valorRestante == 0) {// ja pagou a venda
 				break;
 			}
-			if (v.getValorNaoPagoDaVenda() > valorRestante) {// paga parte da
+			if (pag.getValorNaoPago() > valorRestante) {// paga parte da
 																// venda
-				v.acrescentarPartePagaDaVenda(valorRestante);
+				pag.acrescentarPartePaga(valorRestante);
 				valorRestante = 0;
 			} else {// paga venda toda, pode sobrar resto pra outras vendas ou
 					// nao
-				valorRestante -= v.getValorNaoPagoDaVenda();
-				v.acrescentarPartePagaDaVenda(v.getValorNaoPagoDaVenda());
+				valorRestante -= pag.getValorNaoPago();
+				pag.acrescentarPartePaga(pag.getValorNaoPago());
 			}
-			edit(v);
+			if(pag instanceof Venda){
+				edit((Venda)pag);
+			}else if(pag instanceof Divida){
+				edit((Divida)pag);
+			}
 		}
 		// logo em seguida deve diminuir o debito do cliente com o valor do
 		// Venda
@@ -288,7 +362,7 @@ public class ControllerVenda {
 			throws EntidadeNaoExistenteException, Exception {
 		v.setFormaDePagamento(FormaDePagamento.A_Vista);
 		v.setPaga(true);
-		v.setPartePagaDaVenda(v.getTotal());
+		v.setPartePaga(v.getTotal());
 		edit(v);
 		double valor = retirarItensDoEstoque(v);
 		if (valor != v.getTotal()) {
@@ -297,12 +371,12 @@ public class ControllerVenda {
 		}
 	}
 
-	//retorna o que deve ser acrecentado a conta do cliente
-	public synchronized double finalizarVendaAPrazo(Venda v, Cliente c , double partePaga)
-			throws EntidadeNaoExistenteException, Exception {
+	// retorna o que deve ser acrecentado a conta do cliente
+	public synchronized double finalizarVendaAPrazo(Venda v, Cliente c,
+			double partePaga) throws EntidadeNaoExistenteException, Exception {
 		v.setFormaDePagamento(FormaDePagamento.A_Prazo);
 		v.setPaga(false);
-		v.setPartePagaDaVenda(partePaga);
+		v.setPartePaga(partePaga);
 		v.setCliente(c);
 		edit(v);
 		double valor = retirarItensDoEstoque(v);
@@ -310,11 +384,11 @@ public class ControllerVenda {
 			System.err.println("venda com valor errado");
 			// colocar no relatorio do final do dia
 		}
-		double credito = v.getTotal() - v.getPartePagaDaVenda();
-		if(credito < 0){
+		double credito = v.getTotal() - v.getPartePaga();
+		if (credito < 0) {
 			System.err.println("venda com valor errado");
 			return 0;
-		}else{
+		} else {
 			return credito;
 		}
 	}

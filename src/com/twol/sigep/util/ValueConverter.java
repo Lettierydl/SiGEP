@@ -14,6 +14,9 @@ public class ValueConverter implements Converter {
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String arg2) {
 		try{
+			if(arg2.isEmpty()){
+				return 0.0;
+			}
 			return Double.valueOf(arg2.replace(".", "").replace(" ","").replace(",", "."));
 		}catch(NumberFormatException ne){
 			SessionUtil.exibirMensagem(new FacesMessage(
@@ -27,7 +30,7 @@ public class ValueConverter implements Converter {
 	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {
 		try{
-			if(arg2.toString() != "0.0"){
+			if(!arg2.toString().equals("0.0")){
 				return new DecimalFormat("0.00").format(arg2);
 			}else{
 				return  "0";

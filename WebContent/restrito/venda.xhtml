@@ -43,6 +43,10 @@
 					<a href="home.jsf" > <img src="../imagens/home_ico.png" /></a>
 				</div>
 				
+				<div class="home">
+					<a  onclick="abrirModa('modalProdutos');" > <img src="../imagens/mercadorias.ico.png" /></a>
+				</div>
+				
 				<h:outputLabel value="Mercadinho Popular" styleClass="nome"/>
 				
 			</div>
@@ -159,6 +163,72 @@
 					
 			<a class="close-reveal-modal">&#215;</a>
 		</div><!-- fim modal remover item -->
+		
+		
+		
+		
+		
+		<div id="modalProdutos" class="reveal-modal modal" data-reveal="modalProdutos">
+			
+			<h2>Colsunta de Produtos</h2>
+			
+			<h:form prependId="false" id="formMercadorias">
+			
+				<pi:remoteCommand name="enterProd" actionListener="#{vendaBean.inserirProdutoNasMercadorias()}" update="@form"/>
+						
+				<!-- abrirModa('modalProdutos'); -->
+					<div class="campos">
+					
+						
+							<pi:autoComplete p:id="codigoProd" id="codigoProd" value="#{vendaBean.codigoProd}" 
+								styleClass="codigo_autocomplet" placeholder="Código ou Nome" p:style="width: 239px;"
+								completeMethod="#{vendaBean.completMetodo}" valueChangeListener="#{vendaBean.digitado}"  onkeypress="if(event.keyCode == 13){enterProd();return false;}">
+								<pi:ajax event="change" update="@form"/>
+							</pi:autoComplete>
+							
+							<pi:inputText id="quantidadeProd" converter="valueConverter" placeholder="0,000" title="Quantidade" value="#{vendaBean.quantidadeProd}"  p:style="margin-left: 10px; border: 1px line #3CABC6;"/>
+							
+							
+							<span style="margin-left: 50px;" title="Total"><h:outputLabel value="#{vendaBean.totalMercadorias}"/></span>
+							
+					</div>  
+				
+				
+				<div style=" height: 300px; width: 95%; padding-top: 30px;">
+				<div class="tabela scroll" style="margin-top: 20px; width: 95%;">
+							
+							<h:dataTable styleClass="scroll" id="produtosConsultados" value="#{vendaBean.mercadorias}" var="item">
+								
+								<h:column headerClass="large-4">
+									<f:facet name="header">Produto</f:facet> 
+									<h:outputLabel value="#{item.produto.descricao}"/>
+								</h:column>
+								
+								
+								<h:column headerClass="large-2">
+									<f:facet name="header">Código</f:facet> 
+									<h:outputLabel value="#{item.produto.codigoDeBarras}"/>
+								</h:column>
+								
+								<h:column headerClass="large-2">
+									<f:facet name="header">Estoque</f:facet> 
+									<h:outputLabel value="#{item.produto.quantidadeEmEstoque}" title="Quantidade em estoque"/>
+								</h:column>
+								
+								<h:column headerClass="large-2">
+									<f:facet name="header">Valor UN</f:facet>
+									<h:outputLabel value="#{item.valorProduto}"  converter="valueConverter"/>
+								</h:column>
+								
+							</h:dataTable>
+							
+					</div>
+					</div>
+				
+				
+			</h:form>
+					
+		</div><!-- fim modal Mercadoria -->
 		
 		
 		

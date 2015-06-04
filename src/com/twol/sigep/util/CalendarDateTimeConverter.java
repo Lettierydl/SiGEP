@@ -3,13 +3,14 @@ package com.twol.sigep.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@FacesConverter(forClass= Double.class, value="calendarDateTimeConverter")
+@FacesConverter(forClass= Date.class, value="calendarDateTimeConverter")
 public class CalendarDateTimeConverter implements Converter {
 
 	@Override
