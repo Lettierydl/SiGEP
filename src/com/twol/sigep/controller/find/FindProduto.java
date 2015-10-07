@@ -85,7 +85,7 @@ public class FindProduto {
 		Persistencia.restartConnection();
 		Query q = Persistencia.em
 				.createQuery(
-						"select o from Produto as o where LOWER(o.descricao) LIKE LOWER(:descricao)",
+						"select o from Produto as o where LOWER(o.descricao) LIKE LOWER(:descricao)  order by o.descricao",
 						Produto.class);
 		q.setParameter("descricao", descricao);
 		List<Produto> produtos = q.getResultList();
@@ -97,7 +97,7 @@ public class FindProduto {
 	public static List<Produto> produtosQueDescricaoOuCodigoDeBarrasIniciam(
 			String descricaoOuCodigo) {
 		String stringQuery = "select p FROM Produto as p where LOWER(p.descricao) LIKE LOWER(:descricao) "
-				+ "or LOWER(p.codigoDeBarras) LIKE LOWER(:codigoDeBarras) ";
+				+ "or LOWER(p.codigoDeBarras) LIKE LOWER(:codigoDeBarras) order by p.descricao";
 		
 		Persistencia.restartConnection();
 		
@@ -121,7 +121,7 @@ public class FindProduto {
 	
 	public static Produto produtoComId(int id) {
 		Persistencia.restartConnection();
-		String stringQuery = "select p FROM Produto as p where p.id = :id ";
+		String stringQuery = "select p FROM Produto as p where p.id = :id  order by p.descricao";
 		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
 		query.setParameter("id",id);
 		
@@ -130,7 +130,7 @@ public class FindProduto {
 	}
 
 	public static List<Produto> todosProdutos() {
-		String stringQuery = "select p FROM Produto as p ";
+		String stringQuery = "select p FROM Produto as p  order by p.descricao";
 		Persistencia.restartConnection();
 		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
 		@SuppressWarnings("unchecked")
@@ -140,7 +140,7 @@ public class FindProduto {
 
 	public static Produto produtoComCodigoEDescricao(String nomeOuCodigo) {
 		Persistencia.restartConnection();
-		String stringQuery = "select p FROM Produto as p where p.codigoDeBarras = :cod or p.descricao = :desc";
+		String stringQuery = "select p FROM Produto as p where p.codigoDeBarras = :cod or p.descricao = :desc  order by p.descricao";
 		Query query = Persistencia.em.createQuery(stringQuery, Produto.class);
 		query.setParameter("desc", nomeOuCodigo);
 		query.setParameter("cod", nomeOuCodigo);
@@ -150,25 +150,42 @@ public class FindProduto {
 	}
 
 	public static List<String> drecricaoProdutoQueIniciam(String descricao) {
-		String stringQuery = "select p.descricao FROM Produto as p where LOWER(p.descricao) LIKE LOWER(:descricao) ";
+		String stringQuery = "select p.descricao FROM Produto as p where LOWER(p.descricao) LIKE LOWER(:descricao)  order by p.descricao";
 		
 		Persistencia.restartConnection();
 		
 		Query query = Persistencia.em.createQuery(stringQuery, String.class);
 		query.setParameter("descricao", descricao+ "%");
 		
+		@SuppressWarnings("unchecked")
+		List<String> descricoes = (List<String>) query.getResultList();
+		return descricoes;
+	}
+	
+	public static List<String> drecricaoProdutoQueIniciam(String descricao, int maxResult) {
+		String stringQuery = "select p.descricao FROM Produto as p where LOWER(p.descricao) LIKE LOWER(:descricao)  order by p.descricao";
+		
+		Persistencia.restartConnection();
+		
+		Query query = Persistencia.em.createQuery(stringQuery, String.class);
+		query.setParameter("descricao", descricao+ "%");
+		
+		query.setMaxResults(maxResult);
+		
+		@SuppressWarnings("unchecked")
 		List<String> descricoes = (List<String>) query.getResultList();
 		return descricoes;
 	}
 	
 	public static List<String> codigoProdutoQueIniciam(String codigo) {
-		String stringQuery = "select p.codigoBarras FROM Produto as p where LOWER(p.codigoBarras) LIKE LOWER(:codigoBarras) ";
+		String stringQuery = "select p.codigoBarras FROM Produto as p where LOWER(p.codigoBarras) LIKE LOWER(:codigoBarras)  order by p.descricao";
 		
 		Persistencia.restartConnection();
 		
 		Query query = Persistencia.em.createQuery(stringQuery, String.class);
 		query.setParameter("codigoBarras", codigo+ "%");
 		
+		@SuppressWarnings("unchecked")
 		List<String> codigos = (List<String>) query.getResultList();
 		return codigos;
 	}

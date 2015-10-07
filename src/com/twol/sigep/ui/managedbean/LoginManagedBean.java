@@ -36,7 +36,7 @@ public class LoginManagedBean {
 			JSFUiUtil.error(OperacaoStringUtil.MESSAGEM_LOGIN_INVALIDO);
 			return;
 		}
-		JSFUiUtil.info(OperacaoStringUtil.LOGIN_REALIZADO);
+		//JSFUiUtil.info(OperacaoStringUtil.LOGIN_REALIZADO);
 		try{
 			SessionUtil.redirecionarParaPage(SessionUtil.PAGE_PRINCIPAL);
 		}catch(IOException io){io.printStackTrace();}

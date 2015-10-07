@@ -16,6 +16,7 @@ import javax.faces.event.ValueChangeEvent;
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
+import com.twol.sigep.model.configuracoes.ConfiguracaoSistema;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.VariasVendasPendentesException;
@@ -107,7 +108,12 @@ public class VendaManagedBean {
 		try {
 			UIInput in = (UIInput) event.getComponent();
 			String digitado = (String) event.getNewValue();
-			char ultimoCaracter = digitado.charAt(digitado.length() - 1);
+			char ultimoCaracter = ' ';
+			try{
+				ultimoCaracter = digitado.charAt(digitado.length() - 1);
+			}catch(NullPointerException nu){
+				return;
+			}
 			if (ultimoCaracter == '*') {
 				quantidade = Double.valueOf(digitado.replace("*", "").replace(
 						",", "."));
@@ -115,37 +121,41 @@ public class VendaManagedBean {
 				in.setValue(codigo);
 				RequestContext.getCurrentInstance().update("codigo");
 				RequestContext.getCurrentInstance().update("quantidade");
+			}else if(digitado.length() == 13){
+				if(codigo.startsWith("2")  || f.buscarProdutoPorCodigo(digitado) != null){
+					codigo = digitado;
+					
+					verificarProduto();
+					codigo = "";
+					in.setValue(codigo);
+					RequestContext.getCurrentInstance().update("codigo");
+					RequestContext.getCurrentInstance().update("quantidade");
+					RequestContext.getCurrentInstance().update("itensVenda");
+					RequestContext.getCurrentInstance().update("formPrincipal");	
+				}
 			}
 		} catch (Exception e) {
+			//e.printStackTrace();
 		}
+		
+		
 
 		// addItemAVenda(p, quantidade);
-	}
-
-	public void inserirProdutoNasMercadorias(){
-		
-		Produto p;
-		try {
-			p = f.buscarProdutoPorDescricaoOuCodigo(codigoProd);
-			ItemDeVenda it = new ItemDeVenda(p, quantidadeProd);
-			mercadorias.addFirst(it);
-			totalMercadorias += it.getTotal();
-			
-			codigoProd = "";
-			quantidadeProd = 1;
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Produto ( " + codigoProd + " ) não cadastrado","Produto Invalido")));
-			
-			return;// nenhum produto encontrado
-		}
-		
 	}
 	
 	
 	public void verificarProduto() {
 		Produto p;
 		try {
-			p = f.buscarProdutoPorDescricaoOuCodigo(codigo);
+			if(codigo.startsWith("2") && codigo.length() == 13){
+				String vTotal = codigo.substring(8, 10)+"."+codigo.substring(10, 12);
+				double total = Double.valueOf(vTotal);
+				
+				p = f.buscarProdutoPorDescricaoOuCodigo(codigo.substring(0, 7));
+				this.quantidade = total/p.getValorDeVenda();
+			}else{
+				p = f.buscarProdutoPorDescricaoOuCodigo(codigo);
+			}
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Produto ( " + codigo + " ) não cadastrado","Produto Invalido")));
 			return;// nenhum produto encontrado
@@ -167,11 +177,32 @@ public class VendaManagedBean {
 		quantidade = 1;
 		RequestContext.getCurrentInstance().update("@all");
 	}
+	
+
+	public void inserirProdutoNasMercadorias(){
+		
+		Produto p;
+		try {
+			p = f.buscarProdutoPorDescricaoOuCodigo(codigoProd);
+			ItemDeVenda it = new ItemDeVenda(p, quantidadeProd);
+			mercadorias.addFirst(it);
+			totalMercadorias += it.getTotal();
+			
+			codigoProd = "";
+			quantidadeProd = 1;
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Produto ( " + codigoProd + " ) não cadastrado","Produto Invalido")));
+			
+			return;// nenhum produto encontrado
+		}
+		
+	}
+	
 
 	public void addItemAVenda(Produto p, double quantidade) {
 		ItemDeVenda it = new ItemDeVenda();
-		it.setQuantidade(quantidade);
 		it.setProduto(p);
+		it.setQuantidade(quantidade);
 		try {
 			f.addItemAVenda(it);
 		} catch (Exception e) {// venda nao existente, erro grande
@@ -188,7 +219,11 @@ public class VendaManagedBean {
 	}
 
 	public List<String> completMetodo(String query) {
-		return f.buscarDescricaoProdutoPorDescricaoQueInicia(query);
+		if(ConfiguracaoSistema.getLimiteDeRegistro()){
+			return f.buscarDescricaoProdutoPorDescricaoQueInicia(query, ConfiguracaoSistema.getMaxResult());
+		}else{
+			return f.buscarDescricaoProdutoPorDescricaoQueInicia(query);
+		}
 	}
 
 	private ItemDeVenda removerItem = null;
@@ -251,7 +286,19 @@ public class VendaManagedBean {
 			} catch (Exception e) {// bug banco
 				e.printStackTrace();
 			}
-			SessionUtil.redirecionarParaPage(uri);
+
+			RequestContext.getCurrentInstance().update("@all");
+			
+				//System.out.println(uri);
+				if(uri.equalsIgnoreCase("finalizar_a_vista.jsf")){
+					RequestContext.getCurrentInstance().execute(
+							"window.location = 'finalizar_a_vista.jsf';");
+				}else if(uri.equalsIgnoreCase("finalizar_a_prazo.jsf")){
+					RequestContext.getCurrentInstance().execute(
+							"window.location = 'finalizar_a_prazo.jsf';");
+				}
+				
+				//SessionUtil.redirecionarParaPage(uri);
 		} else {
 			FacesContext.getCurrentInstance().addMessage(
 					null,

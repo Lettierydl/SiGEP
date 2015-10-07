@@ -4,25 +4,24 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:pi="http://primefaces.org/ui">
+	
 <h:head>
 	<title>Cloud Sistem</title>
+	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
 
-	<link rel="stylesheet" href="../foundation/css/foundation.css" />
-	<script src="../foundation/js/vendor/modernizr.js"></script>
+	
 
 	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
 	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
 
 
+
 	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/numeric.js" />
-	
-	<script type="text/javascript">
-		jQuery(function($){
-			$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
-			$(".quantidade").numeric({ decimal : ",",  negative : false, scale: 3 });
-		 });
-	</script>
+	<script type="text/javascript" src="../js/jquery.mask.js" />
+
+	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="../foundation/js/vendor/modernizr.js"></script>
 	
 	
 	
@@ -57,35 +56,36 @@
 		</div>
 		
 		<div class="tabela">
-			<h:dataTable id="tabelaProdutos"
+			<pi:dataTable  styleClass="tabela"   id="tabelaProdutos"  
+			scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="300"
 				value="#{produtoBean.listAtualDeProdutos}" var="produto">
 				<f:facet name="header"/>
-				<h:column headerClass="large-4">
+				<pi:column styleClass="large-4" >
 					<f:facet name="header">Descição</f:facet> 
 					#{produto.descricao}
-				</h:column>
-				<h:column headerClass="large-2">
+				</pi:column>
+				<pi:column styleClass="large-2">
 					<f:facet name="header">Código de Baras</f:facet>
 					#{produto.codigoDeBarras}
-				</h:column>
-				<h:column headerClass="large-2">
+				</pi:column>
+				<pi:column styleClass="large-2">
 					<f:facet name="header">Valor de Venda</f:facet>
 					<h:outputLabel value="#{produto.valorDeVenda}" converter="valueConverter"/>
-				</h:column>
-				<h:column headerClass="large-2">
+				</pi:column>
+				<pi:column styleClass="large-2">
 					<f:facet name="header">Categoria</f:facet>
 					#{produto.categoria.name}
-				</h:column>
-				<h:column headerClass="large-2">
+				</pi:column>
+				<pi:column styleClass="large-2">
 					<f:facet name="header">Quantidade em Estoque</f:facet>
 					<h:outputLabel value="#{produto.quantidadeEmEstoque}"  converter="quantidadeConverter"/>
 					#{produto.descricaoUnidade.name}
-				</h:column>
-				<h:column  headerClass="large-1">
+				</pi:column>
+				<pi:column  styleClass="large-1">
 					<f:facet name="header">Editar</f:facet>
 					<pi:commandLink value="Edit" actionListener="#{produtoBean.openEditProduto(produto)}" rendered="true" update="@all"/>
-				</h:column>
-			</h:dataTable>
+				</pi:column>
+			</pi:dataTable>
 			
 		</div><!-- fim da tabela -->
 		
@@ -100,9 +100,7 @@
 							<h:panelGrid columns="2" >
 								<h:outputLabel value="Código:" for="inputCodigo" />
 								<h:inputText id="inputCodigo"  maxlength="13" value="#{produtoBean.newProduto.codigoDeBarras}"
-								styleClass="campo-grande" title="Código de Barras" required="true" validator="produtoValidation" validatorMessage="Código com formato errado">
-									<f:validateRegex pattern="[0-9]*" />
-								
+								styleClass="campo-grande pula" title="Código de Barras" required="true" validator="produtoValidation" validatorMessage="Código com formato errado">
 								</h:inputText>
 								
 								<h:outputLabel value="Descrição:" for="inputDescricao" />
@@ -185,14 +183,14 @@
 										<h:outputLabel value="Valor:" for="editValorV" />
 										<pi:inputText id="editValorV" title="Valor de Venda" maxlength="11" 
 										value="#{produtoBean.editProduto.valorDeVenda}"    placeholder="0,00" styleClass="campo-medio money" converter="valueConverter" >
+											
 										</pi:inputText>
 									
 										<h:outputLabel value="Compra:" for="editValorC" />
-										<pi:inputText id="editValorC" title="Valor de Compra"   placeholder="0,00" maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio money" converter="valueConverter" />
+										<pi:inputText id="editValorC" title="Valor de Compra"   placeholder="0,00" maxlength="11" value="#{produtoBean.editProduto.valorDeCompra}"  styleClass="campo-medio money"  converter="valueConverter" />
 									
-										
 										<h:outputLabel value="Quantidade:" for="editQuantidade" />
-										<pi:inputText id="editQuantidade"  placeholder="0,000" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio" converter="quantidadeConverter"  title="Quantidade atual em estoque">
+										<pi:inputText id="editQuantidade"  placeholder="0,000" maxlength="11" value="#{produtoBean.editProduto.quantidadeEmEstoque}"  styleClass="campo-medio quantidade" converter="quantidadeConverter"  title="Quantidade atual em estoque">
 										</pi:inputText>
 									
 										<h:outputLabel value="Limite:" for="editLimite" />
@@ -228,18 +226,19 @@
 		
 	</div> <!-- Fim content -->
 
-	
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script type="text/javascript">
 		$(document).foundation();
 		
 		jQuery(function($){
-			$(".quantidade").val("");
-			$(".money").val("");
-			
+			//$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
+			//$(".quantidade").numeric({ decimal : ",",  negative : false, scale: 3 });
+			$(".money").mask('000000000,00', {reverse: true});
+			$(".quantidade").mask('000000000,000', {reverse: true});
 		 });
-	
-	</script>
+		
+		script_footer();
+     </script>
 	
 </h:body>
 ￼￼￼￼

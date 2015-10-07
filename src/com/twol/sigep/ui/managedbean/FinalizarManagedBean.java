@@ -10,7 +10,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
 import org.primefaces.context.RequestContext;
@@ -27,6 +26,7 @@ import com.twol.sigep.util.SessionUtil;
 public class FinalizarManagedBean {
 
 	private Venda aFinalizar = null;
+	private boolean imprimir = false;
 	private double pago = 0;
 	private double partePaga;
 	private String nomeCliente;
@@ -66,24 +66,31 @@ public class FinalizarManagedBean {
 		return f.buscarClientePorCPFOuNomeQueIniciam(query);
 	}
 
-	public void modificValorPago(ValueChangeEvent event) {
-		try {
-			this.pago = Double.valueOf(event.getNewValue().toString()
-					.replace(".", "").replace(" ", "").replace(",", "."));
-		} catch (NumberFormatException nf) {
-			this.pago = 0;
-		}
-	}
-
 	public void finalizarVendaAVista() {
 		if(this.pago >= aFinalizar.getTotal()){
 			//finaliza
-			SessionUtil.putNextMensagem(new FacesMessage(
-					FacesMessage.SEVERITY_INFO, 
-					"Venda finalizada à vista com sucesso", "Venda Finalizada"));
 			
 			try {
 				f.finalizarVendaAVista(aFinalizar);
+				
+				boolean ret = false;
+				try{
+					if(imprimir){
+						ret = f.imprimirVenda(aFinalizar);
+					}else{
+						ret = true;
+					}
+				}catch(Exception | UnsatisfiedLinkError e){}
+				if(ret){
+					SessionUtil.putNextMensagem(new FacesMessage(
+							FacesMessage.SEVERITY_INFO, 
+							"Venda finalizada à vista com sucesso", "Venda Finalizada"));
+				}else{
+					SessionUtil.putNextMensagem(new FacesMessage(
+							FacesMessage.SEVERITY_WARN,"Venda Finalizada! \nImpressora com problema",
+							"Impressora com problema"));
+				}
+				
 				SessionUtil.redirecionarParaPage("venda.jsf");
 			} catch (EntidadeNaoExistenteException e) {
 				e.printStackTrace();// venda ou item removido
@@ -118,9 +125,23 @@ public class FinalizarManagedBean {
 		
 		try {
 			f.finalizarVendaAprazo(aFinalizar, selecionado, partePaga);
-			SessionUtil.putNextMensagem(new FacesMessage(
-					FacesMessage.SEVERITY_INFO,"Venda finalizada à prazo com sucesso",
-					"Venda Finalizada"));
+			boolean ret = false;
+			try{
+				if(imprimir){
+					ret = f.imprimirVenda(aFinalizar);
+				}else{
+					ret = true;
+				}
+			}catch(Exception | UnsatisfiedLinkError e){}
+			if(ret){
+				SessionUtil.putNextMensagem(new FacesMessage(
+						FacesMessage.SEVERITY_INFO,"Venda finalizada à prazo com sucesso",
+						"Venda Finalizada"));
+			}else{
+				SessionUtil.putNextMensagem(new FacesMessage(
+						FacesMessage.SEVERITY_WARN,"Venda Finalizada! \nImpressora com problema",
+						"Impressora com problema"));
+			}
 			SessionUtil.redirecionarParaPage("venda.jsf");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -131,10 +152,7 @@ public class FinalizarManagedBean {
 		}
 	}
 
-	public void cancelarVenda() {
-		SessionUtil.putNextMensagem(new FacesMessage(
-				FacesMessage.SEVERITY_ERROR,"Venda removida com sucesso",
-				"Venda Removida"));
+	public void voltarVenda() {
 		try {
 			SessionUtil.redirecionarParaPage("venda.jsf");
 		} catch (IOException e) {
@@ -143,28 +161,6 @@ public class FinalizarManagedBean {
 
 	}
 
-	public String getTroco() {
-		if ((this.pago - aFinalizar.getTotal()) > 0) {
-			return new DecimalFormat("0.00").format(this.pago - aFinalizar.getTotal());
-		}
-		return "0,00";
-	}
-
-	public String getPago() {
-		if(this.pago != 0){
-			return new DecimalFormat("0.00").format(this.pago);
-		}
-		return "0";
-	}
-
-	public void setPago(String pago) {
-		try {
-			this.pago = Double.valueOf(pago.replace(".", "").replace(" ", "").replace(",", "."));
-		} catch (NumberFormatException ne) {
-			SessionUtil.putNextMensagem(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Formato de valor errado","Formato errado"));
-			this.pago = 0;
-		}
-	}
 
 	public double getTotal() {
 		return this.aFinalizar.getTotal();
@@ -210,6 +206,34 @@ public class FinalizarManagedBean {
 		this.observacao = observacao;
 	}
 
+	public String getTroco() {
+		if ((this.pago - aFinalizar.getTotal()) > 0) {
+			return new DecimalFormat("0.00").format(this.pago - aFinalizar.getTotal());
+		}
+		return "0,00";
+	}
+
+	public String getPago() {
+		if(this.pago != 0){
+			return new DecimalFormat("0.00").format(this.pago);
+		}
+		return "0";
+	}
+
+	public void setPago(String pago) {
+		try {
+			if(pago.length() >= 3){
+				pago = pago.replace(".", "").replace(" ", "")
+						.replace(",", "");
+				pago = pago.substring(0, pago.length()-2) + "," +pago.substring(pago.length()-2);
+			}
+			this.pago = Double.valueOf(pago.replace(".", "").replace(" ", "").replace(",", "."));
+		} catch (NumberFormatException ne) {
+			SessionUtil.putNextMensagem(new FacesMessage(FacesMessage.SEVERITY_ERROR,"Formato de valor errado","Formato errado"));
+			this.pago = 0;
+		}
+	}
+	
 	public String getPartePaga() {
 		if(this.partePaga != 0){
 			return new DecimalFormat("0.00").format(this.partePaga);
@@ -219,6 +243,11 @@ public class FinalizarManagedBean {
 
 	public void setPartePaga(String partePaga) {
 		try {
+			if(partePaga.length() >= 3){
+				partePaga = partePaga.replace(".", "").replace(" ", "")
+				.replace(",", "");
+				partePaga = partePaga.substring(0, partePaga.length()-2) + "," +partePaga.substring(partePaga.length()-2);
+			}
 			this.partePaga = Double.valueOf(partePaga.replace(".", "").replace(" ", "")
 					.replace(",", "."));
 		} catch (NumberFormatException ne) {
@@ -234,4 +263,11 @@ public class FinalizarManagedBean {
 		this.selecionado = selecionado;
 	}
 
+	public boolean isImprimir() {
+		return imprimir;
+	}
+
+	public void setImprimir(boolean imprimir) {
+		this.imprimir = imprimir;
+	}
 }

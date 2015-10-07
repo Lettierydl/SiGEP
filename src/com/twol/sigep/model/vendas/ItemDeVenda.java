@@ -1,5 +1,8 @@
 package com.twol.sigep.model.vendas;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -169,9 +172,12 @@ public class ItemDeVenda  implements Comparable<ItemDeVenda>{
 
 	// deve ser utilizado apenas quando for setar o produto pela primeira vez
 	private void setValores(Produto p) {
+		this.quantidade = new BigDecimal(this.quantidade).setScale(3,
+				RoundingMode.HALF_UP).doubleValue();
 		valorProduto = p.getValorDeVenda();
 		valorCompraProduto = p.getValorDeCompra();
-		total = (quantidade * valorProduto);
+		total = new BigDecimal( quantidade * valorProduto ).setScale(2,
+						RoundingMode.HALF_UP).doubleValue();
 	}
 
 	@Override

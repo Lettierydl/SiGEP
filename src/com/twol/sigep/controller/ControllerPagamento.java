@@ -7,13 +7,10 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import com.twol.sigep.controller.find.FindVenda;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
-import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.vendas.Pagamento;
-import com.twol.sigep.model.vendas.Venda;
 
 public class ControllerPagamento {
 
@@ -114,9 +111,11 @@ public class ControllerPagamento {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public int getQuantidadePagamentos() {
 		EntityManager em = getEntityManager();
 		try {
+			@SuppressWarnings("rawtypes")
 			CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
 			Root<Produto> rt = cq.from(Pagamento.class);
 			cq.select(em.getCriteriaBuilder().count(rt));

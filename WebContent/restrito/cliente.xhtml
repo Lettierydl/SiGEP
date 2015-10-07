@@ -6,6 +6,7 @@
 	xmlns:pi="http://primefaces.org/ui">
 <h:head>
 	<title>Cloud Sistem</title>
+	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
@@ -22,7 +23,7 @@
 		jQuery(function($) {
 			$('.CPFMask').mask("999.999.999-99");
 			$('.DateMask').mask("99/99/9999");
-			$('.TelMask').mask("(99) 9999-9999");
+			$('.TelMask').mask("(99) 9999-9999?9");
 		});
 	</script>
 
@@ -63,36 +64,39 @@
 		</div>
 
 		<div class="tabela">
-			<h:dataTable id="tabelaCliente"
+		
+		
+			<pi:dataTable id="tabelaCliente" styleClass="tabela"  emptyMessage=""
+			scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="300"
 				value="#{clienteBean.listAtualDeClientes}" var="cliente">
 				<f:facet name="header" />
-				<h:column headerClass="large-2">
+				<pi:column styleClass="large-5">
 					<f:facet name="header">Nome</f:facet> 
 						#{cliente.nome}
-					</h:column>
-				<h:column headerClass="large-1">
+					</pi:column>
+				<pi:column styleClass="large-1">
 					<f:facet name="header">Debito</f:facet>
 					<h:outputLabel value="#{cliente.debito}" converter="valueConverter" />
-				</h:column>
-				<h:column headerClass="large-2">
+				</pi:column>
+				<pi:column styleClass="large-2">
 					<f:facet name="header">Telefones</f:facet>
 						#{cliente.celular}<br />#{cliente.telefone}
-					</h:column>
-				<h:column headerClass="large-5">
+					</pi:column>
+				<pi:column styleClass="large-2">
 					<f:facet name="header">Endereço</f:facet>
 						#{cliente.endereco}
-					</h:column>
-				<h:column headerClass="large-2">
+					</pi:column>
+				<pi:column styleClass="large-2">
 					<f:facet name="header">CPF</f:facet>
 						#{cliente.cpf}
-					</h:column>
-				<h:column headerClass="large-1">
+					</pi:column>
+				<pi:column styleClass="large-1">
 					<f:facet name="header">Editar</f:facet>
 					<pi:commandLink value="Edit"
 						actionListener="#{clienteBean.openEditCliente(cliente)}"
 						rendered="true" update="@all" />
-				</h:column>
-			</h:dataTable>
+				</pi:column>
+			</pi:dataTable>
 
 
 			<div id="modalEdit" class="reveal-modal modal"
@@ -237,6 +241,7 @@
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script>
 		$(document).foundation();
+		script_footer();
 	</script>
 </h:body>
 

@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -34,19 +37,46 @@ public class ConfiguracaoManagedBean {
 	private UploadedFile file;
 	private File tempFile;
 	private StreamedContent streamed;
-	 
+	private int mesesAnteriores = 3 ; // meses anteriaores recomendados para nao deletar as vendas
+	
+	private Date dataLimpesa;
     
 	
 	private String nomeEstabelecimento;
 
 	public ConfiguracaoManagedBean() {
 		f = new Facede();
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.MONTH, c.get(Calendar.MONTH)-mesesAnteriores);
+		dataLimpesa = c.getTime();
 	}
 	
 	public void alterarNomeDoEstabalecimento(){
 		
 	}
 	
+	public void abrirMoralLimparBanco(){
+		RequestContext.getCurrentInstance().execute(
+				"abrirModa('modalLimpesa');");
+	}
+	
+	public void limparBanco(){
+		try{
+		int porc = f.limparBancoDeDados(dataLimpesa);
+		SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_INFO, "Limpesa do banco realizada","Vendas foram limberado "+porc+"% das vendas"));
+		}catch(Exception e){
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Não foi possivel efetuar a limpesa","Não foi possivel efetuar a limpesa"));
+		
+		}
+	}
+	
+	
+	public void naolimparBanco(){
+		RequestContext.getCurrentInstance().execute(
+				"fecharModal('modalLimpesa');");
+	}
 	
 	public void realizarBackup(){
 		try {
@@ -272,9 +302,31 @@ public class ConfiguracaoManagedBean {
 	public void setStreamed(StreamedContent streamed) {
 		this.streamed = streamed;
 	}
+
+	public Date getDataLimpesa() {
+		return dataLimpesa;
+	}
+
+	public void setDataLimpesa(Date dataLimpesa) {
+		this.dataLimpesa = dataLimpesa;
+	}
 	
 	
+	public String getMaxDia() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.MONTH, c.get(Calendar.MONTH)-2);
+		return new SimpleDateFormat("dd/MM/yyyy").format(c.getTime());
+	}
 	
+	public String getDiaRecomentado() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.MONTH, c.get(Calendar.MONTH)-mesesAnteriores);
+		return new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+	}
+	
+	public String getMinDia() {
+		return f.getMinDiaRegistroVenda();
+	}
 	
 	
 }

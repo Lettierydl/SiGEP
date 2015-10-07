@@ -29,5 +29,8 @@ public class LogoffManagedBean {
 				"fecharModal('modalLogoff');");
 	}
 	
-	
+	public void mudarDeTela(String uri){
+		RequestContext.getCurrentInstance().update("@all");
+		RequestContext.getCurrentInstance().execute("window.location = '"+uri+ "';");
+	}
 }

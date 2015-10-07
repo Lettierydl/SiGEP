@@ -93,6 +93,10 @@ public class SessionUtil {
     	return (FacesMessage) obterSession().getAttribute(KEY_NEXT_MESAGEM);
     }
     
+    public static void exibirNextMensagem(){
+    	exibirMensagem(getNextMensagem());
+    }
+    
     public static void removerNextMensagem(){
     	obterSession().removeAttribute(KEY_NEXT_MESAGEM);
     }

@@ -2,6 +2,7 @@ package com.twol.sigep.controller.find;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -135,6 +136,36 @@ public class FindVenda {
 		List<Venda> vendas = (List<Venda>) query.getResultList();
 		return vendas;
 	}
+	
+	public static List<Venda> vendasDoCliente(Cliente cliente, Date diaInicio,
+			Date diaFim) {
+		
+		Calendar di = Calendar.getInstance();
+		di.setTime(diaInicio);
+		di.set(Calendar.HOUR, 0);
+		di.set(Calendar.MINUTE, 0);
+		di.set(Calendar.SECOND, 00);
+		
+		Calendar df = Calendar.getInstance();
+		df.setTime(diaFim);
+		df.set(Calendar.HOUR, 23);
+		df.set(Calendar.MINUTE, 59);
+		df.set(Calendar.SECOND, 59);
+		
+		String stringQuery = "select v FROM Venda as v ";
+		stringQuery += "WHERE v.cliente = :cli and  v.dia between :diaInicio and :diaFim"
+				+ " order by v.dia , v.total DESC";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Venda.class);
+		query.setParameter("cli", cliente);
+		query.setParameter("diaInicio", di);
+		query.setParameter("diaFim", df);
+
+		@SuppressWarnings("unchecked")
+		List<Venda> vendas = (List<Venda>) query.getResultList();
+		return vendas;
+	}
 
 	public static List<Venda> vendasNaoPagasDosClientes(List<Cliente> clientes) {
 		String stringQuery = "select v FROM Venda as v ";
@@ -174,6 +205,15 @@ public class FindVenda {
 		@SuppressWarnings("unchecked")
 		List<Venda> vendas = (List<Venda>) query.getResultList();
 		return vendas;
+	}
+	
+	
+	public static List<Pagavel> pagavelCliente(Cliente cliente, Date diaInicio,
+			Date diaFim){
+		List<Pagavel> pag =  new ArrayList<Pagavel>();
+		pag.addAll(vendasDoCliente(cliente, diaInicio, diaFim));
+		pag.addAll(dividasDoCliente(cliente, diaInicio, diaFim));
+		return pag;
 	}
 	
 	public static List<Pagavel> pagavelNaoPagoDoCliente(Cliente cliente){
@@ -225,6 +265,36 @@ public class FindVenda {
 		for (int i = 0; i < clientes.size(); i++) {
 			query.setParameter("cli" + i, clientes.get(i));
 		}
+
+		@SuppressWarnings("unchecked")
+		List<Divida> dividas = (List<Divida>) query.getResultList();
+		return dividas;
+	}
+	
+	public static List<Divida> dividasDoCliente(Cliente cliente, Date diaInicio,
+			Date diaFim) {
+		
+		Calendar di = Calendar.getInstance();
+		di.setTime(diaInicio);
+		di.set(Calendar.HOUR, 0);
+		di.set(Calendar.MINUTE, 0);
+		di.set(Calendar.SECOND, 00);
+		
+		Calendar df = Calendar.getInstance();
+		df.setTime(diaFim);
+		df.set(Calendar.HOUR, 23);
+		df.set(Calendar.MINUTE, 59);
+		df.set(Calendar.SECOND, 59);
+		
+		String stringQuery = "select d FROM Divida as d ";
+		stringQuery += "WHERE d.cliente  = :cli and d.dia between :diaInicio and :diaFim"
+				+ " order by d.dia, d.total DESC";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Divida.class);
+		query.setParameter("cli", cliente);
+		query.setParameter("diaInicio", di);
+		query.setParameter("diaFim", df);
 
 		@SuppressWarnings("unchecked")
 		List<Divida> dividas = (List<Divida>) query.getResultList();
@@ -289,6 +359,21 @@ public class FindVenda {
 
 		ItemDeVenda item = (ItemDeVenda) query.getSingleResult();
 		return item;
+	}
+	
+	
+	
+	public static List<ItemDeVenda> itemDeVendaIdDaVenda(int idVenda) {
+		String stringQuery = "select i FROM ItemDeVenda as i WHERE i.venda.id = :idVenda order by i.indice DESC";
+
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery,
+				ItemDeVenda.class);
+		query.setParameter("idVenda", idVenda);
+
+		@SuppressWarnings("unchecked")
+		List<ItemDeVenda> itens = (List<ItemDeVenda>) query.getResultList();
+		return itens;
 	}
 
 }

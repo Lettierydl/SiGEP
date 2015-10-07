@@ -48,11 +48,11 @@ public class Cliente {
      */
 	@Temporal(TemporalType.DATE)
 	private Calendar dataDeNascimento;
-
-	@Column(nullable = true, length = 14)
+	
+	@Column(nullable = true, length = 15)
 	private String telefone;
 	
-	@Column(nullable = true, length = 14)
+	@Column(nullable = true, length = 15)
 	private String celular;
 	
 	@Column(nullable = true, length = 500)

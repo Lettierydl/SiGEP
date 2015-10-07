@@ -114,6 +114,26 @@ public class FindCliente {
 		return Clientes;
 	}
 	
+	
+	public static List<Cliente> clientesQueNomeOuCPFIniciam(
+			String nomeOuCpf, int maxResult) {
+		String stringQuery = "select c FROM Cliente as c ";
+		stringQuery += "where LOWER(c.nome) LIKE LOWER(:nome) or " +
+							 "LOWER(c.cpf) LIKE LOWER(:cpf)";
+		
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Cliente.class);
+		
+		query.setParameter("nome", nomeOuCpf.replace(" ", "%")+"%");
+		query.setParameter("cpf", nomeOuCpf.replace(" ", "%")+"%");
+		
+		query.setMaxResults(maxResult);
+		
+		@SuppressWarnings("unchecked")
+		List<Cliente> Clientes = (List<Cliente>) query.getResultList();
+		return Clientes;
+	}
+	
 	public static Cliente clientesQueNomeOuCPFIqualA(
 			String nomeOuCpf) {
 		String stringQuery = "select c FROM Cliente as c ";

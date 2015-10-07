@@ -1,12 +1,12 @@
 package com.twol.sigep.controller.teste;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class GeradorPDFTest {
 	public void restoreTeste() throws ParseException, IOException {
 		MySQLBackup m = new MySQLBackup();
 		m.restore(new File("/Users/Lettiery/Desktop/cloudsistem_02_06_2015.sql"));
-		Assert.assertEquals(FindFuncionario.funcionarioComId(2).getNome(), "Amanda");
+		assertEquals(FindFuncionario.funcionarioComId(2).getNome(), "Amanda");
 	}
 	
 	

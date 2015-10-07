@@ -8,6 +8,8 @@
 <h:head>
 
 	<title>Cloud Sistem</title>
+	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
+
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
@@ -17,6 +19,7 @@
 
 	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/numeric.js" />
+	<script type="text/javascript" src="../js/jquery.mask.js" />
 
 
 </h:head>
@@ -28,7 +31,7 @@
 
 	<ui:include src="componentes/menu.xhtml" />
 	<script>
-		ativarMenuBotoes("configuracao");
+		ativarMenuBotoes("balanco");
 	</script>
 
 	<div class="content">
@@ -36,8 +39,8 @@
 		<pi:growl autoUpdate="true" id="growl" life="6000" />
 
 		<ul class="tabs" data-tab="tabs">
-			<li class="tab-title active"><a href="#entrada">Entrada de
-					Caixa</a></li>
+			<li class="tab-title active"><a href="#historico">Histórico do Cliente</a></li>
+			<li class="tab-title"><a href="#entrada">Entrada de Caixa</a></li>
 			<li class="tab-title"><a href="#venda">Relatório de Vendas</a></li>
 			<li class="tab-title"><a href="#saida">Saida de Produtos</a></li>
 			<li class="tab-title"><a href="#geral">Balanço Geral</a></li>
@@ -45,7 +48,7 @@
 		</ul>
 		<div class="tabs-content" id="tabs">
 			
-				<div class="content active" id="entrada" align="center" >
+				<div class="content" id="entrada" align="center" >
 					<ui:include src="componentes/relatorios/entradaCaixa.xhtml" />
 				</div>
 
@@ -57,6 +60,11 @@
 
 				<div class="content " id="saida" align="center">
 					<ui:include src="componentes/relatorios/produtos.xhtml" />
+				</div>
+				
+				
+				<div class="content active" id="historico" align="center">
+					<ui:include src="componentes/relatorios/historicoCliente.xhtml" />
 				</div>
 
 
@@ -77,12 +85,15 @@
 	<script type="text/javascript">
 		$(document).foundation();
 		jQuery(function($) {
-			$("#valorPagamentoInput").numeric({
+			/*$("#valorPagamentoInput").numeric({
 				decimal : ",",
 				negative : false,
 				scale : 2
-			});
+			});*/
+			
+			$("#valorPagamentoInput").mask('000000000,00', {reverse: true});
 		});
+		script_footer();
 	</script>
 
 </h:body>

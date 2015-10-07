@@ -8,18 +8,21 @@
 
 <h:head>
 	<title>Cloud Sistem</title>
+	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
 
 	<link type="text/css" rel="stylesheet" href="../css/venda.css" />
 
-	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/numeric.js" />
+	<script type="text/javascript" src="../js/jquery.mask.js" />
+	<script type="text/javascript" src="../js/componentes.js" />
 	
 	<script type="text/javascript">
 		jQuery(function($){
-			$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
+			//$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
+			$(".money").mask('000000000,00', {reverse: true});
 		 });
 	</script>
 
@@ -44,6 +47,8 @@
 	</div>
 
 	<h:form prependId="false" id="formPrincipal">
+	<pi:remoteCommand name= "ir_venda" 
+				actionListener="#{logoffBean.mudarDeTela('venda.jsf')}" />
 
 		<div class="footer">
 
@@ -63,16 +68,19 @@
 						<h:outputLabel value="Troco: " for="troco" />
 
 						<h:inputText id="valorPago" value="#{finalBean.pago}"
-							valueChangeListener="#{finalBean.modificValorPago}"
 							maxlength="10" title="Valor à vista pago pelo cliente"
-							styleClass="money">
+							styleClass="money" onkeydown="tabenter(event.getElementById('finalizarVenda'));">
 							<f:ajax event="keyup" render="troco" />
 						</h:inputText>
 
 						<h:outputText id="troco" value="#{finalBean.troco}" />
 					</h:panelGrid>
 				</div>
-
+				
+				<div class="imprimir">
+					<h:outputLabel title="Imprimir copom de venda do cliente" >Imprimir copom</h:outputLabel>
+					<h:selectBooleanCheckbox value="#{finalBean.imprimir}" label="Imprimir copom" title="Imprimir copom de venda do cliente"/>
+				</div>
 
 				<div class="finalizar">
 					<h:commandLink id="finalizarVenda" title="Finalizar Venda"
@@ -82,9 +90,9 @@
 				</div>
 
 				<div class="finalizar">
-					<h:commandLink id="cancelarVenda" title="Cancelar Venda"
-						p:onclick="abrirModa('modalCancelarVenda');">
-						<span>Cancelar</span>
+					<h:commandLink id="cancelarVenda" title="Voltar para a venda"
+						actionListener="#{finalBean.voltarVenda}">
+						<span>Voltar</span>
 					</h:commandLink>
 				</div>
 
@@ -147,7 +155,7 @@
 		<h:form prependId="false" >
 			<h:outputLabel value="Tem certeza que deseja cancelar a Venda?" />
 			<br />
-			<h:commandButton value="Deletar" id="removerVenda" actionListener="#{finalBean.cancelarVenda}"
+			<h:commandButton value="Deletar" id="removerVenda" actionListener="#{finalBean.voltarVenda}"
 				 styleClass="botao"   title="Remover venda do sistema"/>
 			
 			
@@ -165,6 +173,30 @@
 		$(document).foundation();
 		document.getElementById("valorPago").select();
 		document.getElementById("valorPago").focus();
+		document.getElementById("valorPago").onkeyup(function(event){
+			tabenter(event.getElementById('finalizarVenda'));
+		});
+		
+		document.onkeydown = function(e) {
+			var keychar;
+			
+			// Internet Explorer
+			try {
+				keychar = String.fromCharCode(event.keyCode);
+				e = event;
+			}
+
+			// Firefox, Opera, Chrome, etc...
+			catch (err) {
+				keychar = String.fromCharCode(e.keyCode);
+			}
+
+			if (e.keyCode == 27) {
+				ir_venda();
+			}
+		}
+		
+		maiusculo('input[type="text"]');
 	</script>
 
 </h:body>

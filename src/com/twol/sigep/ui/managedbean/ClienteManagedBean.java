@@ -10,7 +10,6 @@ import javax.faces.event.ValueChangeEvent;
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
-import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.FuncionarioNaoAutorizadoException;
 import com.twol.sigep.model.pessoas.Cliente;

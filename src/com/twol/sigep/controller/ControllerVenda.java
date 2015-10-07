@@ -2,6 +2,7 @@ package com.twol.sigep.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -507,6 +508,25 @@ public class ControllerVenda {
 		atual.removeItemDeVenda(it);
 		edit(atual);
 		destroy(it);
+	}
+	
+	public int limparBancoDeDados(Date data){
+		int antes = getQuantidadeVendas();
+			EntityManager em = null;
+		try {
+			em = getEntityManager();
+			em.getTransaction().begin();
+			Query q = em.createNativeQuery("DELETE FROM venda WHERE venda.dia < :data and venda.paga = true;", Venda.class);
+			q.setParameter("data", data);
+			q.executeUpdate();	
+			em.getTransaction().commit();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+		int removidas = antes - getQuantidadeVendas();
+		return (removidas *100) / antes;
 	}
 
 }

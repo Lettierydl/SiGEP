@@ -22,6 +22,7 @@ public class PermissaoFuncionario {
 	public static final String GERAR_RELATORIOS = "GERAR_RELATORIOS";
 	
 	
+	
 	public static boolean isAutorizado(Funcionario func, final String acao) throws FuncionarioNaoAutorizadoException{
 		if(ControllerConfiguracao.getQuantidadeConfiguracoes() ==0){
 			configuracoesDefalt();
@@ -51,7 +52,7 @@ public class PermissaoFuncionario {
 		ControllerConfiguracao.putValor(ALTERAR_CONFIGURACOES, true, TipoDeFuncionario.Gerente);
 		ControllerConfiguracao.putValor(CADASTRAR_FUNCIONARIO, true, TipoDeFuncionario.Gerente);
 		
-		
+		ControllerConfiguracao.putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Caixa);
 		ControllerConfiguracao.putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Supervisor);
 		ControllerConfiguracao.putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Gerente);
 		
@@ -62,11 +63,13 @@ public class PermissaoFuncionario {
 		ControllerConfiguracao.putValor(CADASTRAR_PRODUTO, true, TipoDeFuncionario.Supervisor);
 		ControllerConfiguracao.putValor(CADASTRAR_PRODUTO, true, TipoDeFuncionario.Gerente);
 		
+		ControllerConfiguracao.putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Caixa);
 		ControllerConfiguracao.putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Supervisor);
 		ControllerConfiguracao.putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Gerente);
 		
 		ControllerConfiguracao.putValor(GERAR_RELATORIOS, true, TipoDeFuncionario.Supervisor);
 		ControllerConfiguracao.putValor(GERAR_RELATORIOS, true, TipoDeFuncionario.Gerente);
+		
 		
 	}
 	

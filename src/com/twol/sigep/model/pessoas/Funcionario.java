@@ -44,16 +44,16 @@ public class Funcionario {
 
     /**
      */
-    @Column(nullable = false, length = 11, unique = true)
+    @Column(nullable = true, length = 11, unique = true)
     private String cpf;
     
     /**
      */
     
-    @Column(nullable = true, length = 14)
+    @Column(nullable = true, length = 15)
 	private String telefone;
 	
-	@Column(nullable = true, length = 14)
+	@Column(nullable = true, length = 15)
 	private String celular;
 	
 	@Column(nullable = true, length = 500)

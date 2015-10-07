@@ -29,9 +29,10 @@ public class Persistencia {
 	
 	public static void restartConnection(){
 		 try{
-			 em.close();
+		//	 em.close();
 		 }catch(Exception e){}
-		 em = emf.createEntityManager();
+		 //em = emf.createEntityManager();
+		 
 	}
 	
 

@@ -1,5 +1,7 @@
 package com.twol.sigep.controller.find;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -25,18 +27,54 @@ public class FindPagamento {
 	}
 	
 	
-	public static List<Pagamento> pagamentosDoCliente(Cliente cliente) {
+	public static List<Pagamento> pagamentosDoCliente(Cliente cliente, Date diaInicio,
+			Date diaFim) {
+		
+		Calendar di = Calendar.getInstance();
+		di.setTime(diaInicio);
+		di.set(Calendar.HOUR, 0);
+		di.set(Calendar.MINUTE, 0);
+		di.set(Calendar.SECOND, 00);
+		
+		Calendar df = Calendar.getInstance();
+		df.setTime(diaFim);
+		df.set(Calendar.HOUR, 23);
+		df.set(Calendar.MINUTE, 59);
+		df.set(Calendar.SECOND, 59);
+		
+			
 		String stringQuery = "select p FROM Pagamento as p ";
-		stringQuery += "WHERE (p.cliente != :cli) ";
+		stringQuery += "WHERE p.cliente = :cli and p.data between :diaInicio and :diaFim"
+				+ " order by p.data DESC";
 		Persistencia.restartConnection();
 		Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
 		
-			query.setParameter("cli", cliente);
+		query.setParameter("cli", cliente);
+		query.setParameter("diaInicio", di);
+		query.setParameter("diaFim", df);
+		
 		
 		@SuppressWarnings("unchecked")
 		List<Pagamento> pagamentos = (List<Pagamento>) query.getResultList();
 		return pagamentos;
 	}
+	
+	public static List<Pagamento> pagamentosDoCliente(Cliente cliente) {
+			
+		String stringQuery = "select p FROM Pagamento as p ";
+		stringQuery += "WHERE p.cliente = :cli"
+				+ " order by p.data DESC";
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
+		
+		query.setParameter("cli", cliente);
+		
+		
+		@SuppressWarnings("unchecked")
+		List<Pagamento> pagamentos = (List<Pagamento>) query.getResultList();
+		return pagamentos;
+	}
+	
 
 
 	public static List<Pagamento> pagamentosDosClientes(List<Cliente> clientes) {

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.twol.sigep.controller.ControllerConfiguracao;
 import com.twol.sigep.controller.ControllerEstoque;
+import com.twol.sigep.controller.ControllerImpressora;
 import com.twol.sigep.controller.ControllerLogin;
 import com.twol.sigep.controller.ControllerPagamento;
 import com.twol.sigep.controller.ControllerPessoa;
@@ -51,6 +52,7 @@ public class Facede {
 	private ControllerRelatorios rel;
 	private GeradorPDF pdf;
 	private GeradorPlanilha pla;
+	private ControllerImpressora imp;
 
 	public Facede() {
 		est = new ControllerEstoque(Persistencia.emf);
@@ -65,6 +67,10 @@ public class Facede {
 		
 		Funcionario logado = SessionUtil.getFuncionarioLogado();
 		vend.setLogado(logado);
+		
+		try{
+			imp = ControllerImpressora.getInstance();
+		}catch(Error | Exception e){}
 	}
 
 	public void adicionarCliente(Cliente c) throws FuncionarioNaoAutorizadoException {
@@ -98,6 +104,10 @@ public class Facede {
 	
 	public List<Cliente> buscarClientePorCPFOuNomeQueIniciam(String cpfOuNome) {
 		return FindCliente.clientesQueNomeOuCPFIniciam(cpfOuNome);
+	}
+	
+	public List<Cliente> buscarClientePorCPFOuNomeQueIniciam(String cpfOuNome, int maxResult) {
+		return FindCliente.clientesQueNomeOuCPFIniciam(cpfOuNome, maxResult);
 	}
 
 	public List<String> buscarNomeClientePorNomeQueInicia(String nome) {
@@ -222,6 +232,10 @@ public class Facede {
 	
 	public List<String> buscarDescricaoProdutoPorDescricaoQueInicia(String descricao){
 		return FindProduto.drecricaoProdutoQueIniciam(descricao);
+	}
+	
+	public List<String> buscarDescricaoProdutoPorDescricaoQueInicia(String descricao, int maxReult){
+		return FindProduto.drecricaoProdutoQueIniciam(descricao, maxReult);
 	}
 	
 	public List<String> buscarCodigoProdutoPorCodigoQueInicia(String codigo){
@@ -366,6 +380,9 @@ public class Facede {
 	public List<Pagamento> getListaPagamentoDoCliente(Cliente c) {
 		return FindPagamento.pagamentosDoCliente(c);
 	}
+	public List<Pagamento> getListaPagamentoDoCliente(Cliente c, Date diaInicio, Date diaFim) {
+		return FindPagamento.pagamentosDoCliente(c,  diaInicio,  diaFim);
+	}
 
 	public List<Pagamento> getListaPagamentoDosClientes(List<Cliente> clientes) {
 		return FindPagamento.pagamentosDosClientes(clientes);
@@ -398,9 +415,15 @@ public class Facede {
 
 	public List<Venda> buscarVendaNaoPagaDoCliente(Cliente cliente) {
 		return FindVenda.vendasNaoPagaDoCliente(cliente);
-
 	}
 	
+	public List<ItemDeVenda> buscarItensDaVendaPorIdDaVenda(int id) {
+		return FindVenda.itemDeVendaIdDaVenda(id);
+	}
+	
+	public List<Pagavel> buscarPagaveisDoCliente(Cliente cliente,Date diaInicio, Date diaFim) {
+		return FindVenda.pagavelCliente(cliente, diaInicio, diaFim);
+	}
 	
 	
 	public List<Pagavel> buscarPagaveisNaoPagosDosClientes(List<Cliente> clientes) {
@@ -458,6 +481,13 @@ public class Facede {
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
 		return pdf.gerarPdfRelatorioBalancoProdutos(inicio, fim);
 	}
+
+	public String gerarPdfDaVendaVenda(Venda v, List<ItemDeVenda> itens) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
+		return pdf.gerarPdfDaVenda(v, itens);
+	}
+
 	
 	public String gerarPlanilhaRelatorioBalancoProdutos(Date inicio, Date fim) throws FuncionarioNaoAutorizadoException {
 		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
@@ -478,5 +508,17 @@ public class Facede {
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CONFIGURACOES);
 		MySQLBackup my = new MySQLBackup();
 		return my.dump(file);
+	}
+	
+	/* Apaga todas as vendas já pagas antes do dia informado 
+	 * para melhorar o desempenho do banco de dados.
+	 * */
+	public int limparBancoDeDados(Date dia){
+		return vend.limparBancoDeDados(dia);
+	}
+	
+	
+	public boolean imprimirVenda(Venda v){
+		return imp.imprimirVenda(v);
 	}
 }

@@ -8,6 +8,7 @@
 <h:head>
 
 	<title>Cloud Sistem</title>
+	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
@@ -18,11 +19,14 @@
 
 	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/numeric.js" />
+	<script type="text/javascript" src="../js/jquery.mask.js" />
 		
 	<script type="text/javascript">
 		jQuery(function($){
-			$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
-			$(".quantidade").numeric({ decimal : ",",  negative : false, scale: 3 });
+			//$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
+			//$(".quantidade").numeric({ decimal : ",",  negative : false, scale: 3 });
+			$(".money").mask('000000000,00', {reverse: true});
+			$(".quantidade").mask('000000000,000', {reverse: true});
 		 });
 	</script>
 
@@ -64,7 +68,6 @@
 
 
 							<pi:autoComplete id="nomeCliente" styleClass="campo grade left"
-								p:class="campo grade left"
 								value="#{pagamentoBean.nomeClienteParaVenda}"
 								completeMethod="#{pagamentoBean.completNomeCliente}"
 								title="Nome do cliente" placeholder="Nome do Cliente"
@@ -99,11 +102,11 @@
 												for="valorPagamentoInput" />
 											<h:inputText id="valorPagamentoInput"
 												styleClass="campo_medio money"
-												value="#{pagamentoBean.newPagamento.valor}" immediate="true"
-												converter="valueConverter">
+												value="#{pagamentoBean.newPagamento.valor}" 
+												converter="valueConverter_0">
 												<f:ajax event="keyup" execute="@this" />
 												<f:ajax event="change" execute=":troco" render=":troco"
-													immediate="true" />
+													 />
 											</h:inputText>
 
 											<pi:commandLink value="Add Obs"
@@ -113,11 +116,13 @@
 												update="@form">
 											</pi:commandLink>
 
+
 											<h:commandButton id="pagar" styleClass="bt-cadastrar"
 												rendered="#{pagamentoBean.clienteSelecionado != null and pagamentoBean.clienteSelecionado.debito > 0}"
 												value="Pagar" title="Registrar o pagamento"
-												actionListener="#{pagamentoBean.cadastrarPagamento()}"
-												update="@all" />
+												onclick="abrirModa('modalPagar');"
+												actionListener="#{pagamentoBean.abrirModalPagar}"
+												update="@all"/>
 
 										</h:panelGroup>
 									</div>
@@ -136,34 +141,35 @@
 							</h:panelGroup>
 
 
-
-							<h:dataTable id="tableVed" styleClass="tabela"
+							
+							<pi:dataTable id="tableVed" styleClass="tabela" emptyMessage=""
+							scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="300"
 								value="#{pagamentoBean.listAtualDeVenda}" var="pagavel">
 								<f:facet name="header">
 									<h4 align="center">Pagamentos à realizar</h4>
 								</f:facet>
-								<h:column headerClass="large-2">
+								<pi:column styleClass="large-2">
 									<f:facet name="header">Data</f:facet>
 									<h:outputLabel value="#{pagavel.dia.time}">
 										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
 											timeZone="GMT-03:00" />
 									</h:outputLabel>
-								</h:column>
-								<h:column headerClass="large-3">
+								</pi:column>
+								<pi:column styleClass="large-3">
 									<f:facet name="header">Cliente</f:facet> 
 																#{pagavel.cliente.nome}
-								</h:column>
-								<h:column headerClass="large-1">
+								</pi:column>
+								<pi:column styleClass="large-1">
 									<f:facet name="header">Valor</f:facet>
 									<h:outputLabel value="#{pagavel.total}"
 										converter="valueConverter" />
-								</h:column>
-								<h:column headerClass="large-1">
+								</pi:column>
+								<pi:column styleClass="large-1">
 									<f:facet name="header">Valor Restante</f:facet>
 									<h:outputLabel value="#{pagavel.valorNaoPago}"
 										converter="valueConverter" />
-								</h:column>
-								<h:column headerClass="large-1">
+								</pi:column>
+								<pi:column styleClass="large-1">
 									<f:facet name="header">Pagar</f:facet>
 									<h:selectBooleanCheckbox
 										value="#{pagamentoBean.checked[pagavel]}">
@@ -171,8 +177,15 @@
 											listener="#{pagamentoBean.vendaSelecionada}" />
 									</h:selectBooleanCheckbox>
 
-								</h:column>
-							</h:dataTable>
+								</pi:column>
+								<pi:column styleClass="large-1">
+									<f:facet name="header">Origem</f:facet>
+									<h:outputLabel value="Dívida" title="Valor originário de uma dívida cadastrada" 
+										rendered="#{pagavel['class'].simpleName == 'Divida'}"/>
+									<h:outputLabel value="Venda" title="Valor originário de uma venda efetivada" 
+										rendered="#{pagavel['class'].simpleName == 'Venda'}"/>
+								</pi:column>
+							</pi:dataTable>
 
 						</h:form>
 
@@ -213,6 +226,69 @@
 						</div>
 						<!-- fim modal -->
 
+						
+						
+						
+						
+						<div id="modalPagar" class="reveal-modal modal_complementar"
+							data-reveal="modalPagar">
+
+							<h2>Deseja relamente realizar o pagamento?</h2>
+							<br />
+							<pi:focus for="formPagar:bt_pagar" context="formPagar" />
+							
+							<h:form prependId="false" id="formPagar">
+
+								<div class="formulario">
+
+									<div class="row">
+
+										<h:outputLabel value="Cliente: "/>
+										<h:outputLabel value="#{pagamentoBean.clienteSelecionado.nome}"/>
+										<br/>
+										
+										<h:outputLabel value="Saldo devedor: "/>
+										<h:outputLabel value="#{pagamentoBean.clienteSelecionado.debito}"
+										converter="valueConverter" />
+										<br/>
+										
+										<h:outputLabel value="Valor do pagamento: "/>
+										<h:outputLabel value="#{pagamentoBean.newPagamento.valor}"
+										converter="valueConverter" />
+										<br/>
+										
+										<h:outputLabel value="Débito após a operação: "/>
+										<h:outputLabel value="#{pagamentoBean.clienteSelecionado.debito - pagamentoBean.newPagamento.valor}"
+										converter="valueConverter" />
+										<br/>
+										<br/>
+									
+									</div>
+
+									<div class="row">
+										<h:commandButton value="Pagar" id="bt_pagar"
+											onclick="fecharModal('modalPagar')"
+											actionListener="#{pagamentoBean.cadastrarPagamento()}"
+											styleClass="bt-cadastrar"  />
+										<h:commandButton value="Cancelar" styleClass="bt-cadastrar"
+											onclick="fecharModal('modalPagar')"  />
+									</div>
+								</div>
+							</h:form>
+
+							<a class="close-reveal-modal">&#215;</a>
+						</div>
+						<!-- fim modal -->
+
+						
+
+
+
+
+
+
+
+
 					</div>
 				</div>
 			</div>
@@ -240,43 +316,44 @@
 
 						</h:form>
 
-						<h:dataTable id="tableHist" styleClass="tabela"
+						<pi:dataTable id="tableHist" styleClass="tabela" emptyMessage=""
+							scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="300"
 							value="#{pagamentoBean.listAtualDeHistoricos}" var="pagamento">
 							<f:facet name="header">
 								<h4 align="center">Histórico de Pagamentos</h4>
 							</f:facet>
 
-							<h:column headerClass="large-1">
+							<pi:column styleClass="large-1">
 								<f:facet name="header">Valor</f:facet>
 								<h:outputLabel value="#{pagamento.valor}"
 									converter="valueConverter" />
-							</h:column>
+							</pi:column>
 
-							<h:column headerClass="large-2">
+							<pi:column styleClass="large-2">
 								<f:facet name="header">Cliente</f:facet>
 								<h:outputLabel value="#{pagamento.cliente.nome}" />
-							</h:column>
+							</pi:column>
 
 
-							<h:column headerClass="large-1">
+							<pi:column styleClass="large-1">
 								<f:facet name="header">Data</f:facet>
 								<h:outputLabel value="#{pagamento.data.time}">
 									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
 										timeZone="GMT-03:00" />
 								</h:outputLabel>
-							</h:column>
+							</pi:column>
 
-							<h:column headerClass="large-1">
+							<pi:column styleClass="large-1">
 								<f:facet name="header">Funcionário</f:facet>
 																#{pagamento.funcionario.nome}
-															</h:column>
+							</pi:column>
 
-							<h:column headerClass="large-2">
+							<pi:column styleClass="large-2">
 								<f:facet name="header">Observações</f:facet>
 								<h:outputLabel rendered="#{not empty pagamento.observacao}"
 									value="#{pagamento.observacao}" />
-							</h:column>
-						</h:dataTable>
+							</pi:column>
+						</pi:dataTable>
 
 					</div>
 				</div>
@@ -310,7 +387,7 @@
 								
 								
 								<pi:inputText id="valorDivida" title="Valor da dívida" styleClass="money"
-									placeholder="0,00" value="#{pagamentoBean.newDivida.total}" converter="valueConverter"/>
+									placeholder="0,00" value="#{pagamentoBean.newDivida.total}" converter="valueConverter_0"/>
 
 							</div>
 							
@@ -336,6 +413,10 @@
 
 
 	</div>
+	
+	
+	
+	
 
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script type="text/javascript">
@@ -346,7 +427,9 @@
 				negative : false,
 				scale : 2
 			});
+			
 		});
+		script_footer();
 	</script>
 
 </h:body>

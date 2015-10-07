@@ -15,6 +15,10 @@
 <h:body>
 	<ui:composition>
 		<div id="menu" class="menu">
+		<h:form>
+			<pi:remoteCommand name= "ir_home" 
+				actionListener="#{logoffBean.mudarDeTela('home.jsf')}" />
+		</h:form>
 
 			<div class="barra_superior">
 				<div>
@@ -69,6 +73,8 @@
 					</div>
 				</div>
 			</div>
+			
+			
 		</div>
 
 
@@ -89,8 +95,6 @@
 			<a class="close-reveal-modal">&#215;</a>
 		</div>
 		<!-- fim modal remover item -->
-
-
 
 	</ui:composition>
 

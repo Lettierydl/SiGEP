@@ -176,10 +176,12 @@ public class ControllerEstoque {
         }
     }
     
-    public int getQuantidadeProdutos() {
+    @SuppressWarnings("unchecked")
+	public int getQuantidadeProdutos() {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            @SuppressWarnings("rawtypes")
+			CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             Root<Produto> rt = cq.from(Produto.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
@@ -204,10 +206,12 @@ public class ControllerEstoque {
         }
     }
     
-    public int getQuantidadePromocoes() {
+    @SuppressWarnings("unchecked")
+	public int getQuantidadePromocoes() {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            @SuppressWarnings("rawtypes")
+			CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             Root<Produto> rt = cq.from(Promocao.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);

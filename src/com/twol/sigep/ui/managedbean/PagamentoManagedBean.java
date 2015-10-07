@@ -11,18 +11,17 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.PartialViewContext;
 
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
+import com.twol.sigep.model.configuracoes.ConfiguracaoSistema;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.vendas.Divida;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Pagavel;
-import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.SessionUtil;
 
 @ViewScoped
@@ -36,6 +35,8 @@ public class PagamentoManagedBean {
 	private String nomeClienteParaVenda = "";
 	private String nomeClienteDivida = "";
 	private String nomeClienteParaHistorico = "";
+	
+	int maxResult = 10;
 
 	private Map<Pagavel, Boolean> checked = new HashMap<Pagavel, Boolean>();
 
@@ -52,8 +53,13 @@ public class PagamentoManagedBean {
 		listAtualDeHistorico = f.getListaPagamentoHoje();
 	}
 
+	
+	public void abrirModalPagar(){
+		RequestContext.getCurrentInstance().execute(
+				"abrirModa('modalPagar');");
+	}
+	
 	public void cadastrarPagamento() throws IOException {
-		double value = newPagamento.getValor();
 		newPagamento.setFuncionario(SessionUtil.getFuncionarioLogado());
 		
 		if (newPagamento.getValor() < 0) {
@@ -63,6 +69,13 @@ public class PagamentoManagedBean {
 							+ new DecimalFormat("0.00").format(newPagamento
 									.getCliente().getDebito()),
 					"Pagamento com valor negativo"));
+			RequestContext.getCurrentInstance().update("@form");
+			return;
+		}else if (newPagamento.getValor() == 0){
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Valor não pode ser zero ",
+					"Pagamento com valor zero"));
 			RequestContext.getCurrentInstance().update("@form");
 			return;
 		}
@@ -76,18 +89,21 @@ public class PagamentoManagedBean {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		Cliente cli = newPagamento
+				.getCliente();
 		newPagamento = new Pagamento();
+		
+		listAtualDeHistorico = f.getListaPagamentoDoCliente(cli);
+		setNomeClienteParaVenda("");
+		setClienteSelecionado(null);
 		modificarListaAtualDeVendasPeloCliente();
-		listAtualDeHistorico = f.getListaPagamentoDoCliente(newPagamento
-				.getCliente());
-
+		 
 		SessionUtil.exibirMensagem(new FacesMessage(
 				FacesMessage.SEVERITY_INFO,
-				"Pagamento realizado com sucesso \n Saldo devedor: "
-						+ new DecimalFormat("0.00").format(newPagamento
-								.getCliente().getDebito()),
+				"Pagamento realizado com sucesso, \n Saldo devedor: "
+						+ new DecimalFormat("0.00").format(cli.getDebito()),
 				"Pagamento realizado"));
-		RequestContext.getCurrentInstance().update("@form");
+		RequestContext.getCurrentInstance().update("@all");
 	}
 
 	public void cadastrarDivida(){
@@ -134,7 +150,12 @@ public class PagamentoManagedBean {
 	}
 
 	public List<Cliente> completNomeCliente(String query) {
-		return f.buscarClientePorCPFOuNomeQueIniciam(query);
+		if(ConfiguracaoSistema.getLimiteDeRegistro()){
+			return f.buscarClientePorCPFOuNomeQueIniciam(query, ConfiguracaoSistema.getMaxResult());
+		}else{
+			return f.buscarClientePorCPFOuNomeQueIniciam(query);
+		}
+		
 	}
 
 	public void modificarListaAtualDeVendasPeloCliente() {
@@ -157,11 +178,19 @@ public class PagamentoManagedBean {
 	}
 
 	public List<Cliente> completNomeClienteHistorico(String nome) {
-		return f.buscarClientePorCPFOuNomeQueIniciam(nome);
+		if(ConfiguracaoSistema.getLimiteDeRegistro()){
+			return f.buscarClientePorCPFOuNomeQueIniciam(nome, ConfiguracaoSistema.getMaxResult());
+		}else{
+			return f.buscarClientePorCPFOuNomeQueIniciam(nome);
+		}
 	}
 	
 	public List<Cliente> completNomeClienteDivida(String nome) {
-		return f.buscarClientePorCPFOuNomeQueIniciam(nome);
+		if(ConfiguracaoSistema.getLimiteDeRegistro()){
+			return f.buscarClientePorCPFOuNomeQueIniciam(nome, ConfiguracaoSistema.getMaxResult());
+		}else{
+			return f.buscarClientePorCPFOuNomeQueIniciam(nome);
+		}
 	}
 
 	public void modificarListaAtualDeHistoricoDoCliente() {
@@ -220,7 +249,7 @@ public class PagamentoManagedBean {
 	}
 
 	public void setClienteSelecionado(Cliente clienteSelecionado) {
-		this.newPagamento.setValor(clienteSelecionado.getDebito());
+		//this.newPagamento.setValor(clienteSelecionado.getDebito());
 		this.newPagamento.setCliente(clienteSelecionado);
 		RequestContext.getCurrentInstance().update(":pagamanetoForm");
 	}

@@ -2,6 +2,8 @@ package com.twol.sigep.model.configuracoes;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
@@ -17,6 +19,7 @@ public class Configuracao {
 	private String chave;// nome
 
 	@Id
+	@Enumerated(EnumType.STRING)
 	private TipoDeFuncionario tipoDeFuncionario;
 	
 	@Column
@@ -56,4 +59,3 @@ public class Configuracao {
 	}
 
 }
-

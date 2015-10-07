@@ -9,10 +9,8 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
-import com.twol.sigep.controller.find.FindVenda;
-import com.twol.sigep.model.estoque.Produto;
+import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.vendas.FormaDePagamento;
-import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.Persistencia;
 
@@ -25,8 +23,13 @@ public class ControllerRelatorios {
 		Persistencia.restartConnection();
 		Query query = Persistencia.em.createNativeQuery(stringQuery);
 
-		return new SimpleDateFormat("dd/MM/yyyy")
+		try{
+			return new SimpleDateFormat("dd/MM/yyyy")
 				.format((java.sql.Timestamp) query.getSingleResult());
+		}catch(NullPointerException ne){
+			return  new SimpleDateFormat("dd/MM/yyyy")
+			.format(new Date());
+		}
 
 	}
 	
@@ -252,6 +255,29 @@ public class ControllerRelatorios {
 
 		return saida;
 		
-		
 	}
+	
+	
+	
+	
+	public static List<Venda> vendasDoCliente(Cliente cliente, Date diaInicio, Date diaFim) {
+		String stringQuery = "select v FROM Venda as v ";
+		stringQuery += "WHERE v.paga = false and v.cliente = :cli"
+				+ " order by v.total , v.dia DESC ";
+
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createQuery(stringQuery, Venda.class);
+		query.setParameter("cli", cliente);
+
+		@SuppressWarnings("unchecked")
+		List<Venda> vendas = (List<Venda>) query.getResultList();
+		return vendas;
+	}
+	
+	
+	
+	
+	
+	
+	
 }

@@ -1,6 +1,51 @@
 addPtBrCalendar();
 
 
+function script_footer(){
+	document.onkeydown = function(e) {
+		var keychar;
+		
+		// Internet Explorer
+		try {
+			keychar = String.fromCharCode(event.keyCode);
+			e = event;
+		}
+
+		// Firefox, Opera, Chrome, etc...
+		catch (err) {
+			keychar = String.fromCharCode(e.keyCode);
+		}
+
+		if (e.keyCode == 27) {
+			ir_home();
+		}
+	}
+	maiusculo('input[type="text"]');
+	pular_enter();
+}
+
+function pular_enter(){
+	$('input[type="text"]').on("keypress", function(e) {
+        /* ENTER PRESSED*/
+        if (e.keyCode == 13) {
+            /* FOCUS ELEMENT */
+            var inputs = $(this).parents("form").eq(0).find('input[type="text"]');
+            var idx = inputs.index(this);
+            
+            if (idx == inputs.length - 1) {
+            	$('form :input[type="submit"]').focus();
+            	
+            } else {
+                inputs[idx + 1].focus(); //  handles submit buttons
+                inputs[idx + 1].select();
+            }
+            /* impede o sumbit caso esteja dentro de um form */
+            e.preventDefault(e);
+            return false;
+        }
+    });
+}
+
 function ativarMenuBotoes(titulo) {
 	$("#menu-botoes").removeClass("fadeIn");
 	$("#" + titulo).addClass("active");
@@ -26,6 +71,9 @@ function focus(idCampo) {
 // Abrir modal foundation
 function abrirModa(idModal) {
 	$("#" + idModal).foundation('reveal', 'open');
+	
+	$("#" + idModal +' :input[type="text"]')[0].focus();
+	$("#" + idModal +' :input[type="text"]')[0].select();
 }
 
 // Feixar modal foundation
@@ -54,8 +102,21 @@ function maskTelefone(idCampo) {
 	$("#" + idCampo).mask("(99) 9999-9999");
 }
 
+function maiusculo(idCampo){
+	  $(idCampo).keyup(function() {
+	    $(this).val($(this).val().toUpperCase());
+	  });
+}
+
 function alerta(mensagem) {
 	alert(mensagem);
+}
+
+function tabenter(event,campo){
+	var tecla = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+	if (tecla==13) {
+		campo.focus();
+	}
 }
 
 function requestFullScreen() {
@@ -114,3 +175,4 @@ function addPtBrCalendar() {
 		allDayText : 'Todo Dia'
 	};
 }
+

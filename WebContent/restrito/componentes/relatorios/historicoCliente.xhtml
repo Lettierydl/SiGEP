@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
+<h:head>
+	<title>Cloud Sistem</title>
+
+</h:head>
+
+
+
+<h:body>
+	<ui:composition>
+
+		<h:form id="formHist">
+			<div class="row">
+
+
+				<table style="margin-left: 26px; float: left;">
+					<tbody>
+						<tr>
+							<td rowspan="2"><pi:autoComplete id="nomeCliente"
+									styleClass="campo grade left" value="#{relatBean.nomeCliente}"
+									completeMethod="#{relatBean.completNomeCliente}"
+									title="Nome do cliente" placeholder="Nome do Cliente"
+									update="formPag:info" style="top:6.5px;"
+									onkeypress="if(event.keyCode == 13){;return false;}"
+									immediate="true" /></td>
+							<td><h:outputLabel value="De" for="deEntrada" /></td>
+							<td><h:outputLabel value="Até" for="ateEntrada" /></td>
+
+							<td rowspan="2"><pi:commandButton
+									actionListener="#{relatBean.criarHistorico()}" value="Gerar"
+									styleClass="botao" update="@all" style="top:6.5px;"
+									title="Gerar informações com as novas datas" /></td>
+
+						</tr>
+
+						<tr>
+
+
+
+
+							<td><pi:calendar id="deEntrada"
+									value="#{relatBean.diaInicioHis}" p:class="campo pequeno"
+									locale="pt" pattern="dd/MM/yyyy" mindate="#{relatBean.minDia}"
+									maxdate="#{relatBean.maxDia}" navigator="true" mask="true"
+									placeholder="#{relatBean.maxDia}" converter="calendarConverter"
+									immediate="true" /></td>
+							<td><pi:calendar id="ateEntrada"
+									value="#{relatBean.diaFimHis}" p:class="campo pequeno"
+									locale="pt" pattern="dd/MM/yyyy" mindate="#{relatBean.minDia}"
+									maxdate="#{relatBean.maxDia}" navigator="true" mask="true"
+									placeholder="#{relatBean.maxDia}" converter="calendarConverter"
+									immediate="true" /></td>
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="row ">
+				<h:panelGroup layout="div" id="entradaDeC">
+					<div class="large-5 columns">
+						<pi:chart type="line" model="#{relatBean.historico}"
+							responsive="true" style="width:400px;height:300px" />
+
+					</div>
+
+					<div class="large-5 columns">
+
+						<pi:dataTable id="tabelaVendas" styleClass="tabela2"
+							emptyMessage="" scrollRows="20" style="width: 500px;float: right;"
+							liveScroll="true" scrollHeight="300"
+							value="#{relatBean.pagaveis}" var="pag">
+							<f:facet name="header" />
+							<pi:column styleClass="large-1">
+								<f:facet name="header">Data</f:facet>
+								<h:outputLabel value="#{pag.dia}" converter="calendarDateTimeConverter"/> 
+						
+							</pi:column>
+							<pi:column styleClass="large-1">
+								<f:facet name="header">Total</f:facet>
+								<h:outputLabel value="#{pag.total}"
+									converter="valueConverter" />
+							</pi:column>
+							
+							<pi:column styleClass="large-1">
+								<f:facet name="header">Parte Paga</f:facet>
+								<h:outputLabel value="#{pag.partePaga}"
+									converter="valueConverter" />
+							</pi:column>
+							
+							<pi:column styleClass="large-1">
+								<f:facet name="header">Situação</f:facet>
+								<h:outputLabel value="Paga" rendered="#{pag.paga}"/>
+								<h:outputLabel value="Não paga" rendered="#{not pag.paga}"/>
+							</pi:column>
+							
+							<pi:column styleClass="large-1">
+									<f:facet name="header">Origem</f:facet>
+									<h:outputLabel value="Dívida" title="Valor originário de uma dívida cadastrada" 
+										rendered="#{pag['class'].simpleName == 'Divida'}"/>
+									<h:outputLabel value="Venda" title="Valor originário de uma venda efetivada" 
+										rendered="#{pag['class'].simpleName == 'Venda'}"/>
+								</pi:column>
+							
+							<pi:column styleClass="large-1">
+								<f:facet name="header">Vizualizar</f:facet>
+								<pi:commandLink value="Ver"
+								actionListener="#{relatBean.openViewPag(pag)}"
+									rendered="true" update="@all" />
+							</pi:column>
+						</pi:dataTable>
+
+
+					</div>
+
+				</h:panelGroup>
+			</div>
+			
+			
+			<div id="modalViewVenda" class="reveal-modal modal"
+				data-reveal="modalViewVenda">
+				<h2>Venda</h2>
+				<h:panelGrid columns="4"  styleClass="tabela2" >
+				
+				<h:outputLabel  value="Data"/>
+				<h:outputLabel  value="Total"/>
+				<h:outputLabel  value="Parte Paga" rendered="#{not relatBean.viewVenda.paga}"/>
+				<h:outputLabel  value="Situação" rendered="#{relatBean.viewVenda.paga}"/>
+				<h:outputLabel  value="Funcionário"/>
+				
+				
+				<h:outputLabel  value="#{relatBean.viewVenda.dia}" converter="calendarDateTimeConverter"/>
+				<h:outputLabel  value="#{relatBean.viewVenda.total}" converter="valueConverter"/>
+				<h:outputLabel  value="#{relatBean.viewVenda.partePaga}" converter="valueConverter" rendered="#{not relatBean.viewVenda.paga}"/>
+				<h:outputLabel  value="Paga" rendered="#{relatBean.viewVenda.paga}"/>
+				<h:outputLabel  value="#{relatBean.viewVenda.funcionario.nome}" />
+				
+				</h:panelGrid>
+				
+					<pi:dataTable id="itensVenda" styleClass="tabela2"  
+					emptyMessage="" scrollRows="20"
+					scrollable="true" liveScroll="true" scrollHeight="300"
+					value="#{relatBean.listItensViewVenda}" var="item">
+							
+							<pi:column styleClass="large-4">
+								<f:facet name="header">Produto</f:facet> 
+								<h:outputLabel value="#{item.produto.descricao}"/>
+							</pi:column>
+							<pi:column styleClass="large-2">
+								<f:facet name="header">Quantidade</f:facet>
+								<h:outputLabel value="#{item.quantidade}"  converter="quantidadeConverter"/>
+							</pi:column>
+							<pi:column styleClass="large-2">
+								<f:facet name="header">Valor UN</f:facet>
+								<h:outputLabel value="#{item.valorProduto}"  converter="valueConverter"/>
+							</pi:column>
+							<pi:column styleClass="large-2">
+								<f:facet name="header">Total</f:facet>
+								<h:outputLabel value="#{item.total}"  converter="valueConverter"/>
+							</pi:column>
+							
+						</pi:dataTable>
+				
+				<a class="close-reveal-modal">&#215;</a>
+			</div>
+			<!-- fim modal View Venda -->
+			
+			
+			
+			
+			
+			
+			<div id="modalViewDivida" class="reveal-modal modal"
+				data-reveal="modalViewDivida">
+				<h2>Dívida</h2>
+				<h:panelGrid columns="5" styleClass="tabela2" >
+				
+				<h:outputLabel  value="Data"/>
+				<h:outputLabel  value="Total"/>
+				<h:outputLabel  value="Parte Paga" rendered="#{not relatBean.viewDivida.paga}"/>
+				<h:outputLabel  value="Situação" rendered="#{relatBean.viewDivida.paga}"/>
+				<h:outputLabel  value="Funcionário"/>
+				<h:outputLabel  value="Descricao"/>
+				
+				
+				<h:outputLabel  value="#{relatBean.viewDivida.dia}" converter="calendarDateTimeConverter"/>
+				<h:outputLabel  value="#{relatBean.viewDivida.total}" converter="valueConverter"/>
+				<h:outputLabel  value="#{relatBean.viewDivida.partePaga}" converter="valueConverter" rendered="#{not relatBean.viewDivida.paga}"/>
+				<h:outputLabel  value="Paga" rendered="#{relatBean.viewDivida.paga}"/>
+				<h:outputLabel  value="#{relatBean.viewDivida.funcionario.nome}" />
+				
+				</h:panelGrid>
+				
+				<a class="close-reveal-modal">&#215;</a>
+			</div>
+			<!-- fim modal View Venda -->
+			
+			
+			
+			
+		</h:form>
+	</ui:composition>
+
+</h:body>
+</html>

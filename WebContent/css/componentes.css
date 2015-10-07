@@ -36,7 +36,7 @@
 	align: center;
 }
 
-.tabela table, .tabela2 table {
+.tabela table, .tabela2 table  {
 	margin: auto;
 	border-spacing: 2px;
 	border-collapse: separate;
@@ -44,7 +44,7 @@
 	min-width: 990px;
 }
 
-.tabela tbody tr, .tabela2 tbody tr {
+.tabela tbody tr, .tabela2 tbody tr{
 	height: 50px;
 	background-color: #ebebeb;
 	font-size: 15px;
@@ -62,9 +62,14 @@
 	font-size: 15px;
 	font-family: "Dosis";
 	text-align: center;
+	
+	padding: 4px 15px;
+	overflow: hidden;
+	border-width: 0px;
+	border-style: none;
 }
 
-.tabela thead th, .tabela2 thead th {
+.tabela thead th, .tabela2 thead th, .ui-corner-top {
 	height: 50px;
 	background-color: #3cabc6;
 	font-size: 15px;
@@ -74,6 +79,14 @@
 	text-align: left;
 	padding-left: 15px;
 	padding-right: 15px;
+	
+	overflow: hidden;
+	border-width: 0px;
+	border-style: none;
+}
+.ui-corner-top{
+	margin-left: 2px;
+	margin-right: 2px;
 }
 
 .tabela tbody tr:hover td {
@@ -155,8 +168,8 @@
 
 .pequeno, .pequeno input{
 	width: 125px;
-	height: 23px;
-	top: 0px;left: 0px;
+	height: 39px;
+	top: -6px;left: 0px;
 }
 
 .grade input{
@@ -202,6 +215,11 @@
 }
 
 /* autocompet nome cliente */
+.ui-autocomplete-panel{
+	overflow:scroll;
+	height: 250px!important;
+}
+
 .ui-autocomplete-panel  ul {
 	width: 97%;
 	background-color: white;

@@ -3,16 +3,17 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
 <h:head>
 	<title>Cloud Sistem</title>
+	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
 
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
 
 	<script type="text/javascript" src="../js/componentes.js" />
-	<script type="text/javascript" src="../js/jquery.js" />
 
 	<link type="text/css" rel="stylesheet" href="../css/home.css" />
 
@@ -26,6 +27,7 @@
 			</div>
 		</div>
 		<div class="barra_inferior">
+		
 			<div>
 				<span class="ajuda">#{msgs.ajuda}</span>
 				<div class="menu-usuario" data-dropdown="hover1"
@@ -46,6 +48,25 @@
 
 	<div class="content">
 		<ui:insert name="content">
+		
+		<h:form>
+		<pi:remoteCommand name= "ir_venda" 
+				actionListener="#{logoffBean.mudarDeTela('venda.jsf')}" />
+		<pi:remoteCommand name= "ir_pagamento" 
+				actionListener="#{logoffBean.mudarDeTela('pagamento.jsf')}" />
+		<pi:remoteCommand name= "ir_cliente" 
+				actionListener="#{logoffBean.mudarDeTela('cliente.jsf')}" />
+		<pi:remoteCommand name= "ir_funcionario" 
+				actionListener="#{logoffBean.mudarDeTela('funcionario.jsf')}" />
+		<pi:remoteCommand name= "ir_produto" 
+				actionListener="#{logoffBean.mudarDeTela('produto.jsf')}" />
+		<pi:remoteCommand name= "ir_relatorio" 
+				actionListener="#{logoffBean.mudarDeTela('balanco.jsf')}" />
+		</h:form>
+		
+							
+			
+		
 			<div class="botoes fadeIn">
 				<a href="venda.jsf"><img src="../imagens/bt_venda.png" /></a> <a
 					href="pagamento.jsf"><img src="../imagens/bt_pagamento.png" /></a>
@@ -81,7 +102,48 @@
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script>
 		$(document).foundation();
+		document.onkeydown = function(e) {
+			var keychar;
+			
+			// Internet Explorer
+			try {
+				keychar = String.fromCharCode(event.keyCode);
+				e = event;
+			}
+
+			// Firefox, Opera, Chrome, etc...
+			catch (err) {
+				keychar = String.fromCharCode(e.keyCode);
+			}
+
+			
+			if (e.keyCode == 86) {
+				ir_venda();
+			}else if(e.keyCode == 80){
+				ir_pagamento();
+			}
+			else if(e.keyCode == 80){
+				ir_pagamento();
+			}
+			else if(e.keyCode == 67){
+				ir_cliente();
+			}
+			else if(e.keyCode == 69){
+				ir_produto();
+			}
+			else if(e.keyCode == 70){
+				ir_funcionario();
+			}
+			else if(e.keyCode == 82){
+				ir_relatorio();
+			}
+			
+			
+
+		}
 	</script>
+	
+	
 
 </h:body>
 </html>

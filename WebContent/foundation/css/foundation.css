@@ -63,10 +63,7 @@ html {
 
 *,
 *:before,
-*:after {
-  -webkit-box-sizing: inherit;
-  -moz-box-sizing: inherit;
-  box-sizing: inherit; }
+*:after { }
 
 html,
 body {

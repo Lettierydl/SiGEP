@@ -79,20 +79,9 @@ public class MySQLBackup {
 		sbComando.append(" --result-file=");
 		sbComando.append(arquivo);
 
-		// Tempo
-		long t1, t2, tempo;
-		
-		// tempo inicio
-		t1 = System.currentTimeMillis();
-
-		// executa o comando
+				// executa o comando
 		Runtime.getRuntime().exec(sbComando.toString());
 
-		// tempo fim
-		t2 = System.currentTimeMillis();
-
-		// Tempo total da operação
-		tempo = t2 - t1;
 		
 		return arquivo;
 	}
@@ -163,7 +152,9 @@ public class MySQLBackup {
 				+ "ms");
 		System.out.println("Processo de Restauração Finalizado!");
 	}
-
+	
+	
+	
 }
 
 class StreamGobbler implements Runnable {

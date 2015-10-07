@@ -2,11 +2,14 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:pi="http://primefaces.org/ui">
 
 <h:head>
 
 	<title>Cloud Sistem</title>
+	
+	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
@@ -262,8 +265,6 @@
 
 
 
-
-
 			<!-- Tab historico -->
 			<div class="content" id="Cong2">
 				<pi:focus for="formSis" />
@@ -276,18 +277,23 @@
 						<h:form prependId="false" styleClass="formulario" id="formSis"
 							rendered="#{confBean.permissaoDeConfiguracao}">
 							<pi:spacer width="20px" />
-							<div class="row">
-
-								<pi:inputText class="grade left"
-									value="#{confBean.nomeEstabelecimento}"
-									placeholder="nome do estabelecimento"
-									title="Nome do estabelecimento" />
+							<div class="row" title="Realizar limpesa do banco de dados" >
+								
+								<pi:calendar id="tempoLimpesa" value="#{confBean.dataLimpesa}"
+									p:class="campo pequeno" locale="pt" pattern="dd/MM/yyyy" title="Apagar vendas anteriores a data" 
+									mindate="#{confBean.minDia}" maxdate="#{confBean.maxDia}"
+									navigator="true" mask="true" placeholder="#{confBean.diaRecomentado}"
+									converter="calendarConverter" immediate="true" />
+																
 							</div>
 							<div class="row" style="margin-top: 20px;">
-								<h:commandButton styleClass="bt-cadastrar left" value="Salvar"
-									actionListener="#{confBean.alterarNomeDoEstabalecimento}"
-									title="Salvar novo nome do estabelecimento" />
+								<pi:commandLink styleClass="bt-cadastrar left" value="Limpar Banco"
+									actionListener="#{confBean.abrirMoralLimparBanco()}"
+									title="Limpar Banco de Dados" />
 							</div>
+							
+							
+							
 
 							<div class="row" style="margin-top: 20px;"
 								title="Restaurar banco de dados do Sistema">
@@ -318,6 +324,7 @@
 								</pi:commandButton>
 
 							</div>
+							
 
 						</h:form>
 
@@ -326,8 +333,8 @@
 
 			</div>
 			<!-- fim div historico -->
-
-
+			
+			
 		</div>
 
 		<div id="modalRestore" class="reveal-modal modal_pequeno"
@@ -347,6 +354,27 @@
 			<a class="close-reveal-modal">&#215;</a>
 		</div>
 		<!-- fim modal restore -->
+		
+		
+		
+		
+		<div id="modalLimpesa" class="reveal-modal modal"
+			data-reveal="modalLimpesa">
+			<h1>Limpeza do Banco de Dados</h1>
+			<br />
+
+			<h3>A vendas já paga do antes do dia <h:outputLabel
+				value="#{confBean.dataLimpesa}" converter="calendarConverter"/> serão removidas do sistema para melhorar o desempenho.</h3>
+			<h3>Deseja efetuar a limpesa do banco de dados?</h3>
+			<h:form>
+				<h:commandButton value="Limpar"
+					actionListener="#{confBean.limparBanco}" styleClass="botao" />
+				<h:commandButton value="Cancelar"
+					actionListener="#{confBean.naolimparBanco}" styleClass="botao" />
+			</h:form>
+			<a class="close-reveal-modal">&#215;</a>
+		</div>
+		<!-- fim modal restore -->
 
 	</div>
 
@@ -360,6 +388,7 @@
 				scale : 2
 			});
 		});
+		script_footer();
 	</script>
 
 </h:body>
