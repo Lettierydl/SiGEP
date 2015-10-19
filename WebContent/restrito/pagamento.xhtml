@@ -8,7 +8,8 @@
 <h:head>
 
 	<title>Cloud Sistem</title>
-	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
+	<link rel="shortcut icon" href="../imagens/logo.png"
+		type="image/x-icon" />
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
@@ -20,14 +21,18 @@
 	<script type="text/javascript" src="../js/componentes.js" />
 	<script type="text/javascript" src="../js/numeric.js" />
 	<script type="text/javascript" src="../js/jquery.mask.js" />
-		
+
 	<script type="text/javascript">
-		jQuery(function($){
+		jQuery(function($) {
 			//$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
 			//$(".quantidade").numeric({ decimal : ",",  negative : false, scale: 3 });
-			$(".money").mask('000000000,00', {reverse: true});
-			$(".quantidade").mask('000000000,000', {reverse: true});
-		 });
+			$(".money").mask('000000000,00', {
+				reverse : true
+			});
+			$(".quantidade").mask('000000000,000', {
+				reverse : true
+			});
+		});
 	</script>
 
 </h:head>
@@ -102,11 +107,10 @@
 												for="valorPagamentoInput" />
 											<h:inputText id="valorPagamentoInput"
 												styleClass="campo_medio money"
-												value="#{pagamentoBean.newPagamento.valor}" 
+												value="#{pagamentoBean.newPagamento.valor}"
 												converter="valueConverter_0">
 												<f:ajax event="keyup" execute="@this" />
-												<f:ajax event="change" execute=":troco" render=":troco"
-													 />
+												<f:ajax event="change" execute=":troco" render=":troco" />
 											</h:inputText>
 
 											<pi:commandLink value="Add Obs"
@@ -122,7 +126,7 @@
 												value="Pagar" title="Registrar o pagamento"
 												onclick="abrirModa('modalPagar');"
 												actionListener="#{pagamentoBean.abrirModalPagar}"
-												update="@all"/>
+												update="@all" />
 
 										</h:panelGroup>
 									</div>
@@ -141,10 +145,11 @@
 							</h:panelGroup>
 
 
-							
+
 							<pi:dataTable id="tableVed" styleClass="tabela" emptyMessage=""
-							scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="300"
-								value="#{pagamentoBean.listAtualDeVenda}" var="pagavel">
+								scrollRows="20" scrollable="true" liveScroll="true"
+								scrollHeight="300" value="#{pagamentoBean.listAtualDeVenda}"
+								var="pagavel">
 								<f:facet name="header">
 									<h4 align="center">Pagamentos à realizar</h4>
 								</f:facet>
@@ -180,10 +185,17 @@
 								</pi:column>
 								<pi:column styleClass="large-1">
 									<f:facet name="header">Origem</f:facet>
-									<h:outputLabel value="Dívida" title="Valor originário de uma dívida cadastrada" 
-										rendered="#{pagavel['class'].simpleName == 'Divida'}"/>
-									<h:outputLabel value="Venda" title="Valor originário de uma venda efetivada" 
-										rendered="#{pagavel['class'].simpleName == 'Venda'}"/>
+									<h:outputLabel value="Dívida"
+										title="Valor originário de uma dívida cadastrada"
+										rendered="#{pagavel['class'].simpleName == 'Divida'}" />
+									<h:outputLabel value="Venda"
+										title="Valor originário de uma venda efetivada"
+										rendered="#{pagavel['class'].simpleName == 'Venda'}" />
+									<br />
+									<h:commandLink value="Detalhar"
+										title="Detalhar todos os produtos da venda"
+										rendered="#{pagavel['class'].simpleName == 'Venda'}"
+										actionListener="#{pagamentoBean.abrirModalDetalheVenda(pagavel.id)}" />
 								</pi:column>
 							</pi:dataTable>
 
@@ -226,52 +238,54 @@
 						</div>
 						<!-- fim modal -->
 
-						
-						
-						
-						
+
+
+
+
 						<div id="modalPagar" class="reveal-modal modal_complementar"
 							data-reveal="modalPagar">
 
 							<h2>Deseja relamente realizar o pagamento?</h2>
 							<br />
 							<pi:focus for="formPagar:bt_pagar" context="formPagar" />
-							
+
 							<h:form prependId="false" id="formPagar">
 
 								<div class="formulario">
 
 									<div class="row">
 
-										<h:outputLabel value="Cliente: "/>
-										<h:outputLabel value="#{pagamentoBean.clienteSelecionado.nome}"/>
-										<br/>
-										
-										<h:outputLabel value="Saldo devedor: "/>
-										<h:outputLabel value="#{pagamentoBean.clienteSelecionado.debito}"
-										converter="valueConverter" />
-										<br/>
-										
-										<h:outputLabel value="Valor do pagamento: "/>
+										<h:outputLabel value="Cliente: " />
+										<h:outputLabel
+											value="#{pagamentoBean.clienteSelecionado.nome}" />
+										<br />
+
+										<h:outputLabel value="Saldo devedor: " />
+										<h:outputLabel
+											value="#{pagamentoBean.clienteSelecionado.debito}"
+											converter="valueConverter" />
+										<br />
+
+										<h:outputLabel value="Valor do pagamento: " />
 										<h:outputLabel value="#{pagamentoBean.newPagamento.valor}"
-										converter="valueConverter" />
-										<br/>
-										
-										<h:outputLabel value="Débito após a operação: "/>
-										<h:outputLabel value="#{pagamentoBean.clienteSelecionado.debito - pagamentoBean.newPagamento.valor}"
-										converter="valueConverter" />
-										<br/>
-										<br/>
-									
+											converter="valueConverter" />
+										<br />
+
+										<h:outputLabel value="Débito após a operação: " />
+										<h:outputLabel
+											value="#{pagamentoBean.clienteSelecionado.debito - pagamentoBean.newPagamento.valor}"
+											converter="valueConverter" />
+										<br /> <br />
+
 									</div>
 
 									<div class="row">
 										<h:commandButton value="Pagar" id="bt_pagar"
 											onclick="fecharModal('modalPagar')"
 											actionListener="#{pagamentoBean.cadastrarPagamento()}"
-											styleClass="bt-cadastrar"  />
+											styleClass="bt-cadastrar" />
 										<h:commandButton value="Cancelar" styleClass="bt-cadastrar"
-											onclick="fecharModal('modalPagar')"  />
+											onclick="fecharModal('modalPagar')" />
 									</div>
 								</div>
 							</h:form>
@@ -280,7 +294,78 @@
 						</div>
 						<!-- fim modal -->
 
-						
+
+						<!-- modal Detalhe venda-->
+						<div id="modalDetalheVenda" class="reveal-modal modal"
+							data-reveal="modalDetalheVenda">
+
+							<h2>Venda</h2>
+							<h:form>
+
+								<h:panelGrid columns="2">
+									<h:outputLabel value="Total: " for="valueTotal" />
+									<h:outputLabel id="valueTotal"
+										value="#{pagamentoBean.detalheVenda.total}"
+										converter="valueConverter" />
+
+									<h:outputLabel value="Valor pago: " for="valuePartePaga" />
+									<h:outputLabel id="valuePartePaga"
+										value="#{pagamentoBean.detalheVenda.partePaga}"
+										converter="valueConverter" />
+
+									<h:outputLabel value="Data: " for="valueData" />
+									<h:outputLabel id="valueData"
+										value="#{pagamentoBean.detalheVenda.dia}"
+										converter="calendarDateTimeConverter" />
+
+									<h:outputLabel value="Cliente: " for="valueCliente" />
+									<h:outputLabel id="valueCliente"
+										value="#{pagamentoBean.detalheVenda.cliente.nome}" />
+
+									<h:outputLabel value="Funcionário: " for="valueFuncionario" />
+									<h:outputLabel id="valueFuncionario"
+										value="#{pagamentoBean.detalheVenda.funcionario.nome}" />
+
+								</h:panelGrid>
+
+								<h3>Itens de Venda</h3>
+
+								<div style="height: 200px; width: 95%; padding-top: -15px;">
+									<div class="tabela_itens_venda">
+										<h:dataTable id="itensVenda" style="scroll:auto"
+											value="#{pagamentoBean.itensDetalheVenda}" var="item">
+											<h:column headerClass="large-4">
+												<f:facet name="header">Produto</f:facet>
+												<h:outputLabel value="#{item.produto.descricao}" />
+											</h:column>
+											<h:column headerClass="large-2">
+												<f:facet name="header">Quantidade</f:facet>
+												<h:outputLabel value="#{item.quantidade}"
+													converter="quantidadeConverter" />
+											</h:column>
+											<h:column headerClass="large-2">
+												<f:facet name="header">Valor UN</f:facet>
+												<h:outputLabel value="#{item.valorProduto}"
+													converter="valueConverter" />
+											</h:column>
+											<h:column headerClass="large-2">
+												<f:facet name="header">Total</f:facet>
+												<h:outputLabel value="#{item.total}"
+													converter="valueConverter" />
+											</h:column>
+
+										</h:dataTable>
+									</div>
+								</div>
+
+
+							</h:form>
+
+							<a class="close-reveal-modal">&#215;</a>
+						</div>
+						<!-- fim modal -->
+
+
 
 
 
@@ -317,8 +402,9 @@
 						</h:form>
 
 						<pi:dataTable id="tableHist" styleClass="tabela" emptyMessage=""
-							scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="300"
-							value="#{pagamentoBean.listAtualDeHistoricos}" var="pagamento">
+							scrollRows="20" scrollable="true" liveScroll="true"
+							scrollHeight="300" value="#{pagamentoBean.listAtualDeHistoricos}"
+							var="pagamento">
 							<f:facet name="header">
 								<h4 align="center">Histórico de Pagamentos</h4>
 							</f:facet>
@@ -367,36 +453,38 @@
 				<div class="container" align="center">
 					<div class="subtabela">
 
-						<h:form id="formDivi" prependId="false" >
+						<h:form id="formDivi" prependId="false">
 
 
-							<div class="campo left" >
+							<div class="campo left">
 								<pi:autoComplete id="nomeClienteDiv" style="widget: 350px;"
-									styleClass="grade" 
-									value="#{pagamentoBean.nomeClienteDivida}"
+									styleClass="grade" value="#{pagamentoBean.nomeClienteDivida}"
 									completeMethod="#{pagamentoBean.completNomeClienteDivida}"
 									title="Nome do cliente" placeholder="Nome do Cliente">
 								</pi:autoComplete>
 
 
-								<pi:inputText id="textOBSDivida" 
+								<pi:inputText id="textOBSDivida"
 									value="#{pagamentoBean.newDivida.descricao}"
 									placeholder="Descrição da dívida"
 									title="Observações ou descrição da dívida">
 								</pi:inputText>
-								
-								
-								<pi:inputText id="valorDivida" title="Valor da dívida" styleClass="money"
-									placeholder="0,00" value="#{pagamentoBean.newDivida.total}" converter="valueConverter_0"/>
+
+
+								<pi:inputText id="valorDivida" title="Valor da dívida"
+									styleClass="money" placeholder="0,00"
+									value="#{pagamentoBean.newDivida.total}"
+									converter="valueConverter_0" />
 
 							</div>
-							
+
 							<div class="formulario">
-							
-							<h:commandButton value="Salvar" actionListener="#{pagamentoBean.cadastrarDivida()}"
-									styleClass="bt-cadastrar" style="margin-top: 30px"/>
-							</div>		
-									
+
+								<h:commandButton value="Salvar"
+									actionListener="#{pagamentoBean.cadastrarDivida()}"
+									styleClass="bt-cadastrar" style="margin-top: 30px" />
+							</div>
+
 
 
 						</h:form>
@@ -413,10 +501,10 @@
 
 
 	</div>
-	
-	
-	
-	
+
+
+
+
 
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script type="text/javascript">
@@ -427,7 +515,7 @@
 				negative : false,
 				scale : 2
 			});
-			
+
 		});
 		script_footer();
 	</script>

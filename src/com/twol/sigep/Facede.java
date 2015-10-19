@@ -258,6 +258,10 @@ public class Facede {
 		return  FindProduto.produtoComCodigoEDescricao(nomeOuCodigo);
 	}
 	
+	public List<Produto> buscarListaProdutoPorDescricaoOuCodigo(String nomeOuCodigo) {
+		return  FindProduto.produtosQueDescricaoOuCodigoDeBarrasIniciam(nomeOuCodigo);
+	}
+	
 	/*
 	 * Negocio
 	 */
@@ -311,6 +315,10 @@ public class Facede {
 	
 	public void removerItemDaVenda(ItemDeVenda it) throws EntidadeNaoExistenteException, Exception {
 		vend.removerItem(it);
+	}
+	
+	public void refreshValorDeVendaAtual() throws EntidadeNaoExistenteException, Exception{
+		vend.refreshValorVendaAtual();
 	}
 	
 	public Venda getVendaAtual(){
@@ -474,6 +482,10 @@ public class Facede {
 		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
 		return rel.getRelatorioProduto(diaInicio, diaFim);
+	}
+	
+	public double getRelatorioDeProduto30Dias(int idProduto){
+		return rel.getRelatorioDeProduto30Dias(idProduto);
 	}
 	
 	public String gerarPdfRelatorioBalancoProdutos(Date inicio, Date fim) throws FuncionarioNaoAutorizadoException {

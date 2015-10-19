@@ -30,14 +30,13 @@ public class ControllerImpressora {
 
 	public static void carregarDLL() {
 		try {
-			System.out.println("Tentando carregar...");
 			System.loadLibrary("DarumaFramework");
-			System.out.println("Biblioteca carregada!!!");
+			/*System.out.println("Biblioteca carregada!!!");
 			System.out.println("Comunicacao com Impressora:"
-					+ ECF.eBuscarPortaVelocidade_ECF_Daruma());
+					+ ECF.eBuscarPortaVelocidade_ECF_Daruma());*/
 			return;
 		} catch (Exception e) {
-			System.err.println("Nao carragou no primeiro Teste");
+			//System.err.println("Nao carragou no primeiro Teste");
 		}
 	}
 

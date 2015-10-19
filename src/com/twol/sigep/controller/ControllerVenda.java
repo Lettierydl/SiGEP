@@ -182,8 +182,7 @@ public class ControllerVenda {
 			}
 		}
 	}
-	
-	
+
 	public void destroy(Divida divida) throws EntidadeNaoExistenteException {
 		EntityManager em = null;
 		try {
@@ -205,7 +204,6 @@ public class ControllerVenda {
 			}
 		}
 	}
-	
 
 	public void destroy(ItemDeVenda item) throws EntidadeNaoExistenteException {
 		EntityManager em = null;
@@ -213,7 +211,6 @@ public class ControllerVenda {
 			em = getEntityManager();
 			em.getTransaction().begin();
 			try {
-				em.getReference(Venda.class, item.getVenda().getId());
 				item = em.getReference(ItemDeVenda.class, item.getId());
 			} catch (EntityNotFoundException enfe) {
 				throw new EntidadeNaoExistenteException(
@@ -222,12 +219,7 @@ public class ControllerVenda {
 			}
 
 			try {
-				item.setVenda(null);
-				em.merge(item);
-				em.getTransaction().commit();
 
-				em = getEntityManager();
-				em.getTransaction().begin();
 				item = em.getReference(ItemDeVenda.class, item.getId());
 				em.remove(item);
 				em.getTransaction().commit();
@@ -310,13 +302,13 @@ public class ControllerVenda {
 		List<Pagavel> pagaveis = new ArrayList<Pagavel>();
 		pagaveis.addAll(FindVenda.vendasNaoPagaDoCliente(c));
 		pagaveis.addAll(FindVenda.dividasNaoPagaDoCliente(c));
-		
+
 		for (Pagavel pag : pagaveis) {
 			if (valorRestante == 0) {// ja pagou a venda
 				break;
 			}
 			if (pag.getValorNaoPago() > valorRestante) {// paga parte da
-																// venda
+														// venda
 				pag.acrescentarPartePaga(valorRestante);
 				valorRestante = 0;
 			} else {// paga venda toda, pode sobrar resto pra outras vendas ou
@@ -324,10 +316,10 @@ public class ControllerVenda {
 				valorRestante -= pag.getValorNaoPago();
 				pag.acrescentarPartePaga(pag.getValorNaoPago());
 			}
-			if(pag instanceof Venda){
-				edit((Venda)pag);
-			}else if(pag instanceof Divida){
-				edit((Divida)pag);
+			if (pag instanceof Venda) {
+				edit((Venda) pag);
+			} else if (pag instanceof Divida) {
+				edit((Divida) pag);
 			}
 		}
 		// logo em seguida deve diminuir o debito do cliente com o valor do
@@ -505,20 +497,56 @@ public class ControllerVenda {
 
 	public void removerItem(ItemDeVenda it)
 			throws EntidadeNaoExistenteException, Exception {
-		atual.removeItemDeVenda(it);
+		
+		try{
+			refreshAtual();
+			it.setVenda(null);
+			edit(it);
+			try{
+				destroy(it);
+			}catch(Exception ee){
+				// item perdido
+			}
+		}catch(Exception e){
+			throw e;
+		}
+		refreshAtual();
+		atual.removeItemDeVendaJaDeletado(it);
 		edit(atual);
-		destroy(it);
+		
 	}
 	
-	public int limparBancoDeDados(Date data){
+	public void refreshValorVendaAtual() throws EntidadeNaoExistenteException, Exception{
+		this.refreshAtual();
+		atual.recalcularTotal();
+		edit(atual);
+		refreshAtual();
+	}
+	
+	private void refreshAtual() {
+		EntityManager em = null;
+		em = getEntityManager();
+		em.getTransaction().begin();
+		try {
+			atual = em.getReference(Venda.class, atual.getId());
+		} catch (EntityNotFoundException enfe) {
+		}
+		em.getTransaction().commit();
+
+	}
+
+	public int limparBancoDeDados(Date data) {
 		int antes = getQuantidadeVendas();
-			EntityManager em = null;
+		EntityManager em = null;
 		try {
 			em = getEntityManager();
 			em.getTransaction().begin();
-			Query q = em.createNativeQuery("DELETE FROM venda WHERE venda.dia < :data and venda.paga = true;", Venda.class);
+			Query q = em
+					.createNativeQuery(
+							"DELETE FROM venda WHERE venda.dia < :data and venda.paga = true;",
+							Venda.class);
 			q.setParameter("data", data);
-			q.executeUpdate();	
+			q.executeUpdate();
 			em.getTransaction().commit();
 		} finally {
 			if (em != null) {
@@ -526,7 +554,7 @@ public class ControllerVenda {
 			}
 		}
 		int removidas = antes - getQuantidadeVendas();
-		return (removidas *100) / antes;
+		return (removidas * 100) / antes;
 	}
 
 }

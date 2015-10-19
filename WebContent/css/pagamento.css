@@ -91,3 +91,58 @@ body{
 #troco{
 	margin-left: -50px;
 }
+
+.tabela_itens_venda {
+	padding-top: 19px;
+	
+	height:95%;
+    overflow: scroll;    
+}
+.tabela_itens_venda table {
+	position:relative;left:0px;
+	width: 95%;
+	border-collapse: collapse;
+	margin-left: 1px;
+	
+	font-size: 15px;
+	font-family: Dosis;
+	font-weight:normal;
+    color:#000000;//color:#b7b7b7;
+}
+
+.tabela_itens_venda tbody tr {
+	height: 50px;
+	text-align: center;
+}
+
+.tabela_itens_venda tbody tr:nth-child(2n) td{
+}
+
+.tabela_itens_venda tbody td {
+	height: 50px;
+	
+	border:0.25px double #b7b7b7; 
+}
+
+.tabela_itens_venda thead th {
+	height: 50px;
+
+	font-weight:normal;
+	text-transform: uppercase;
+	text-align: center;
+	color: #3cabc6;
+
+	padding-left: 15px;
+	padding-right: 15px;
+	
+	border:1px double #3cabc6;
+}
+
+.tabela_itens_venda tbody tr:hover td{
+	background-color: #fcfcfc;
+}
+
+.tabela_itens_venda tbody td {
+	padding-left: 15px;
+	padding-right: 15px;
+}

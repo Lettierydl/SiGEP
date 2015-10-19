@@ -10,6 +10,7 @@
 	<title>Cloud Sistem</title>
 	<link type="text/css" rel="stylesheet" href="css/login.css" />
 	<link rel="shortcut icon" href="imagens/logo.png" type="image/x-icon" />
+	<script type="text/javascript" src="js/componentes.js" />
 	
 </h:head>
 <h:body id="body">
@@ -30,7 +31,14 @@
 			<h:commandButton id="entrar" actionListener="#{loginBean.logar}"
 				value="entrar" class="entrar" />
 		</div>
+		<pi:remoteCommand name= "ir_config" 
+				actionListener="#{logoffBean.mudarDeTela('configuracao_sys.jsf')}" />
 	</h:form>
+	
 	<pi:focus for="form:login"/>
+	<script type='text/javascript'>
+		script_footer_login();
+	</script>
+	
 </h:body>
 </html>

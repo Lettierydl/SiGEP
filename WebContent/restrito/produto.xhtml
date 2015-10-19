@@ -73,8 +73,10 @@
 					<h:outputLabel value="#{produto.valorDeVenda}" converter="valueConverter"/>
 				</pi:column>
 				<pi:column styleClass="large-2">
-					<f:facet name="header">Categoria</f:facet>
-					#{produto.categoria.name}
+					<f:facet name="header" title="Quantidade vendida nos últimos 30 dias">Vendas</f:facet>
+					<h:outputLabel title="Quantidade vendida nos últimos 30 dias"
+					 value="#{produtoBean.quantidadeVendida30Dias(produto.id)}"
+					 converter="valueUnidadeConverter"/>
 				</pi:column>
 				<pi:column styleClass="large-2">
 					<f:facet name="header">Quantidade em Estoque</f:facet>

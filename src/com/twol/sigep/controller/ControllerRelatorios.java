@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.vendas.FormaDePagamento;
+import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.Persistencia;
 
@@ -272,6 +273,40 @@ public class ControllerRelatorios {
 		@SuppressWarnings("unchecked")
 		List<Venda> vendas = (List<Venda>) query.getResultList();
 		return vendas;
+	}
+
+
+	public double getRelatorioDeProduto30Dias(int idProduto) {
+		Calendar di = Calendar.getInstance();
+		di.set(Calendar.DATE, di.get(Calendar.DATE)-30);
+		di.set(Calendar.HOUR, 0);
+		di.set(Calendar.MINUTE, 0);
+		di.set(Calendar.SECOND, 00);
+		
+		Calendar df = Calendar.getInstance();
+		
+		
+		String stringQuery = "select sum(it.quantidade) from venda as v,item_de_venda as it where  it.produto_id = :idProduto and"
+				+ " v.dia between :diaInicio and :diaFim";
+		Persistencia.restartConnection();
+		Query query = Persistencia.em.createNativeQuery(stringQuery);
+		query.setParameter("diaInicio", di);
+		query.setParameter("diaFim", df);
+		query.setParameter("idProduto", idProduto);
+
+		try{
+			if(idProduto == 1){
+				System.out.println(query.toString());
+			}
+			double o = (double) query.getSingleResult();
+			return o;
+		}catch(NullPointerException ne){
+			return 0;
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 	
 	

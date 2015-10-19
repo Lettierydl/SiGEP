@@ -7,6 +7,7 @@ import com.twol.sigep.model.exception.LoginIncorretoException;
 import com.twol.sigep.model.exception.SenhaIncorretaException;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
+import com.twol.sigep.util.OperacaoStringUtil;
 import com.twol.sigep.util.SessionUtil;
 
 public class ControllerLogin {
@@ -80,7 +81,7 @@ public class ControllerLogin {
 	}
 	
 	private String criptografar(String string) {
-		return string;
+		return OperacaoStringUtil.criptografar(string);
 	}
 
 }

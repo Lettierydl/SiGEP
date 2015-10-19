@@ -7,7 +7,8 @@
 	xmlns:pi="http://primefaces.org/ui">
 <h:head>
 	<title>Cloud Sistem</title>
-	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
+	<link rel="shortcut icon" href="../imagens/logo.png"
+		type="image/x-icon" />
 
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
@@ -27,7 +28,7 @@
 			</div>
 		</div>
 		<div class="barra_inferior">
-		
+
 			<div>
 				<span class="ajuda">#{msgs.ajuda}</span>
 				<div class="menu-usuario" data-dropdown="hover1"
@@ -48,8 +49,9 @@
 
 	<div class="content">
 		<ui:insert name="content">
-		
-		<h:form>
+			<h:form>
+		<pi:remoteCommand name= "ir_home" 
+				actionListener="#{logoffBean.mudarDeTela('home.jsf')}" />
 		<pi:remoteCommand name= "ir_venda" 
 				actionListener="#{logoffBean.mudarDeTela('venda.jsf')}" />
 		<pi:remoteCommand name= "ir_pagamento" 
@@ -65,19 +67,30 @@
 		<pi:remoteCommand name= "ir_atalhos" 
 				actionListener="#{logoffBean.mudarDeTela('atalhos.jsf')}" />
 		</h:form>
-		
-							
-			
+
 		
 			<div class="botoes fadeIn">
-				<a href="venda.jsf"><img src="../imagens/bt_venda.png" /></a> <a
-					href="pagamento.jsf"><img src="../imagens/bt_pagamento.png" /></a>
-				<a href="cliente.jsf"><img src="../imagens/bt_cliente.png" /></a> <a
-					href="produto.jsf"><img src="../imagens/bt_produto.png" /></a> <a
-					href="funcionario.jsf"><img src="../imagens/bt_funcionario.png" /></a>
-				<a href="balanco.jsf"><img
-					src="../imagens/bt_relatorios.png" /></a>
+				<h3>Tela Iniciar</h3>
+				<p>Tecla V: Abre a tela de Vendas</p>
+				<p>Tecla P: Abre a tela de Pagamentos</p>
+				<p>Tecla E: Abre a tela de Estoque</p>
+				<p>Tecla F: Abre a tela de Funcionários</p>
+				<p>Tecla U: Abre a tela de Atalhos</p>
+				
+				<br/>
+				<h3>Tela Vendas</h3>
+				<p>Tecla Ctrl: Finaliza Venda à Vista</p>
+				<p>Tecla Alt: Finaliza Venda à Prazo</p>
+				<p>Tecla Shift + Esc: Atualiza Venda Atual (recalcula o valor com atualizações de outros caixas)</p>
+				
+				<br/>
+				<h3>Atalhos Padão</h3>
+				<p>Tecla Esc: Volta para a tela anterior</p>
+				<p>Tecla Enter: Pula linha ou Finaliza o Cadastro</p>
+				
+				
 			</div>
+			
 		</ui:insert>
 	</div>
 
@@ -106,7 +119,7 @@
 		$(document).foundation();
 		document.onkeydown = function(e) {
 			var keychar;
-			
+
 			// Internet Explorer
 			try {
 				keychar = String.fromCharCode(event.keyCode);
@@ -118,9 +131,10 @@
 				keychar = String.fromCharCode(e.keyCode);
 			}
 
-			
-			
 			switch (e.keyCode) {
+			case 27:
+				ir_home();
+				break;
 			case 67:
 				ir_cliente();
 				break;
@@ -147,11 +161,10 @@
 				break;
 			}
 			
-
 		}
 	</script>
-	
-	
+
+
 
 </h:body>
 </html>

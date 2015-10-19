@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +16,16 @@ import javax.faces.bean.ViewScoped;
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
+import com.twol.sigep.controller.find.FindVenda;
 import com.twol.sigep.model.configuracoes.ConfiguracaoSistema;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.vendas.Divida;
+import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Pagavel;
+import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.SessionUtil;
 
 @ViewScoped
@@ -45,6 +49,8 @@ public class PagamentoManagedBean {
 	private List<Pagamento> listAtualDeHistorico;
 
 	private List<Pagavel> listAtualDeVenda;
+
+	private Venda vendaDetalhar;
 
 	public PagamentoManagedBean() {
 		f = new Facede();
@@ -206,6 +212,26 @@ public class PagamentoManagedBean {
 		} else {
 			listAtualDeHistorico = new ArrayList<Pagamento>();
 		}
+	}
+	
+	
+	public void abrirModalDetalheVenda(int IdVenda){
+		this.vendaDetalhar = FindVenda.vendaId(IdVenda);
+		RequestContext.getCurrentInstance().execute(
+				"abrirModa('modalDetalheVenda');");
+	}
+	
+	public List<ItemDeVenda> getItensDetalheVenda() {
+		if(vendaDetalhar == null){
+			return new ArrayList<ItemDeVenda>();
+		}
+		List<ItemDeVenda> itens = vendaDetalhar.getItensDeVenda();
+		Collections.sort(itens);
+		return itens;
+	}
+	
+	public Venda getDetalheVenda(){
+		return this.vendaDetalhar;
 	}
 
 	public String getNomeClienteParaVenda() {

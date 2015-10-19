@@ -78,6 +78,10 @@ public class ProdutoManagedBean {
 			RequestContext.getCurrentInstance().update("tabelaProdutos");
 		}
 	}
+	
+	public double quantidadeVendida30Dias(int idProduto){
+		return f.getRelatorioDeProduto30Dias(idProduto);
+	}
 
 	public void openEditProduto(Produto p) {
 		this.setEditProduto(p);

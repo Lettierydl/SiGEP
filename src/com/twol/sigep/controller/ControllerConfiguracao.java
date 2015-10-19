@@ -21,11 +21,11 @@ public class ControllerConfiguracao {
 	private static EntityManagerFactory emf = null;
 
 	public ControllerConfiguracao(EntityManagerFactory emf) {
-		this.emf = emf;
+		ControllerConfiguracao.setEmf(emf);
 	}
 
 	private static EntityManager getEntityManager() {
-		return emf.createEntityManager();
+		return getEmf().createEntityManager();
 	}
 
 	/*
@@ -119,9 +119,11 @@ public class ControllerConfiguracao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static int getQuantidadeConfiguracoes() {
 		EntityManager em = getEntityManager();
 		try {
+			@SuppressWarnings("rawtypes")
 			CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
 			Root<Produto> rt = cq.from(Configuracao.class);
 			cq.select(em.getCriteriaBuilder().count(rt));
@@ -180,6 +182,14 @@ public class ControllerConfiguracao {
 		} finally {
 			em.close();
 		}
+	}
+
+	public static EntityManagerFactory getEmf() {
+		return emf;
+	}
+
+	public static void setEmf(EntityManagerFactory emf) {
+		ControllerConfiguracao.emf = emf;
 	}
 
 }

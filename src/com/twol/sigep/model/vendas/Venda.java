@@ -95,6 +95,7 @@ public class Venda implements Comparable<Venda>, Pagavel{
     @OnDelete(action=OnDeleteAction.NO_ACTION)
     private Cliente cliente;
     
+    
     public int getId() {
 		return id;
 	}
@@ -193,6 +194,14 @@ public class Venda implements Comparable<Venda>, Pagavel{
 	public void setItensDeVenda(List<ItemDeVenda> itensDeVenda){
 		this.itensDeVenda = itensDeVenda;
 	}
+	
+	public void recalcularTotal(){
+		int custo = 0;
+		for(ItemDeVenda it : getItensDeVenda()){
+			custo += it.getTotal();
+		}
+		this.total = custo;
+	}
 
 	public List<ItemDeVenda> getItensDeVenda() {
 		if(itensDeVenda == null){
@@ -236,6 +245,17 @@ public class Venda implements Comparable<Venda>, Pagavel{
 			this.total -= item.getTotal();
 			total = new BigDecimal(total).setScale(5, RoundingMode.HALF_UP).doubleValue();
 		}
+	}
+	
+	/**
+	 * @see Este metodo so deve ser utilizado pelo ControllerVenda.removerItemDeVenda(item)
+	 * @see Deve ser removido o ItemDeVenda do banco e logo em seguida chamar esse método para atualizar a venda
+	 * @param item que existe nesta venda
+	 */
+	public void removeItemDeVendaJaDeletado(ItemDeVenda item){
+			this.desconto -= item.getDesconto();
+			this.total -= item.getTotal();
+			total = new BigDecimal(total).setScale(5, RoundingMode.HALF_UP).doubleValue();
 	}
 	
 	/**

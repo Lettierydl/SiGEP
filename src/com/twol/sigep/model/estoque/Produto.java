@@ -91,6 +91,8 @@ public class Produto{
 	protected void setId(int id) {
 		this.id = id;
 	}
+	
+	
 
 	public String getCodigoDeBarras() {
 		return codigoDeBarras;
@@ -209,6 +211,8 @@ public class Produto{
 		promocoes.get(0).equals(p);
 		promocoes.remove(p);
 	}
+	
+	
 	/*
 	@Override
 	protected List<?> getListEntidadeRelacionada(){

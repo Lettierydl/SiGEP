@@ -106,8 +106,12 @@
 			
 				<pi:remoteCommand name="a_prazo" 
 				actionListener="#{vendaBean.finalizarVenda('finalizar_a_prazo.jsf')}" />
-
-
+				
+				<pi:remoteCommand name="refresh_venda" 
+				actionListener="#{vendaBean.refreshValorVendaAtual()}" update="@all" />
+				
+				
+				
 
 					<h:panelGrid columns="2">
 						<h:outputLabel value="Código de barras ou nome" for="codigo" />
@@ -118,14 +122,16 @@
 							value="#{vendaBean.codigo}" styleClass="codigo_autocomplet"
 							immediate="true" completeMethod="#{vendaBean.completMetodo}"
 							valueChangeListener="#{vendaBean.digitado}"
-							onkeypress="if(event.keyCode == 13){enterkey();return false;}"
+							onkeydown= "if(event.keyCode == 13){enterkey();return false;}"
 							onchange="if(event.value.size == 13){enterkey();return false;}">
 							<pi:ajax event="keyup" update=":quantidade" />
+							
 						</pi:autoComplete>
 
 
 						<h:inputText id="quantidade" value="#{vendaBean.quantidade}"
 							converter="valueUnidadeConverter"
+							
 							p:onkeypress="if(event.keyCode == 13){document.getElementById('codigo').focus();}"
 							styleClass="quantidade" />
 
@@ -191,10 +197,7 @@
 		</div>
 
 
-		<pi:remoteCommand name="removeritem"
-			actionListener="#{vendaBean.removerItem()}" update="@form" />
-		<pi:remoteCommand name="naoremoveritem"
-			actionListener="#{vendaBean.cancelarItemRemovido()}" update="@form" />
+		
 		<pi:growl id="growl" life="3000" />
 	</h:form>
 
@@ -203,15 +206,16 @@
 		data-reveal="modalRemoverItem">
 		<h2>Remover Item</h2>
 		<br />
-
+		<h:form>
 		<h:outputLabel value="Tem certeza que deseja remover o Item?" />
 		<br />
-		<h:commandButton value="Remover" onclick="removeritem();"
-			styleClass="botao" />
-		<h:commandButton value="Cancelar" onclick="naoremoveritem();"
-			styleClass="botao" />
+		<h:commandButton value="Remover" 
+			actionListener="#{vendaBean.removerItemDaVenda}" styleClass="botao" update="@form"/>
+		<h:commandButton value="Cancelar"
+			styleClass="botao" actionListener="#{vendaBean.cancelarItemRemovido()}"/>
 
 		<a class="close-reveal-modal">&#215;</a>
+		</h:form>
 	</div>
 	<!-- fim modal remover item -->
 
@@ -358,18 +362,26 @@
 			catch (err) {
 				keychar = String.fromCharCode(e.keyCode);
 			}
-
-			if (e.ctrlKey == true) {
+			
+			if(e.shiftKey == true){
+				if( e.keyCode == 27){
+					refresh_venda();	
+				}
+			}else if (e.ctrlKey == true) {
 				a_vista();
 			}else if(e.altKey == true){
 				a_prazo();
 				return false;
 			}else if(e.shiftKey == true){
-				alet('pegou');
+				
+			}else if (e.keyCode == 27) {
+				ir_home();
 			}
 
 		}
-		script_footer();
+		maiusculo('input[type="text"]');
+		//pular_enter();
+	
 	</script>
 
 

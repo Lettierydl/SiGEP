@@ -176,3 +176,25 @@ function addPtBrCalendar() {
 	};
 }
 
+
+function script_footer_login(){
+	document.onkeydown = function(e) {
+		var keychar;
+		
+		// Internet Explorer
+		try {
+			keychar = String.fromCharCode(event.keyCode);
+			e = event;
+		}
+
+		// Firefox, Opera, Chrome, etc...
+		catch (err) {
+			keychar = String.fromCharCode(e.keyCode);
+		}
+
+		if (e.ctrlKey == true && e.keyCode == 27) {
+			ir_config();
+		}
+	}
+
+}

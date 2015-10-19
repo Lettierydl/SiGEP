@@ -16,6 +16,7 @@ import javax.faces.event.ValueChangeEvent;
 import org.primefaces.context.RequestContext;
 
 import com.twol.sigep.Facede;
+import com.twol.sigep.controller.find.FindVenda;
 import com.twol.sigep.model.configuracoes.ConfiguracaoSistema;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
@@ -240,8 +241,17 @@ public class VendaManagedBean {
 				"fecharModal('modalRemoverItem');");
 	}
 
-	public void removerItem() {
+	public void removerItemDaVenda() {
 		try {
+			if(removerItem == null){
+				RequestContext.getCurrentInstance().execute(
+						"fecharModal('modalRemoverItem');");
+				this.removerItem = null;
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN ,"Item Já Removido",
+						"Item já removido"));
+				return;	
+			}
 			f.removerItemDaVenda(removerItem);
 			RequestContext.getCurrentInstance().execute(
 					"fecharModal('modalRemoverItem');");
@@ -306,7 +316,22 @@ public class VendaManagedBean {
 							"Não há itens nessa venda", "Venda Vazia"));
 		}
 	}
-
+	
+	public void refreshValorVendaAtual(){
+		try {
+			f.refreshValorDeVendaAtual();
+		} catch (Exception e) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Venda não sincronizada",
+					"Venda não sincronizada"));
+			return;
+		}
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Venda atualizada",
+				"Venda atualizada"));
+		RequestContext.getCurrentInstance().update("@all");
+	}
+	
 	public double getQuantidade() {
 		return quantidade;
 	}
