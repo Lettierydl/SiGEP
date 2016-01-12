@@ -19,6 +19,7 @@ function script_footer(){
 		if (e.keyCode == 27) {
 			ir_home();
 		}
+		atalhos_adicionas(e);
 	}
 	maiusculo('input[type="text"]');
 	pular_enter();
@@ -45,6 +46,78 @@ function pular_enter(){
         }
     });
 }
+
+
+function upCodigo(event) {
+	if (event.keyCode == 32) {
+		$('#buscaNome').css({
+			display : 'inherit'
+		});
+		$('#buscaNome_input').focus();
+		$('#buscaNome_input').select();
+		var cod = $("#codigo");
+		cod.val($.trim(cod.val().replace('\n','')));
+		return false;
+	}if (event.keyCode == 13) {
+		var cod = $("#codigo");
+		cod.val($.trim(cod.val().replace('\n','')));
+		enterkey();
+		return false;
+	}else if($("#codigo").val().replace('\n','?').replace('\r','?').indexOf('?') != -1){
+		var cod = $("#codigo");
+		cod.val($.trim(cod.val().replace('\n','')));
+		enterkey();
+		setTimeout(function(){$("#codigo").select();},400);
+		return false;
+	}
+	var cod = $("#codigo");
+	if(cod.val().length > 1){
+		var ultimoc = cod.val().charAt(cod.val().length - 1);
+		if(ultimoc == '*'){
+			$("#quantidade").val(cod.val().replace('*',''));
+			cod.val('');
+		}
+	}
+	
+	cod.val(cod.val().replace(/[^\d ,]+/g,''));
+	
+}
+
+function upCodigoMercadorias(event) {
+	if (event.keyCode == 32) {
+		$('#buscaNomeProd').css({
+			display : 'inherit'
+		});
+		$('#buscaNomeProd_input').focus();
+		$('#buscaNomeProd_input').select();
+		var cod = $("#codigoProd");
+		cod.val($.trim(cod.val().replace('\n','')));
+		return false;
+	}if (event.keyCode == 13) {
+		var cod = $("#codigoProd");
+		cod.val($.trim(cod.val().replace('\n','')));
+		enterProd();
+		return false;
+	}else if($("#codigoProd").val().replace('\n','?').replace('\r','?').indexOf('?') != -1){
+		var cod = $("#codigoProd");
+		cod.val($.trim(cod.val().replace('\n','')));
+		enterProd();
+		setTimeout(function(){$("#codigoProd").select();},400);
+		return false;
+	}
+	var cod = $("#codigoProd");
+	if(cod.val().length > 1){
+		var ultimoc = cod.val().charAt(cod.val().length - 1);
+		if(ultimoc == '*'){
+			$("#quantidadeProd").val(cod.val().replace('*',''));
+			cod.val('');
+		}
+	}
+	
+	cod.val(cod.val().replace(/[^\d ,]+/g,''));
+	
+}
+
 
 function ativarMenuBotoes(titulo) {
 	$("#menu-botoes").removeClass("fadeIn");

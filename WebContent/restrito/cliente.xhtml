@@ -6,12 +6,13 @@
 	xmlns:pi="http://primefaces.org/ui">
 <h:head>
 	<title>Cloud Sistem</title>
-	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
+	<link rel="shortcut icon" href="../imagens/logo.png"
+		type="image/x-icon" />
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
-	
-	
+
+
 
 	<link type="text/css" rel="stylesheet" href="../css/menu.css" />
 	<link type="text/css" rel="stylesheet" href="../css/componentes.css" />
@@ -64,11 +65,12 @@
 		</div>
 
 		<div class="tabela">
-		
-		
-			<pi:dataTable id="tabelaCliente" styleClass="tabela"  emptyMessage=""
-			scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="300"
-				value="#{clienteBean.listAtualDeClientes}" var="cliente">
+
+
+			<pi:dataTable id="tabelaCliente" styleClass="tabela" emptyMessage=""
+				scrollRows="20" scrollable="true" liveScroll="true"
+				scrollHeight="300" value="#{clienteBean.listAtualDeClientes}"
+				var="cliente">
 				<f:facet name="header" />
 				<pi:column styleClass="large-5">
 					<f:facet name="header">Nome</f:facet> 
@@ -186,16 +188,18 @@
 									styleClass="campo-grande CPFMask" validator="clienteValidation" />
 
 								<h:outputLabel value="Nascimento:" for="inputDataDeNascimento" />
-								
-								<pi:calendar id="inputDataDeNascimento" value="#{clienteBean.newCliente.dataDeNascimentoDate}" styleClass="campo-grande DateMask" locale="pt"
+
+								<pi:calendar id="inputDataDeNascimento"
+									value="#{clienteBean.newCliente.dataDeNascimentoDate}"
+									styleClass="campo-grande DateMask" locale="pt"
 									pattern="dd/MM/yyyy" yearRange="c-80:c+10"
 									maxdate="#{relatBean.maxDia}" navigator="true" mask="true"
-									placeholder="#{relatBean.maxDia}" converter="calendarConverter"/>
-								
-								
-								
-								
-								
+									placeholder="#{relatBean.maxDia}" converter="calendarConverter" />
+
+
+
+
+
 							</h:panelGrid>
 						</div>
 
@@ -223,7 +227,73 @@
 					</div>
 					<div class="row">
 						<h:commandButton styleClass="bt-cadastrar" value="Cadastrar"
-							actionListener="#{clienteBean.cadastrarCliente()}" immediate="false"/>
+							actionListener="#{clienteBean.cadastrarCliente()}"
+							immediate="false" />
+					</div>
+				</div>
+			</h:form>
+			<a class="close-reveal-modal">&#215;</a>
+		</div>
+
+
+
+
+		<div id="modalCriarDependente" class="reveal-modal modal"
+			data-reveal="modalCriarDependente">
+			<h2>Criar Dependente</h2>
+			<h:form id="formAdicionarDependente" prependId="false">
+				<div class="formulario">
+					<div class="row">
+						<h:panelGrid columns="2">
+							<h:outputLabel value="Cliente: " for="clienteNome" />
+							<h:outputLabel id="clienteNome"
+								value="#{clienteBean.addDependenteCliente.nome}"/>
+						</h:panelGrid>
+					</div>
+
+					<div class="row">
+
+						<div class="large-5 columns" id="coluna1">
+							<h:panelGrid columns="2">
+								<h:outputLabel value="Nome:" for="inputNomeDependente" />
+								<h:inputText id="inputNomeDependente"
+									value="#{clienteBean.newDependente.nome}"
+									styleClass="campo-grande">
+								</h:inputText>
+							</h:panelGrid>
+						</div>
+					</div>
+
+					<div class="row">
+						<h3>Dependentes</h3>
+
+						<div style="height: 200px; width: 95%; padding-top: -15px;">
+							<div class="tabela_itens_venda scroll">
+								<h:dataTable id="dependentes" style="scroll:auto"
+									value="#{clienteBean.nomeDependentes}" var="dep">
+									<h:column headerClass="large-4">
+										<f:facet name="header">Dependente</f:facet>
+										<h:outputLabel value="#{dep}" />
+									</h:column>
+									<h:column headerClass="large-2">
+										<f:facet name="header">Remover</f:facet>
+										
+										<pi:commandLink
+											actionListener="#{clienteBean.removerDependente(dep)}"
+											rendered="true" update="@form">
+											<img src="../imagens/bt_cancel.png" />
+										</pi:commandLink>
+									</h:column>
+
+								</h:dataTable>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<h:commandButton styleClass="bt-cadastrar" value="Cadastrar"
+							actionListener="#{clienteBean.cadastrarDependente()}"
+							immediate="false" />
 					</div>
 				</div>
 			</h:form>

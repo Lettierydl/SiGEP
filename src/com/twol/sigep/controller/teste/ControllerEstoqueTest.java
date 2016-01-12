@@ -1,8 +1,6 @@
 package com.twol.sigep.controller.teste;
 
-import static org.junit.Assert.*;
-
-import java.util.Calendar;
+import static org.junit.Assert.assertEquals;
 
 import javax.persistence.NoResultException;
 
@@ -13,23 +11,21 @@ import com.twol.sigep.controller.ControllerEstoque;
 import com.twol.sigep.controller.find.FindProduto;
 import com.twol.sigep.model.estoque.CategoriaProduto;
 import com.twol.sigep.model.estoque.Produto;
-import com.twol.sigep.model.estoque.Promocao;
 import com.twol.sigep.model.estoque.UnidadeProduto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
-import com.twol.sigep.model.exception.PromocaoInvalida;
-import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
-import com.twol.sigep.util.Persistencia;
 
 public class ControllerEstoqueTest {
 	
 	ControllerEstoque ce;
+	FindProduto fprod;
 	String codigo = "1234567890123";
 	
 	@Before
 	public void setup(){
-		ce = new ControllerEstoque(Persistencia.emf);
+		ce = new ControllerEstoque();
 		ce.removeAllPromocoes();
 		ce.removeAllProdutos();
+		fprod  = new FindProduto();
 	}
 
 	private Produto iniciarProdutoInformacoesAleatorias(String codigo) {
@@ -46,6 +42,7 @@ public class ControllerEstoqueTest {
 		return p;
 	}
 	
+	/*
 	private Promocao iniciarPromocaoValidaInformacoesAleatorias(double valorDesconto) {
 		int num = (int) (Math.random() * 100);
 		Promocao p = new Promocao();
@@ -59,8 +56,9 @@ public class ControllerEstoqueTest {
 		p.setDataDeInicio(dia);
 		
 		return p;
-	}
+	}*/
 	
+	/*
 	private Promocao iniciarPromocaoInvalidaInformacoesAleatorias(double valorDesconto) {
 		int num = (int) (Math.random() * 100);
 		Promocao p = new Promocao();
@@ -77,7 +75,7 @@ public class ControllerEstoqueTest {
 		
 		return p;
 	}
-	
+	*/
 	
 	/*
 	 * Produto
@@ -86,24 +84,24 @@ public class ControllerEstoqueTest {
 	public void createProdutoTest() {
 		Produto p = iniciarProdutoInformacoesAleatorias(codigo);
 		ce.create(p);
-		assertEquals(FindProduto.produtoComCodigoDeBarras(codigo), p);
+		assertEquals(fprod.produtoComCodigoDeBarras(codigo), p);
 	}
 	
 	@Test
 	public void editProdutoTest() throws EntidadeNaoExistenteException, Exception {
 		createProdutoTest();
-		Produto p = FindProduto.produtoComCodigoDeBarras(codigo);
+		Produto p = fprod.produtoComCodigoDeBarras(codigo);
 		p.setDescricao("Produto Alterado");
 		ce.edit(p);
-		assertEquals(FindProduto.produtoComCodigoDeBarras(codigo).getDescricao(), p.getDescricao());
+		assertEquals(fprod.produtoComCodigoDeBarras(codigo).getDescricao(), p.getDescricao());
 	}
 	
 	@Test(expected=NoResultException.class )
 	public void destroyProdutoTest() throws EntidadeNaoExistenteException  {
 		createProdutoTest();
-		Produto p = FindProduto.produtoComCodigoDeBarras(codigo);
+		Produto p = fprod.produtoComCodigoDeBarras(codigo);
 		ce.destroy(p);
-		FindProduto.produtoComCodigoDeBarras(codigo);
+		fprod.produtoComCodigoDeBarras(codigo);
 	}
 	
 	@Test
@@ -120,7 +118,7 @@ public class ControllerEstoqueTest {
 	
 	/*
 	 * Promocao
-	 */
+	
 	@Test
 	public void createPromocaoTest() {
 		Promocao p = this.iniciarPromocaoValidaInformacoesAleatorias(50);
@@ -137,6 +135,9 @@ public class ControllerEstoqueTest {
 		assertEquals(Promocao.recuperarLista().get(0).getValorDoDesconto(), p.getValorDoDesconto(), 0);
 	}
 	
+	 */
+	
+	/*
 	@Test(expected=NoResultException.class )
 	public void destroyPromocaoTest() throws EntidadeNaoExistenteException  {
 		createPromocaoTest();
@@ -144,6 +145,7 @@ public class ControllerEstoqueTest {
 		ce.destroy(p);
 		Promocao.recuperarPromocao(p.getId());
 	}
+	
 	
 	@Test
 	public void removeAllPromocaoTest() {
@@ -155,10 +157,10 @@ public class ControllerEstoqueTest {
 		assertEquals(ce.getQuantidadePromocoes() , 0);
 	}
 	
-	
+	*/
 	/*
 	 * Relacionamento Produto e Promocao
-	 */
+	 
 	
 	@Test
 	public void createUmaPromocaoValidaAoProduto() throws EntidadeNaoExistenteException, Exception {
@@ -174,6 +176,7 @@ public class ControllerEstoqueTest {
 		assertArrayEquals(result.getPromocoes().toArray(), c.getPromocoes().toArray());
 		assertEquals(result.getPromocaoValida(), c.getPromocaoValida());
 	}
+	
 	
 	@Test(expected=NoResultException.class )
 	public void destroyUmProdutoComUmaPromocao() throws EntidadeNaoExistenteException, Exception {
@@ -193,6 +196,8 @@ public class ControllerEstoqueTest {
 		c = FindProduto.produtoComCodigoDeBarras(codigo);
 		assertNull(c.getPromocaoValida());
 	}
+	*/
+	
 	
 	/*
 	@Test(expected = PromocaoValidaJaExistente.class)
@@ -208,7 +213,7 @@ public class ControllerEstoqueTest {
 		p2.setProduto(c);
 		ce.create(p2);
 	}
-	*/
+	
 	
 	@Test(expected = PromocaoInvalida.class)
 	public void creatUmaPromocaoInvalidaAoProduto() throws PromocaoValidaJaExistente, PromocaoInvalida {
@@ -218,7 +223,7 @@ public class ControllerEstoqueTest {
 		Promocao p = this.iniciarPromocaoInvalidaInformacoesAleatorias(c.getValorDeVenda()*0.25);
 		p.setProduto(c);
 		ce.create(p);
-	}
+	}*/
 	
 	
 	

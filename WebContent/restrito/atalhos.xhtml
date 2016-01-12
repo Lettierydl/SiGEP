@@ -66,7 +66,7 @@
 				actionListener="#{logoffBean.mudarDeTela('balanco.jsf')}" />
 		<pi:remoteCommand name= "ir_atalhos" 
 				actionListener="#{logoffBean.mudarDeTela('atalhos.jsf')}" />
-		</h:form>
+		
 
 		
 			<div class="botoes fadeIn">
@@ -81,15 +81,27 @@
 				<h3>Tela Vendas</h3>
 				<p>Tecla Ctrl: Finaliza Venda à Vista</p>
 				<p>Tecla Alt: Finaliza Venda à Prazo</p>
+				<!-- 
 				<p>Tecla Shift + Esc: Atualiza Venda Atual (recalcula o valor com atualizações de outros caixas)</p>
+				 -->
+				<p>Tecla Shift: Abre a tela de Colsulta de Mercadorias</p>
 				
 				<br/>
+				<h3>Tela Pagamentos</h3>
+				<p>Tecla Ctrl: Corrige díbito do cliente</p>
+				<br/>
+				
 				<h3>Atalhos Padão</h3>
 				<p>Tecla Esc: Volta para a tela anterior</p>
 				<p>Tecla Enter: Pula linha ou Finaliza o Cadastro</p>
+				<br/>
+				<p>version 2.0 14.12.15</p>
 				
-				
+				<h:outputLabel value="#{confBean.systemInformacao}"/>
+				<br/>
+		
 			</div>
+		</h:form>		
 			
 		</ui:insert>
 	</div>

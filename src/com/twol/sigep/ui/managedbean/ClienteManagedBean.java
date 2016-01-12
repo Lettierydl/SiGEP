@@ -1,5 +1,6 @@
 package com.twol.sigep.ui.managedbean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -13,6 +14,7 @@ import com.twol.sigep.Facede;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.FuncionarioNaoAutorizadoException;
 import com.twol.sigep.model.pessoas.Cliente;
+import com.twol.sigep.model.pessoas.Dependente;
 import com.twol.sigep.util.SessionUtil;
 
 @ViewScoped
@@ -23,15 +25,21 @@ public class ClienteManagedBean {
 	private String nomePesquisa;
 	private Cliente newCliente;
 	private Cliente editCliente;
+	private Cliente addDependenteCliente;
+	private Dependente newDependente;
 	private List<Cliente> listAtualDeClientes;
+
 
 	public ClienteManagedBean() {
 		f = new Facede();
 		newCliente = new Cliente();
+		newDependente = new Dependente();
 		setEditCliente(new Cliente());
 		listAtualDeClientes = f.getListaClientes();
 	}
 
+
+	
 	public void cadastrarCliente() {
 		try {
 			f.adicionarCliente(newCliente);
@@ -74,6 +82,17 @@ public class ClienteManagedBean {
 	public void openEditCliente(Cliente c) {
 		this.setEditCliente(c);
 		RequestContext.getCurrentInstance().execute("abrirModa('modalEdit');");
+		/*
+		 * RequestContext.getCurrentInstance().update("formEdit");
+		 * RequestContext.getCurrentInstance().update("nomeEdit");
+		 * RequestContext.getCurrentInstance().openDialog("modalEdit");
+		 * RequestContext.getCurrentInstance().openDialog("#modalEdit");
+		 */
+	}
+	
+	public void openCriarDependente(int idCliente) {
+		this.setAddDependenteCliente(f.buscarClientePorId(idCliente));
+		RequestContext.getCurrentInstance().execute("abrirModa('modalCriarDependente');");
 		/*
 		 * RequestContext.getCurrentInstance().update("formEdit");
 		 * RequestContext.getCurrentInstance().update("nomeEdit");
@@ -142,6 +161,61 @@ public class ClienteManagedBean {
 			RequestContext.getCurrentInstance().update("@all");
 		}
 	}
+	
+	public void cadastrarDependente(){
+		try{
+			f.adicionarDependente(newDependente, addDependenteCliente);
+		} catch (FuncionarioNaoAutorizadoException fe) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
+							.getMessage()));
+			return;
+		} catch (Exception e) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Dependente duplicado não pode ser cadastrado",
+					"Dependente duplicado não pode ser cadastrado"));
+			return;
+		}
+		
+		SessionUtil.exibirMensagem(new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Dependente cadastrado com sucesso",
+				"Dependente cadastrado com sucesso"));
+		newDependente = new Dependente();
+		addDependenteCliente =  new Cliente();
+	}
+	
+	public void removerDependente(String nomeDependente){
+		try{
+			f.removerDependente(f.buscarDependenteNomeECliente(nomeDependente, addDependenteCliente));
+		} catch (EntidadeNaoExistenteException fe) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Dependente não encontrado",  "Dependente não encontrado"));
+			return;
+		} catch (Exception e) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Dependente não pode ser removido",
+					"Dependente não pode ser removido"));
+			return;
+		}
+		
+		SessionUtil.exibirMensagem(new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Dependente removido com sucesso",
+				"Dependente removido com sucesso"));
+	}
+	
+	public List<String> getNomeDependentes(){
+		try{
+			return f.getListaNomeDependentes(addDependenteCliente.getId());
+		}catch(NullPointerException ne){
+			return new ArrayList<String>();
+		}
+	}
+	
+	public List<Dependente> getDependentes(){
+		return f.getListaDependentes(addDependenteCliente);
+	}
 
 	public String getNomePesquisa() {
 		return nomePesquisa;
@@ -166,5 +240,23 @@ public class ClienteManagedBean {
 	public void setEditCliente(Cliente editCliente) {
 		this.editCliente = editCliente;
 	}
+
+	public Cliente getAddDependenteCliente() {
+		return addDependenteCliente;
+	}
+
+	public void setAddDependenteCliente(Cliente addDependenteCliente) {
+		this.addDependenteCliente = addDependenteCliente;
+	}
+
+	public Dependente getNewDependente() {
+		return newDependente;
+	}
+
+	public void setNewDependente(Dependente newDependente) {
+		this.newDependente = newDependente;
+	}
+	
+	
 
 }

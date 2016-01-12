@@ -21,14 +21,22 @@ public class PermissaoFuncionario {
 
 	public static final String GERAR_RELATORIOS = "GERAR_RELATORIOS";
 	
+	private static ControllerConfiguracao controller;
 	
+
+	public static ControllerConfiguracao getControllerConfiguracao(){
+		if (controller == null){
+			controller = new ControllerConfiguracao();
+		}
+		return controller;
+	}
 	
 	public static boolean isAutorizado(Funcionario func, final String acao) throws FuncionarioNaoAutorizadoException{
-		if(ControllerConfiguracao.getQuantidadeConfiguracoes() ==0){
+		if(getControllerConfiguracao().getQuantidadeConfiguracoes() == 0){
 			configuracoesDefalt();
 		}
 		
-		if(ControllerConfiguracao.getValor(acao, func.getTipoDeFuncionario())){
+		if(getValor(acao, func.getTipoDeFuncionario())){
 			return true;
 		}else{
 			throw new FuncionarioNaoAutorizadoException("( "+acao+" )");
@@ -36,39 +44,39 @@ public class PermissaoFuncionario {
 	}
 	
 	public static boolean getValor(String acao, TipoDeFuncionario tipo){
-		return ControllerConfiguracao.getValor(acao, tipo);
+		return getControllerConfiguracao().getValor(acao, tipo);
 	}
 	
 	
 	public static void putValor(String acao, boolean valor ,TipoDeFuncionario tipo)throws FuncionarioNaoAutorizadoException{
-		ControllerConfiguracao.putValor(acao, valor, tipo);
+		getControllerConfiguracao().putValor(acao, valor, tipo);
 	}
 	
 	
 	public static void configuracoesDefalt(){
-		ControllerConfiguracao.removeAllConfiguracoes();
+		getControllerConfiguracao().removeAllConfiguracoes();
 		
-		ControllerConfiguracao.putValor(ALTERAR_FUNCIONARIO, true, TipoDeFuncionario.Gerente);
-		ControllerConfiguracao.putValor(ALTERAR_CONFIGURACOES, true, TipoDeFuncionario.Gerente);
-		ControllerConfiguracao.putValor(CADASTRAR_FUNCIONARIO, true, TipoDeFuncionario.Gerente);
+		getControllerConfiguracao().putValor(ALTERAR_FUNCIONARIO, true, TipoDeFuncionario.Gerente);
+		getControllerConfiguracao().putValor(ALTERAR_CONFIGURACOES, true, TipoDeFuncionario.Gerente);
+		getControllerConfiguracao().putValor(CADASTRAR_FUNCIONARIO, true, TipoDeFuncionario.Gerente);
 		
-		ControllerConfiguracao.putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Caixa);
-		ControllerConfiguracao.putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Supervisor);
-		ControllerConfiguracao.putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Gerente);
+		getControllerConfiguracao().putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Caixa);
+		getControllerConfiguracao().putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Supervisor);
+		getControllerConfiguracao().putValor(ALTERAR_CLIENTES, true, TipoDeFuncionario.Gerente);
 		
-		ControllerConfiguracao.putValor(ALTERAR_PRODUTO, true, TipoDeFuncionario.Supervisor);
-		ControllerConfiguracao.putValor(ALTERAR_PRODUTO, true, TipoDeFuncionario.Gerente);
+		getControllerConfiguracao().putValor(ALTERAR_PRODUTO, true, TipoDeFuncionario.Supervisor);
+		getControllerConfiguracao().putValor(ALTERAR_PRODUTO, true, TipoDeFuncionario.Gerente);
 		
 		
-		ControllerConfiguracao.putValor(CADASTRAR_PRODUTO, true, TipoDeFuncionario.Supervisor);
-		ControllerConfiguracao.putValor(CADASTRAR_PRODUTO, true, TipoDeFuncionario.Gerente);
+		getControllerConfiguracao().putValor(CADASTRAR_PRODUTO, true, TipoDeFuncionario.Supervisor);
+		getControllerConfiguracao().putValor(CADASTRAR_PRODUTO, true, TipoDeFuncionario.Gerente);
 		
-		ControllerConfiguracao.putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Caixa);
-		ControllerConfiguracao.putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Supervisor);
-		ControllerConfiguracao.putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Gerente);
+		getControllerConfiguracao().putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Caixa);
+		getControllerConfiguracao().putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Supervisor);
+		getControllerConfiguracao().putValor(CADASTRAR_CLIENTES, true, TipoDeFuncionario.Gerente);
 		
-		ControllerConfiguracao.putValor(GERAR_RELATORIOS, true, TipoDeFuncionario.Supervisor);
-		ControllerConfiguracao.putValor(GERAR_RELATORIOS, true, TipoDeFuncionario.Gerente);
+		getControllerConfiguracao().putValor(GERAR_RELATORIOS, true, TipoDeFuncionario.Supervisor);
+		getControllerConfiguracao().putValor(GERAR_RELATORIOS, true, TipoDeFuncionario.Gerente);
 		
 		
 	}

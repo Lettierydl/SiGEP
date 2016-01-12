@@ -2,15 +2,29 @@ package com.twol.sigep.controller.find;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.util.Persistencia;
 
 public class FindFuncionario {
+	
+	private  EntityManager em;
 
+	private  EntityManager getEntityManager() {
+		/*if (em != null && em.isOpen()) {
+			em.close();
+		}*/
+		if(em == null || !em.isOpen()){
+			em = Persistencia.getEntityManager();
+		}
+		return em;
+	}
+	
+	
 	@SuppressWarnings("unchecked")
-	public static List<Funcionario> funcionariosQueNomeLike(String nome) {
+	public  List<Funcionario> funcionariosQueNomeLike(String nome) {
 		if (nome == null || nome.length() == 0)
 			throw new IllegalArgumentException(
 					"������ necess������rio um nome v������lido");
@@ -21,19 +35,20 @@ public class FindFuncionario {
 		if (nome.charAt(nome.length() - 1) != '%') {
 			nome += "%";
 		}
-		Persistencia.restartConnection();
-		Query q = Persistencia.em
+		
+		Query q = getEntityManager()
 				.createQuery(
 						"select o from Funcionario as o where LOWER(o.nome) LIKE LOWER(:nome)",
 						Funcionario.class);
 		q.setParameter("nome", nome.replace(" ", "%"));
 		List<Funcionario> funcionarios = q.getResultList();
 
+
 		return funcionarios;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Funcionario> funcionariosQueLoginLike(String login) {
+	public  List<Funcionario> funcionariosQueLoginLike(String login) {
 		if (login == null || login.length() == 0)
 			throw new IllegalArgumentException(
 					"������ necess������rio uma Login v������lido");
@@ -44,8 +59,8 @@ public class FindFuncionario {
 		if (login.charAt(login.length() - 1) != '%') {
 			login += "%";
 		}
-		Persistencia.restartConnection();
-		Query q = Persistencia.em
+		
+		Query q = getEntityManager()
 				.createQuery(
 						"SELECT o FROM Funcionario AS o WHERE LOWER(o.login) LIKE LOWER(:login)",
 						Funcionario.class);
@@ -56,7 +71,7 @@ public class FindFuncionario {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Funcionario> funcionariosQueNomeInicia(String nome) {
+	public  List<Funcionario> funcionariosQueNomeInicia(String nome) {
 		if (nome == null || nome.length() == 0)
 			throw new IllegalArgumentException(
 					"������ necess������rio um nome v������lido");
@@ -64,8 +79,8 @@ public class FindFuncionario {
 		if (nome.charAt(0) != '%') {
 			nome += "%";
 		}
-		Persistencia.restartConnection();
-		Query q = Persistencia.em
+		
+		Query q = getEntityManager()
 				.createQuery(
 						"select o from Funcionario as o where LOWER(o.nome) LIKE LOWER(:nome)",
 						Funcionario.class);
@@ -76,7 +91,7 @@ public class FindFuncionario {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Funcionario> funcionariosQueLoginInicia(String login) {
+	public  List<Funcionario> funcionariosQueLoginInicia(String login) {
 		if (login == null || login.length() == 0)
 			throw new IllegalArgumentException(
 					"������ necess������rio uma CPF v������lida");
@@ -84,8 +99,8 @@ public class FindFuncionario {
 		if (login.charAt(0) != '%') {
 			login += "%";
 		}
-		Persistencia.restartConnection();
-		Query q = Persistencia.em
+		
+		Query q = getEntityManager()
 				.createQuery(
 						"select o from Funcionario as o where LOWER(o.login) LIKE LOWER(:login)",
 						Funcionario.class);
@@ -95,86 +110,93 @@ public class FindFuncionario {
 		return Funcionarios;
 	}
 
-	public static List<String> nomeFuncionariosQueNomeInicia(String nome) {
+	public  List<String> nomeFuncionariosQueNomeInicia(String nome) {
 		String stringQuery = "select c.nome FROM Funcionario as c ";
 		stringQuery += "where LOWER(c.nome) LIKE LOWER(:nome) ";
 
-		Persistencia.restartConnection();
-		Query query = Persistencia.em.createQuery(stringQuery, String.class);
+		
+		Query query = getEntityManager().createQuery(stringQuery, String.class);
 
 		query.setParameter("nome", nome.replace(" ", "%") + "%");
 
 		@SuppressWarnings("unchecked")
 		List<String> nomes = (List<String>) query.getResultList();
+
 		return nomes;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Funcionario> listFuncionarios() {
-		Persistencia.restartConnection();
-		Query consulta = Persistencia.em
+	public  List<Funcionario> listFuncionarios() {
+		
+		Query consulta = getEntityManager()
 				.createQuery("select Funcionario from Funcionario Funcionario order by nome");
 		List<Funcionario> Funcionarios = consulta.getResultList();
+
 		return Funcionarios;
 	}
 
-	public static Funcionario funcionarioComId(int idFuncionario) {
-		Persistencia.restartConnection();
-		Query consulta = Persistencia.em.createQuery(
+	public  Funcionario funcionarioComId(int idFuncionario) {
+		
+		Query consulta = getEntityManager().createQuery(
 				"select c from Funcionario as c where c.id = :idFuncionario ",
 				Funcionario.class);
 		consulta.setParameter("idFuncionario", idFuncionario);
 		Funcionario c = (Funcionario) consulta.getSingleResult();
+
 		return c;
 	}
 
-	public static Funcionario funcionarioComNome(String nome) {
+	public  Funcionario funcionarioComNome(String nome) {
 		if (nome == null || nome.length() == 0)
 			throw new IllegalArgumentException(
 					"������ necess������rio um nome v������lido");
-		Persistencia.restartConnection();
-		Query q = Persistencia.em
+		
+		Query q = getEntityManager()
 				.createQuery(
 						"select o from Funcionario as o where LOWER(o.nome) = LOWER(:nome)",
 						Funcionario.class);
 		q.setParameter("nome", nome);
 		Funcionario Funcionario = (Funcionario) q.getSingleResult();
+
 		return Funcionario;
 	}
 	
-	public static Funcionario funcionarioComCPF(String cpf) {
+	public  Funcionario funcionarioComCPF(String cpf) {
 		if (cpf == null || cpf.length() == 0)
 			throw new IllegalArgumentException(
 					"������ necess������rio um nome v������lido");
-		Persistencia.restartConnection();
-		Query q = Persistencia.em
+		
+		Query q = getEntityManager()
 				.createQuery(
 						"select o from Funcionario as o where o.cpf = :cpf",
 						Funcionario.class);
 		q.setParameter("cpf", cpf);
 		Funcionario Funcionario = (Funcionario) q.getSingleResult();
+
 		return Funcionario;
 	}
 	
-	public static Funcionario funcionarioComLoginESenha
+	public  Funcionario funcionarioComLoginESenha
 	(String login, String senha){
-		Persistencia.restartConnection();
-		Query consulta = Persistencia.em
+		
+		Query consulta = getEntityManager()
 				.createQuery("select f from Funcionario as f where f.login = :lo " +
 						"and f.senha = :se");
 		consulta.setParameter("lo", login);
 		consulta.setParameter("se", senha);
 		Funcionario fuc= (Funcionario) consulta.getSingleResult();
+
 		return fuc;
     }
 	
-	public static Funcionario funcionarioComLogin
+	public  Funcionario funcionarioComLogin
 	(String login){
-		Persistencia.restartConnection();
-		Query consulta = Persistencia.em
+		
+		Query consulta = getEntityManager()
 				.createQuery("select f from Funcionario as f where f.login = :lo");
 		consulta.setParameter("lo", login);
 		Funcionario fuc= (Funcionario) consulta.getSingleResult();
+
 		return fuc;
     }
 

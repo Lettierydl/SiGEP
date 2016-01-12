@@ -37,23 +37,6 @@ public class ClienteValidation implements Validator {
 			
 
 		}
-		if (arg1.getId().equals("inputCPF")) {
-			String cpf = arg2.toString().replace(".", "").replace("-", "");
-			try {
-				f.buscarClientePorCPF(cpf);
-				throw new ValidatorException(new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Cliente já cadastrado com o CPF: " + cpf,
-						"Cliente já cadastrado com o CPF: " + cpf));
-			} catch (NoResultException nre) {
-			}catch (NonUniqueResultException e) {
-				throw new ValidatorException(new FacesMessage(
-						FacesMessage.SEVERITY_FATAL,
-						"Existe mais de um cliente cadastrado com o CPF: " + cpf,
-						"Existe mais de um cliente cadastrado com o CPF: " + cpf));
-			}
-
-		}
 	}
 
 }

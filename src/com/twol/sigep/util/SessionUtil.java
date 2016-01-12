@@ -70,11 +70,11 @@ public class SessionUtil {
     }
     
     public static void putVendaAFinalizar(Venda venda){
-    	obterSession().setAttribute(KEY_VENDA_A_FINALIZAR, venda);
+    	obterSession().setAttribute(KEY_VENDA_A_FINALIZAR, venda.getId());
     }
     
-    public static Venda getVendaAFinalizar() throws NullPointerException{
-    	return (Venda) obterSession().getAttribute(KEY_VENDA_A_FINALIZAR);
+    public static int getVendaAFinalizar() throws NullPointerException{
+    	return (int) obterSession().getAttribute(KEY_VENDA_A_FINALIZAR);
     }
     
     public static void removerVendaAFinalizar(){

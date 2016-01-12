@@ -12,6 +12,9 @@ public class OperacaoStringUtil {
 	public static final String LOGIN_REALIZADO = "Login realizado com sucesso";
 	public static final String AREA_RESTRITA_APEAS_PARA_FUNCIONARIO_LOGADO = "Área restrita apenas para funcionarios logados no sistema";
 
+	public static final String DESCRICAO_DIVIDA_ANTIGO_SISTEMA = "Dívida do Antigo Sistema";
+
+	
 	public static String formatarStringQuantidade(double quantidade) {
 		return (quantidade + "").replace(".", ",");
 	}
@@ -72,7 +75,7 @@ public class OperacaoStringUtil {
 			}
 		}
 
-		return senha_cript.equals("c629b1689c04adba1576b0063319a94b");
+		return senha_cript.equals("4f02a2f9d2fd686bd865990e8f1838a3");
 	}
 
 }

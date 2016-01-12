@@ -32,7 +32,7 @@ public class WebFiltro implements Filter {
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -67,7 +67,6 @@ public class WebFiltro implements Filter {
 		}
 		
 	
-		
 		chain.doFilter(httpRequest, response);
 	}
 
@@ -75,7 +74,7 @@ public class WebFiltro implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
+		
 	}
 
 }

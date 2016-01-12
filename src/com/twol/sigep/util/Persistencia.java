@@ -11,6 +11,13 @@ public class Persistencia {
 			.createEntityManagerFactory(UNIDADE_DE_PERSISTENCIA);
 	public static EntityManager em = emf.createEntityManager();
 	
+	public static EntityManager getEntityManager(){
+		if(em == null || !em.isOpen()){
+			em = emf.createEntityManager();
+		}
+		return em;
+	}
+	
 	public static void iniciarTrascao(){
 		restartConnection();
 		em.getTransaction().begin();
@@ -29,12 +36,11 @@ public class Persistencia {
 	
 	public static void restartConnection(){
 		 try{
-		//	 em.close();
+			 em.close();
 		 }catch(Exception e){}
-		 //em = emf.createEntityManager();
+		 em = emf.createEntityManager();
 		 
 	}
-	
 
 	public static void flush() {
 		iniciarTrascao();

@@ -58,12 +58,13 @@ public class ControllerLogin {
 	private Funcionario validarSenha(String login, String senha)
 			throws SenhaIncorretaException, LoginIncorretoException {
 		Funcionario f = null;
+		FindFuncionario ffunc = new FindFuncionario();
 		try {
-			f = FindFuncionario.funcionarioComLoginESenha(login,
+			f = ffunc.funcionarioComLoginESenha(login,
 					criptografar(senha));
 		} catch (Exception e) {
 			try{
-				FindFuncionario.funcionarioComLogin(login);
+				ffunc.funcionarioComLogin(login);
 			}catch(NoResultException nre){
 				throw new LoginIncorretoException();
 			}

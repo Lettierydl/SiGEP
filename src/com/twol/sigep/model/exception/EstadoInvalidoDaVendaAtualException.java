@@ -10,5 +10,9 @@ public class EstadoInvalidoDaVendaAtualException extends Exception {
 	public EstadoInvalidoDaVendaAtualException(){
 		super("Estado inválido da venda atual");
 	}
+	
+	public EstadoInvalidoDaVendaAtualException(String msg){
+		super(msg);
+	}
 
 }

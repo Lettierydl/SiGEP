@@ -32,6 +32,7 @@ body .dimensao {
 	top: 8px;
 	height: 75px;
 	width: 75px;
+	
 }
 
 .titulo {
@@ -162,14 +163,19 @@ body .dimensao {
 	padding-left: 15px;
 }
 
-.campos  #codigo_input, .campo #codigoProd, .grande input {
+.campos  #codigo_input, .campo #codigoProd, .grande input, .grande {
 	margin-right: 10px;
 	width: 239px;
 }
 
 
 #nomeCliente_panel ul, #codigo_panel ul{
-	width: 100%;
+	width: 93%;
+	background-color: white;
+}
+
+#nomeCliente_panel table, #codigo_panel table{
+	width: 93%;
 	background-color: white;
 }
 
@@ -177,10 +183,6 @@ body .dimensao {
 	background-color: #3CABC6;
 }
 
-
-.ui-state-highlight{
-	background-color: #3CABC6;
-}
 
 .botao {
 	position: relative;
@@ -211,6 +213,7 @@ body .dimensao {
 
 .imprimir{
 	margin-top: 35px;
+	
 }
 .imprimir input{
 	float: left;
@@ -230,7 +233,7 @@ body .dimensao {
 	margin-right:8px;
 	top: 20px;
 	width: 175px;
-	height: 55px;
+	height: 60px;
 	background-color: #c8fa00;
 	box-shadow: 2.5px 4.33px 0px 0px rgba(48, 138, 160, 0.392);
 	font-size: 20px;
@@ -239,19 +242,13 @@ body .dimensao {
 	padding-top: 5px;
 	
 	cursor: pointer;
-}
-
-.finalizar  a{
-	display:inline-block;
-	width: 100%;
-	height: 100%;
+	border-width: 0px;
+	
+	
 	padding-top: 8px;
 	color: #a1a1a1;
 	text-decoration: none;
-}
-
-.finalizar span {
-	text-transform: uppercase;
+	display:inline-block;
 	color: #000000;
 }
 
@@ -264,13 +261,15 @@ body .dimensao {
 	font-size: 30px;
 	font-family: Dosis;
 	color: #3cabc6;
+	margin-bottom: 20px;
+	float: left;
 }
 
 
 
 .tabela {
-	padding-top: 19px;
-	
+	clear:both;
+	padding-top: 15px;
 	height:80%;
     overflow: scroll;    
 }
@@ -339,20 +338,66 @@ body .dimensao {
 	overflow:scroll;
 }
 
-.ui-autocomplete-panel{
-	overflow:scroll;
-	width:240px!important;
-	height: 100px!important;
+.codigo_autocomplet{
+	position: relative;
+	height: 57px;width: 239px;
+	
+	margin-right: 10px;
+	
+	background-color: #ffffff;
+	box-shadow: 2.5px 4.33px 0px 0px rgba(48, 138, 160, 0.392);
+	border: none;
+	color: #000000;
+	font-family: "Dosis";
+	font-size: 18px;
+	padding-left: 15px;
+	padding-top:15px;
+	
+	resize: none;
+	
+	line-height: 24px;
+	
+	overflow:hidden;
+	
+	
 }
 
-.ui-autocomplete-panel  ul {
-	width: 97%;
+.campo_complet_nome{
+	float: right;
+	margin-right: 20px;
+}
+
+.campo_complet_nome_input{
+	position: relative;
+	height: 57px;
+	width: 350px;
+	
+	background-color: #ffffff;
+	box-shadow: 2.5px 4.33px 0px 0px rgba(48, 138, 160, 0.392);
+	border:  0.5px solid #3CABC6;
+	color: #000000;
+	font-family: "Dosis";
+	font-size: 18px;
+	padding-left: 15px;
+	
+	margin-right: 10px;
+}
+
+
+.panel_complet_nome{
+	border: 1px solid #3CABC6;
+	width: 340px;
+}
+
+.panel_complet_nome  ul {
+	width: 335px;
 	background-color: white;
 }
 
-.ui-autocomplete-panel li:hover {
+.panel_complet_nome li:hover {
 	background-color: #3CABC6;
 }
+
 
 .ui-state-highlight {
 	background-color: #3CABC6;

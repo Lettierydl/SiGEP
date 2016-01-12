@@ -224,6 +224,7 @@ public class Divida implements Comparable<Divida> , Pagavel{
 	public String toString() {
 		return "Divida [id=" + id + ", total=" + total + "]";
 	}
+
 	
 	
 	

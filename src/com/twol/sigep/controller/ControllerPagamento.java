@@ -1,7 +1,6 @@
 package com.twol.sigep.controller;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -12,17 +11,8 @@ import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.vendas.Pagamento;
 
-public class ControllerPagamento {
+public class ControllerPagamento extends Controller{
 
-	private EntityManagerFactory emf = null;
-
-	public ControllerPagamento(EntityManagerFactory emf) {
-		this.emf = emf;
-	}
-
-	private EntityManager getEntityManager() {
-		return emf.createEntityManager();
-	}
 
 	/*
 	 * Pagamento
@@ -38,9 +28,9 @@ public class ControllerPagamento {
 			// embutidos
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
-				em.close();
-			}
+			if (em != null && em.isOpen()) {
+                em.close();
+            }
 		}
 	}
 
@@ -65,9 +55,9 @@ public class ControllerPagamento {
 			}
 			throw ex;
 		} finally {
-			if (em != null) {
-				em.close();
-			}
+			if (em != null && em.isOpen()) {
+                em.close();
+            }
 		}
 	}
 
@@ -90,9 +80,9 @@ public class ControllerPagamento {
 			em.remove(pagamento);
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
-				em.close();
-			}
+			if (em != null && em.isOpen()) {
+                em.close();
+            }
 		}
 	}
 
@@ -105,9 +95,9 @@ public class ControllerPagamento {
 					Pagamento.class).executeUpdate();
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
-				em.close();
-			}
+			if (em != null && em.isOpen()) {
+                em.close();
+            }
 		}
 	}
 
@@ -122,7 +112,9 @@ public class ControllerPagamento {
 			Query q = em.createQuery(cq);
 			return ((Long) q.getSingleResult()).intValue();
 		} finally {
-			em.close();
+			if (em != null && em.isOpen()) {
+                em.close();
+            }
 		}
 	}
 	

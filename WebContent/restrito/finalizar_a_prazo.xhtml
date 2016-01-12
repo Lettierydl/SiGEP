@@ -8,7 +8,8 @@
 
 <h:head>
 	<title>Cloud Sistem</title>
-	<link rel="shortcut icon" href="../imagens/logo.png" type="image/x-icon" />
+	<link rel="shortcut icon" href="../imagens/logo.png"
+		type="image/x-icon" />
 
 	<link rel="stylesheet" href="../foundation/css/foundation.css" />
 	<script src="../foundation/js/vendor/modernizr.js"></script>
@@ -19,13 +20,12 @@
 	<script type="text/javascript" src="../js/jquery.mask.js" />
 
 	<script type="text/javascript">
-		function setFocoESelecionaValorPago() {
-			document.getElementById('finalizarVenda').focus();
-		}
-		jQuery(function($){
+		jQuery(function($) {
 			//$(".money").numeric({ decimal : ",",  negative : false, scale: 2 });
-			$(".money").mask('000000000,00', {reverse: true});
-		 });
+			$(".money").mask('000000000,00', {
+				reverse : true
+			});
+		});
 	</script>
 
 </h:head>
@@ -49,8 +49,9 @@
 	</div>
 
 	<h:form prependId="false" id="formPrincipal">
-		<pi:remoteCommand name= "ir_venda" 
-				actionListener="#{logoffBean.mudarDeTela('venda.jsf')}" />
+		<pi:remoteCommand name="ir_venda"
+			actionListener="#{logoffBean.mudarDeTela('venda.jsf')}" />
+
 
 
 		<div class="footer_fim">
@@ -73,48 +74,57 @@
 				<div class="campos">
 
 					<pi:remoteCommand name="enterkey"
-						actionListener="#{finalBean.verificarCliente()}"  />
+						actionListener="#{finalBean.verificarCliente()}" />
 
 
 					<pi:autoComplete p:id="nomeCliente" id="nomeCliente"
 						value="#{finalBean.nomeCliente}"
 						completeMethod="#{finalBean.completNomeCliente}"
-						title="Nome do cliente" styleClass="grande"
-						placeholder="Nome do cliente"
+						scrollHeight="100" minQueryLength="2" title="Nome do cliente"
+						styleClass="grande" placeholder="Nome do cliente"
 						onkeypress="if(event.keyCode == 13){enterkey();tabenter(event.getElementById('finalizarVenda'));return false;}">
 					</pi:autoComplete>
 
 
 
-				
-					<h:inputText id="valorPago" value="#{finalBean.partePaga}" styleClass="money"
-						maxlength="10" p:placeholder="Entrada"
+
+					<h:inputText id="valorPago" value="#{finalBean.partePaga}"
+						styleClass="money" maxlength="10" p:placeholder="Entrada"
 						title="Parte da venda paga à vista pelo cliente"
-						onkeypress="if(event.keyCode == 13){setFocoESelecionaValorPago();return false;}">
+						onkeydown="tabenter(event.getElementById('finalizarVenda'));">
 						<f:ajax event="keyup" render=":subTotal" />
+					</h:inputText>
+
+				</div>
+
+				<div class="campos" style="float:left; margin-bottom: 10px;">
+					<h:inputText id="observacao" value="#{finalBean.observacao}"
+						p:placeholder="Observação"
+						style="width: 239px;margin-top: 10px;" title="Observação da venda"
+						styleClass="grande"
+						onkeydown="tabenter(event.getElementById('finalizarVenda'));">
 					</h:inputText>
 				</div>
 				
-				<div class="imprimir">
-					<h:outputLabel title="Imprimir copom de venda do cliente" >Imprimir copom</h:outputLabel>
-					<h:selectBooleanCheckbox value="#{finalBean.imprimir}" label="Imprimir copom" title="Imprimir copom de venda do cliente"/>
+				<div class="imprimir" style="float:left;margin-top:50px;">
+					<h:outputLabel title="Imprimir copom de venda do cliente" >Imprimir cupom</h:outputLabel>
+					<h:selectBooleanCheckbox value="#{finalBean.imprimir}" label="Imprimir cupom" title="Imprimir cupom de venda do cliente"/>
 				</div>
 
-				<div class="finalizar">
-					<h:commandLink id="finalizarVenda" title="Finalizar Venda"
-						actionListener="#{finalBean.finalizarVendaAPrazo}">
-						<span>Finalizar</span>
-					</h:commandLink>
+				<div id="botoes" style="clear: both;">
+				<h:commandButton id="finalizarVenda" title="Finalizar Venda"
+					actionListener="#{finalBean.finalizarVendaAPrazo}"
+					class="finalizar" value="FINALIZAR">
+
+				</h:commandButton>
+
+
+				<h:commandButton id="cancelarVenda" title="Voltar para a venda"
+					actionListener="#{finalBean.voltarVenda}" class="finalizar"
+					value="VOLTAR">
+				</h:commandButton>
 				</div>
 
-				<div class="finalizar">
-					<h:commandLink id="cancelarVenda" title="Voltar para a venda"
-						actionListener="#{finalBean.voltarVenda}">
-						<span>Voltar</span>
-					</h:commandLink>
-				</div>
-
-				
 
 			</div>
 			<!-- final coluna direita -->
@@ -191,15 +201,15 @@
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script>
 		$(document).foundation();
-		
+
 		document.getElementById("valorPago").value = '';
-		
+
 		document.getElementById("nomeCliente_input").select();
 		document.getElementById("nomeCliente_input").focus();
-		
+
 		document.onkeydown = function(e) {
 			var keychar;
-			
+
 			// Internet Explorer
 			try {
 				keychar = String.fromCharCode(event.keyCode);
@@ -216,6 +226,43 @@
 			}
 		}
 		maiusculo('input[type="text"]');
+
+		$('input[type="text"]').on(
+				"keypress",
+				function(e) {
+					/* ENTER PRESSED*/
+					if (e.keyCode == 13) {
+						/* FOCUS ELEMENT */
+						var inputs = $(this).parents("form").eq(0).find(
+								'input[type="text"]');
+						var idx = inputs.index(this);
+
+						if (idx == inputs.length - 1) {
+							$('#finalizarVenda').focus();
+
+						} else {
+							inputs[idx + 1].focus(); //  handles submit buttons
+							inputs[idx + 1].select();
+						}
+						/* impede o sumbit caso esteja dentro de um form */
+						e.preventDefault(e);
+						return false;
+					}
+				});
+
+		var chamado = false;
+
+		$('#finalizarVenda').on("keypress", function(e) {
+			/* ENTER PRESSED*/
+			if (e.keyCode == 13) {
+				if (!chamado) {
+					chamado = true;
+					this.keypress(e);
+				}
+				//e.preventDefault(e);
+				return false;
+			}
+		});
 	</script>
 
 </h:body>

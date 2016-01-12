@@ -1,0 +1,246 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:pi="http://primefaces.org/ui">
+
+
+<h:head>
+	<title>Cloud Sistem</title>
+	<link rel="shortcut icon" href="../imagens/logo.png"
+		type="image/x-icon" />
+
+	<link rel="stylesheet" href="../foundation/css/foundation.css" />
+	<script src="../foundation/js/vendor/modernizr.js"></script>
+
+	<link type="text/css" rel="stylesheet" href="../css/venda.css" />
+
+	<script type="text/javascript" src="../js/componentes.js" />
+	<script type="text/javascript" src="../js/numeric.js" />
+
+	<script type="text/javascript">
+		jQuery(function($) {
+			$(".quantidade").numeric({
+				decimal : ",",
+				negative : false,
+				scale : 3
+			});
+
+			//$(".quantidade").mask('000000000,000', {reverse: true});
+			//$("#formMercadorias:quantidadeProd").mask('000000000,000', {reverse: true});
+		});
+	</script>
+
+</h:head>
+
+<h:body>
+
+	<div class="top">
+
+		<div class="dimensao">
+			<img src="../imagens/logo.png" class="logo" />
+			<h:outputLabel value="Colsulta de Mercadorias" styleClass="titulo" />
+
+			<div class="home">
+				<a href="home.jsf"><img src="../imagens/home_ico.png" /></a>
+			</div>
+
+			<div class="home">
+				<a onclick="ir_venda();"> <img src="../imagens/venda_ico.png" /></a>
+			</div>
+
+		</div>
+	</div>
+
+	<h:form prependId="false" id="formPrincipal">
+
+		<div class="descricao">
+			<div class="dimensao">
+				<h:outputLabel
+					value="#{vendaBean.ultimoItemMercadorias.produto.descricao}"
+					styleClass="produto" />
+				<br />
+				<h:outputLabel styleClass="calculo">
+					<h:outputLabel
+						value="#{vendaBean.ultimoItemMercadorias.quantidade}"
+						converter="valueUnidadeConverter" /> x 
+					<h:outputLabel
+						value="#{vendaBean.ultimoItemMercadorias.valorProduto}"
+						converter="valueConverter" /> = 
+					<span><h:outputLabel
+							value="#{vendaBean.ultimoItemMercadorias.total}"
+							converter="valueConverter" /></span>
+				</h:outputLabel>
+			</div>
+		</div>
+
+		<div class="footer">
+
+			<div class="formulario" id="formulario"
+				style="background-color: #cccccc;">
+
+				<h:outputLabel value="Total" />
+				<div class="total" style="border-color: #222222;">
+					<h:outputLabel value="#{vendaBean.totalMercadorias}"
+						converter="valueConverter" />
+				</div>
+
+
+				<div class="campos">
+					<pi:remoteCommand name="submit_busca_nome_prod"
+						actionListener="#{vendaBean.inserirProdutoNasMercadoriasPorNome()}"
+						update="@form" />
+
+					<pi:remoteCommand name="ir_venda"
+						actionListener="#{logoffBean.mudarDeTela('venda.jsf')}" />
+
+					<pi:remoteCommand name="enterProd"
+						actionListener="#{vendaBean.inserirProdutoNasMercadorias()}"
+						update="@form" />
+
+
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Código de barras ou nome" for="codigoProd" />
+						<h:outputLabel value="Quantidade" for="quantidadeProd" />
+
+						<h:inputTextarea id="codigoProd" value="#{vendaBean.codigoProd}"
+							styleClass="codigo_autocomplet" rows="1"
+							onkeyup="upCodigoMercadorias(event);" immediate="true">
+
+						</h:inputTextarea>
+
+
+
+
+
+						<pi:inputText id="quantidadeProd" converter="valueConverter"
+							placeholder="0,000" title="Quantidade"
+							value="#{vendaBean.quantidadeProd}"
+							p:style="margin-left: 10px; border: 1px line #3CABC6;" />
+
+
+
+
+						<pi:focus for="codigoProd" />
+
+					</h:panelGrid>
+				</div>
+
+
+
+			</div>
+
+			<div class="itens" id="itens">
+
+
+				<h:outputLabel value="Itens consultados" />
+
+				<pi:autoComplete id="buscaNomeProd" style="display: none;"
+					styleClass="campo_complet_nome" value="#{vendaBean.nomeBuscaProd}"
+					inputStyleClass="campo_complet_nome_input"
+					panelStyleClass="panel_complet_nome"
+					completeMethod="#{vendaBean.completMetodo}" minQueryLength="3"
+					cacheTimeout="30000" cache="true" immediate="true"
+					onkeyup="if (event.keyCode == 13) {submit_busca_nome_prod();return false;}"
+					onkeypress="if (event.keyCode == 13) {submit_busca_nome_prod();return false;}"
+					scrollHeight="250">
+
+				</pi:autoComplete>
+
+
+
+				<div class="tabela">
+
+					<h:dataTable id="produtosConsultados" style="scroll:auto"
+						value="#{vendaBean.mercadorias}" var="item">
+
+						<h:column headerClass="large-4">
+							<f:facet name="header">Produto</f:facet>
+							<h:outputLabel value="#{item.produto.descricao}" />
+						</h:column>
+						<h:column headerClass="large-2">
+							<f:facet name="header">Código</f:facet>
+							<h:outputLabel value="#{item.produto.codigoDeBarras}" />
+						</h:column>
+
+						<h:column headerClass="large-2">
+							<f:facet name="header">Estoque</f:facet>
+							<h:outputLabel value="#{item.produto.quantidadeEmEstoque}"
+								title="Quantidade em estoque" />
+						</h:column>
+
+
+						<h:column headerClass="large-2">
+							<f:facet name="header">Valor UN</f:facet>
+							<h:outputLabel value="#{item.valorProduto}"
+								converter="valueConverter" />
+						</h:column>
+
+						<pi:column styleClass="large-2">
+							<f:facet name="header"
+								title="Quantidade vendida nos últimos 30 dias">Saída</f:facet>
+							<h:outputLabel title="Quantidade vendida nos últimos 30 dias"
+								value="#{vendaBean.quantidadeVendida30Dias(item.produto.id)}"
+								converter="valueUnidadeConverter" />
+						</pi:column>
+
+
+
+					</h:dataTable>
+
+				</div>
+			</div>
+
+
+		</div>
+
+
+
+		<pi:growl id="growl" life="6000" />
+	</h:form>
+
+
+
+
+	<script src="../foundation/js/foundation.min.js"></script>
+
+	<script type='text/javascript'>
+		$(document).foundation();
+
+		document.onkeydown = function(e) {
+			var keychar;
+
+			// Internet Explorer
+			try {
+				keychar = String.fromCharCode(e.keyCode);
+				e = event;
+			}
+
+			// Firefox, Opera, Chrome, etc...
+			catch (err) {
+				keychar = String.fromCharCode(e.keyCode);
+			}
+
+			if (e.shiftKey == true) {
+				if (e.keyCode == 27) {
+					refresh_venda();
+				} else if (e.ctrlKey == true) {
+					abrirModa('modalProdutos');
+				}
+			} else if (e.shiftKey == true) {
+				abrirModa('modalProdutos');
+			} else if (e.keyCode == 27) {
+				ir_venda();
+				return false;
+			}
+
+		}
+		maiusculo('input[type="text"]');
+	</script>
+
+
+
+
+</h:body>
+</html>

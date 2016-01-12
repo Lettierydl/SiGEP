@@ -1,27 +1,16 @@
 package com.twol.sigep.model.estoque;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import com.twol.sigep.model.exception.ProdutoABaixoDoEstoqueException;
-import com.twol.sigep.model.exception.PromocaoInvalida;
-import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
 
 //@RooJpaActiveRecord(finders = { "findProdutoesByDescricaoLike", "findProdutoesByCategoria", "findProdutoesByCodigoDeBarrasLike", "findProdutoesByFabricante" })
 @Table(name = "produto")
@@ -78,10 +67,11 @@ public class Produto{
 
 
 	/**
-    */
+    
 	@OneToMany(cascade = {CascadeType.REMOVE, CascadeType.REFRESH}, fetch = FetchType.EAGER,mappedBy = "produto")
 	@Fetch(FetchMode.SUBSELECT)  
 	private List<Promocao> promocoes = new ArrayList<Promocao>();
+	*/
 	
 	
 	public int getId() {
@@ -166,7 +156,7 @@ public class Produto{
 	public void setFabricante(Representante fabricante) {
 		this.fabricante = fabricante;
 	}
-	*/
+	
 
 	public List<Promocao> getPromocoes() {
 		return promocoes;
@@ -178,7 +168,7 @@ public class Produto{
 			}
 		}
 		return null;
-	}
+	}*/
 	
 	//esse metododeve ser chamado apenas pelo controller venda
 	public void removerQuantidadeDeEstoque(double quantidade) throws ProdutoABaixoDoEstoqueException{
@@ -188,6 +178,7 @@ public class Produto{
 		}
 	}
 
+	/*
 	//apenas quem deve usar esse metodo �� o Promocao.setProduto(Produto)
 	void addPromocaoValida(Promocao p) throws PromocaoValidaJaExistente, PromocaoInvalida {
 		if (promocoes == null) {
@@ -213,7 +204,7 @@ public class Produto{
 	}
 	
 	
-	/*
+	
 	@Override
 	protected List<?> getListEntidadeRelacionada(){
 		return super.getListEntidadeRelacionada();

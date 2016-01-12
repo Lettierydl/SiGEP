@@ -19,6 +19,7 @@ public interface Pagavel {
 	
 	public Calendar getDia();
 	
+	public String getDescricao();
 
 	public void acrescentarPartePaga(double partePaga);
 	

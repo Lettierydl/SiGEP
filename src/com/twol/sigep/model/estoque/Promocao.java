@@ -1,7 +1,6 @@
 package com.twol.sigep.model.estoque;
 
 import java.util.Calendar;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -12,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,7 +19,6 @@ import org.hibernate.annotations.ForeignKey;
 
 import com.twol.sigep.model.exception.PromocaoInvalida;
 import com.twol.sigep.model.exception.PromocaoValidaJaExistente;
-import com.twol.sigep.util.Persistencia;
 
 @Table(name = "promocao")
 @Entity
@@ -127,7 +124,7 @@ public class Promocao {
 
 	public void setProduto(Produto produto) throws PromocaoValidaJaExistente, PromocaoInvalida {
 		this.produto = produto;
-		this.produto.addPromocaoValida(this);
+		//this.produto.addPromocaoValida(this);
 	}
 	
 	public boolean isValida() {
@@ -150,24 +147,33 @@ public class Promocao {
 		this.ativa = true;
 	}
 
+	/*
 	
 	@SuppressWarnings("unchecked")
 	public static List<Promocao> recuperarLista(){
-		Persistencia.restartConnection();
-		Query consulta = Persistencia.em
+		Persistencia.iniciarTransacao();
+		try{
+		Query consulta = Persistencia.getEntityManager()
 				.createQuery("select promocao from Promocao promocao");
 		List<Promocao> promocoes = consulta.getResultList();
 		return promocoes;
+		} finally {
+			Persistencia.finalizarTransacao();
+		}
     }
 	
 	
 	public static Promocao recuperarPromocao(int id){
-		Persistencia.restartConnection();
-		Query consulta = Persistencia.em
+		Persistencia.iniciarTransacao();
+		try{
+		Query consulta = Persistencia.getEntityManager()
 				.createQuery("select promocao from Promocao promocao where promocao.id = :id");
 		consulta.setParameter("id", id);
 		Promocao pro = (Promocao) consulta.getSingleResult();
 		return pro;
+		} finally {
+			Persistencia.finalizarTransacao();
+		}
     }
 
 	
@@ -193,5 +199,6 @@ public class Promocao {
 		return true;
 	}
 
+*/
 	
 }

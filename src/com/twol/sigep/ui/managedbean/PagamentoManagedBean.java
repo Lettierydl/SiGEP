@@ -1,6 +1,9 @@
 package com.twol.sigep.ui.managedbean;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,11 +17,13 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import com.twol.sigep.Facede;
-import com.twol.sigep.controller.find.FindVenda;
 import com.twol.sigep.model.configuracoes.ConfiguracaoSistema;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.FuncionarioNaoAutorizadoException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
 import com.twol.sigep.model.pessoas.Cliente;
 import com.twol.sigep.model.vendas.Divida;
@@ -26,6 +31,7 @@ import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Pagavel;
 import com.twol.sigep.model.vendas.Venda;
+import com.twol.sigep.util.OperacaoStringUtil;
 import com.twol.sigep.util.SessionUtil;
 
 @ViewScoped
@@ -39,6 +45,8 @@ public class PagamentoManagedBean {
 	private String nomeClienteParaVenda = "";
 	private String nomeClienteDivida = "";
 	private String nomeClienteParaHistorico = "";
+	
+	private StreamedContent filePDF;
 	
 	int maxResult = 10;
 
@@ -57,6 +65,31 @@ public class PagamentoManagedBean {
 		newPagamento = new Pagamento();
 		newDivida = new Divida();
 		listAtualDeHistorico = f.getListaPagamentoHoje();
+	}
+	
+	public void recalcularDebitoDoCliente(){
+		try {
+			Cliente e = f.buscarClientePorId(newPagamento.getCliente().getId());
+			double oud_debito = e.getDebito();
+			double new_debito = f.recalcularDebitoDoCliente(e);
+			if(oud_debito != new_debito){
+				SessionUtil.exibirMensagem(new FacesMessage(
+						FacesMessage.SEVERITY_WARN,
+						"Débito atulizado para " + OperacaoStringUtil.formatarStringValorMoedaComDescricao(new_debito),
+						"Débito atulizado para " + OperacaoStringUtil.formatarStringValorMoedaComDescricao(new_debito)));
+				setClienteSelecionado(f.buscarClientePorId(newPagamento.getCliente().getId()));
+			}else{
+				SessionUtil.exibirMensagem(new FacesMessage(
+						FacesMessage.SEVERITY_INFO,
+						"Débito já atualizado",
+						"Débito já atualizado"));
+			}
+		} catch (Exception e) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Erro ao recalcular!",
+					"Adicione o cliente!"));
+		}
 	}
 
 	
@@ -100,6 +133,7 @@ public class PagamentoManagedBean {
 		newPagamento = new Pagamento();
 		
 		listAtualDeHistorico = f.getListaPagamentoDoCliente(cli);
+		cli = f.buscarClientePorId(cli.getId());
 		setNomeClienteParaVenda("");
 		setClienteSelecionado(null);
 		modificarListaAtualDeVendasPeloCliente();
@@ -167,6 +201,11 @@ public class PagamentoManagedBean {
 	public void modificarListaAtualDeVendasPeloCliente() {
 		List<Cliente> clientes = f
 				.buscarClientePorCPFOuNomeQueIniciam(nomeClienteParaVenda);
+		
+		if(clientes.size() > 1 && clientes.get(1).getNome().startsWith(clientes.get(0).getNome())){
+			clientes.remove(1);
+		}
+		
 		if (nomeClienteParaVenda.isEmpty()) {
 			listAtualDeVenda = new ArrayList<Pagavel>();
 			retirarClienteSelecionado();
@@ -216,7 +255,10 @@ public class PagamentoManagedBean {
 	
 	
 	public void abrirModalDetalheVenda(int IdVenda){
-		this.vendaDetalhar = FindVenda.vendaId(IdVenda);
+		this.vendaDetalhar = f.buscarVendaPeloId(IdVenda);
+		this.vendaDetalhar.recalcularTotal();
+		this.vendaDetalhar.getItensDeVenda();
+		
 		RequestContext.getCurrentInstance().execute(
 				"abrirModa('modalDetalheVenda');");
 	}
@@ -229,6 +271,46 @@ public class PagamentoManagedBean {
 		Collections.sort(itens);
 		return itens;
 	}
+	
+	public void gerarPDFDaVenda() throws FileNotFoundException {
+		try {
+			String path = f.gerarPdfDaVendaVenda(vendaDetalhar, f.buscarItensDaVendaPorIdDaVenda(vendaDetalhar.getId()));
+
+			InputStream stream = new FileInputStream(path);
+			filePDF = new DefaultStreamedContent(stream, "application/pdf",
+					"Venda.pdf");
+			RequestContext.getCurrentInstance().update(":gerarPDFButon");
+			return;
+		} catch (FuncionarioNaoAutorizadoException fe) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
+							.getMessage()));
+		} catch (Exception e) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"PDF não gerado, contate o suporte",
+					"PDF não gerada, contate o suporte"));
+			RequestContext.getCurrentInstance().update("@all");
+		}
+	}
+	
+	public void imprimirVendaDetalheECF(){
+		f.imprimirVenda(vendaDetalhar);
+	}
+	
+	@Deprecated
+	public void imprimirVendaDetalhe(){
+		String path = "";
+		try {
+			path = f.gerarPdfDaVendaVenda(vendaDetalhar, f.buscarItensDaVendaPorIdDaVenda(vendaDetalhar.getId()));
+		} catch (FuncionarioNaoAutorizadoException fe) {
+			SessionUtil.exibirMensagem(new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
+							.getMessage()));
+		}
+		RequestContext.getCurrentInstance().execute("window.print('"+path+"');");;
+	}
+	
 	
 	public Venda getDetalheVenda(){
 		return this.vendaDetalhar;
@@ -336,6 +418,16 @@ public class PagamentoManagedBean {
 
 	public void setNewDivida(Divida newDivida) {
 		this.newDivida = newDivida;
+	}
+
+
+	public StreamedContent getFilePDF() {
+		return filePDF;
+	}
+
+
+	public void setFilePDF(StreamedContent filePDF) {
+		this.filePDF = filePDF;
 	}
 	
 	

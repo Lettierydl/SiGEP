@@ -1,7 +1,5 @@
 package com.twol.sigep.model.pessoas;
 
-import java.util.List;
-
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.ForeignKey;
@@ -19,7 +16,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.twol.sigep.model.Entidade;
-import com.twol.sigep.util.Persistencia;
 
 
 //@RooJpaActiveRecord(finders = { "findDependentesByNomeEquals", "findDependentesByNomeLike" })
@@ -44,13 +40,13 @@ public class Dependente extends Entidade{
 	@Column(nullable = false)
     private String nome;
 	
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(updatable=true)
 	@ForeignKey(name = "dependentes_do_cliente")
-	@OnDelete(action=OnDeleteAction.CASCADE)
+	@OnDelete(action=OnDeleteAction.NO_ACTION)
 	private Cliente cliente;
 	
-	void setCliente(Cliente cliente){
+	public void setCliente(Cliente cliente){
 		this.cliente = cliente;
 	}
 	
@@ -66,12 +62,14 @@ public class Dependente extends Entidade{
 		this.nome = nome;
 	}
 
+	/*
 	@SuppressWarnings("unchecked")
 	public static List<Dependente> recuperarLista() {
 		Persistencia.restartConnection();
-		Query consulta = Persistencia.em
+		Query consulta = Persistencia.getEntityManager()
 				.createNamedQuery("select dependente from Dependente dependente");
 		List<Dependente> dependentes = consulta.getResultList();
 		return dependentes;
 	}
+	*/
 }

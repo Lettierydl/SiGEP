@@ -70,8 +70,12 @@
 							<pi:remoteCommand name="enterkey"
 								actionListener="#{pagamentoBean.modificarListaAtualDeVendasPeloCliente}"
 								update="formPag:info" />
+								
+								<pi:remoteCommand name="recalcularDebito"
+								actionListener="#{pagamentoBean.recalcularDebitoDoCliente}" update="@all" />
 
-
+							
+							
 							<pi:autoComplete id="nomeCliente" styleClass="campo grade left"
 								value="#{pagamentoBean.nomeClienteParaVenda}"
 								completeMethod="#{pagamentoBean.completNomeCliente}"
@@ -155,7 +159,8 @@
 								</f:facet>
 								<pi:column styleClass="large-2">
 									<f:facet name="header">Data</f:facet>
-									<h:outputLabel value="#{pagavel.dia.time}">
+									<h:outputLabel value="#{pagavel.dia.time}"
+										title="#{pagavel.descricao}">
 										<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
 											timeZone="GMT-03:00" />
 									</h:outputLabel>
@@ -299,8 +304,22 @@
 						<div id="modalDetalheVenda" class="reveal-modal modal"
 							data-reveal="modalDetalheVenda">
 
-							<h2>Venda</h2>
 							<h:form>
+								<h2>Venda</h2>
+								<pi:commandButton id="gerarPDFButon"
+									actionListener="#{pagamentoBean.gerarPDFDaVenda()}"
+									ajax="false" value="Gerar PDF" styleClass="botao right"
+									update="@all"
+									onclick="PrimeFaces.monitorDownload(start, stop);"
+									title="Gerar relatorio geral da venda">
+									<pi:fileDownload value="#{pagamentoBean.filePDF}" />
+								</pi:commandButton>
+
+								<pi:commandButton id="imprimirECF"
+									actionListener="#{pagamentoBean.imprimirVendaDetalheECF()}"
+									ajax="false" value="Imprimir ECF" styleClass="botao right"
+									update="@all" title="Imprimir venda da impressora fiscal">
+								</pi:commandButton>
 
 								<h:panelGrid columns="2">
 									<h:outputLabel value="Total: " for="valueTotal" />
@@ -325,13 +344,17 @@
 									<h:outputLabel value="Funcionário: " for="valueFuncionario" />
 									<h:outputLabel id="valueFuncionario"
 										value="#{pagamentoBean.detalheVenda.funcionario.nome}" />
+										
+									<h:outputLabel value="Observação: " for="valueObservacao" rendered="#{not empty pagamentoBean.detalheVenda.observacao}"/>
+									<h:outputLabel id="valueObservacao" rendered="#{not empty pagamentoBean.detalheVenda.observacao}"
+										value="#{pagamentoBean.detalheVenda.observacao}" />
 
 								</h:panelGrid>
 
 								<h3>Itens de Venda</h3>
 
 								<div style="height: 200px; width: 95%; padding-top: -15px;">
-									<div class="tabela_itens_venda">
+									<div class="tabela_itens_venda scroll">
 										<h:dataTable id="itensVenda" style="scroll:auto"
 											value="#{pagamentoBean.itensDetalheVenda}" var="item">
 											<h:column headerClass="large-4">
@@ -503,9 +526,6 @@
 	</div>
 
 
-
-
-
 	<script src="../foundation/js/foundation.min.js"></script>
 	<script type="text/javascript">
 		$(document).foundation();
@@ -515,9 +535,31 @@
 				negative : false,
 				scale : 2
 			});
-
 		});
-		script_footer();
+		
+		document.onkeydown = function(e) {
+			var keychar;
+			
+			// Internet Explorer
+			try {
+				keychar = String.fromCharCode(event.keyCode);
+				e = event;
+			}
+
+			// Firefox, Opera, Chrome, etc...
+			catch (err) {
+				keychar = String.fromCharCode(e.keyCode);
+			}
+
+			if (e.keyCode == 27) {
+				ir_home();
+			}
+			if (e.ctrlKey) {
+				recalcularDebito();
+			}
+		}
+		maiusculo('input[type="text"]');
+		pular_enter();
 	</script>
 
 </h:body>

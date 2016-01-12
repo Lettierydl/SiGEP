@@ -1,7 +1,6 @@
 package com.twol.sigep.controller;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -14,24 +13,14 @@ import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 import com.twol.sigep.model.vendas.Pagamento;
-import com.twol.sigep.util.Persistencia;
 
-public class ControllerConfiguracao {
+public class ControllerConfiguracao extends Controller{
 
-	private static EntityManagerFactory emf = null;
-
-	public ControllerConfiguracao(EntityManagerFactory emf) {
-		ControllerConfiguracao.setEmf(emf);
-	}
-
-	private static EntityManager getEntityManager() {
-		return getEmf().createEntityManager();
-	}
 
 	/*
 	 * Configuracao
 	 */
-	private static void create(Configuracao config) {
+	private void create(Configuracao config) {
 		EntityManager em = null;
 		try {
 			em = getEntityManager();
@@ -41,13 +30,13 @@ public class ControllerConfiguracao {
 			// embutidos
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
 	}
 
-	private static void edit(Configuracao config)
+	private void edit(Configuracao config)
 			throws EntidadeNaoExistenteException, Exception {
 		EntityManager em = null;
 		try {
@@ -55,11 +44,11 @@ public class ControllerConfiguracao {
 			em.getTransaction().begin();
 			// atualiza entidades de relacionamento do Pagamento incluindo
 			// listas
-			
+
 			ConfiguracaoPK cpk = new ConfiguracaoPK();
 			cpk.setChave(config.getChave());
 			cpk.setTipoDeFuncionario(config.getTipoDeFuncionario());
-			
+
 			em.getReference(Configuracao.class, cpk);
 			config = em.merge(config);
 			em.getTransaction().commit();
@@ -73,13 +62,13 @@ public class ControllerConfiguracao {
 			}
 			throw ex;
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
 	}
 
-	public static void destroy(Configuracao config)
+	public void destroy(Configuracao config)
 			throws EntidadeNaoExistenteException {
 		EntityManager em = null;
 		try {
@@ -98,13 +87,13 @@ public class ControllerConfiguracao {
 			em.remove(config);
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
 	}
 
-	public static void removeAllConfiguracoes() {
+	public void removeAllConfiguracoes() {
 		EntityManager em = null;
 		try {
 			em = getEntityManager();
@@ -113,14 +102,14 @@ public class ControllerConfiguracao {
 					.executeUpdate();
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public static int getQuantidadeConfiguracoes() {
+	public int getQuantidadeConfiguracoes() {
 		EntityManager em = getEntityManager();
 		try {
 			@SuppressWarnings("rawtypes")
@@ -130,42 +119,44 @@ public class ControllerConfiguracao {
 			Query q = em.createQuery(cq);
 			return ((Long) q.getSingleResult()).intValue();
 		} finally {
-			em.close();
+			if (em != null && em.isOpen()) {
+				em.close();
+			}
 		}
 	}
 
-	public static boolean getValor(String chave, TipoDeFuncionario tipo)
+	public boolean getValor(String chave, TipoDeFuncionario tipo)
 			throws EntityNotFoundException {
 		EntityManager em = getEntityManager();
 		try {
 			String stringQuery = "select c FROM Configuracao as c ";
-			stringQuery += "where c.chave = :chave and " +
-								 "c.tipoDeFuncionario = :tipo ";
-			
-			Persistencia.restartConnection();
-			Query query = Persistencia.em.createQuery(stringQuery, Configuracao.class);
-			
+			stringQuery += "where c.chave = :chave and "
+					+ "c.tipoDeFuncionario = :tipo ";
+
+			Query query = getEntityManager().createQuery(stringQuery,
+					Configuracao.class);
+
 			query.setParameter("tipo", tipo);
 			query.setParameter("chave", chave);
-			
+
 			Configuracao con = (Configuracao) query.getSingleResult();
 			return con.isValor();
 		} catch (EntityNotFoundException ee) {
 			Configuracao c = new Configuracao(chave, false, tipo);
 			create(c);
 			return false;
-		}catch (NoResultException nr) {
+		} catch (NoResultException nr) {
 			Configuracao c = new Configuracao(chave, false, tipo);
 			create(c);
 			return false;
-		}
-		finally {
-			em.close();
+		} finally {
+			if (em != null && em.isOpen()) {
+				em.close();
+			}
 		}
 	}
 
-	public static void putValor(String chave, boolean valor,
-			TipoDeFuncionario tipo) {
+	public void putValor(String chave, boolean valor, TipoDeFuncionario tipo) {
 		EntityManager em = getEntityManager();
 		try {
 
@@ -180,16 +171,10 @@ public class ControllerConfiguracao {
 			Configuracao c = new Configuracao(chave, valor, tipo);
 			create(c);
 		} finally {
-			em.close();
+			if (em != null && em.isOpen()) {
+				em.close();
+			}
 		}
-	}
-
-	public static EntityManagerFactory getEmf() {
-		return emf;
-	}
-
-	public static void setEmf(EntityManagerFactory emf) {
-		ControllerConfiguracao.emf = emf;
 	}
 
 }

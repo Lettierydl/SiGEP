@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Deprecated
 public class MySQLBackup {
 
 	private static final String osname = System.getProperty("os.name");
@@ -134,6 +135,7 @@ public class MySQLBackup {
 
 		System.out.println("Processo de Restauração Iniciado...");
 		// imprime o comando
+		System.out.println(sbComando.toString());
 		System.out.println(sbComando.toString());
 
 		// tempo inicio

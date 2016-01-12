@@ -113,7 +113,9 @@
 }
 
 .formulario .campo-grande, .formulario .campo-grande input {
-	width: 313px;
+	max-width:313px;
+	width: 120%;
+	min-width: 194px;
 	padding-bottom: 10px;
 }
 

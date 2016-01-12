@@ -19,8 +19,11 @@
 
 /*titulo da tabela*/
 .titulo-tabela {
-	margin-top: 61px;
-	margin-bottom: 68px;
+	/*margin-top: 61px;
+	margin-bottom: 68px;*/
+	margin-top: 7px;
+	margin-bottom: 10px;
+	
 	font-size: 40px;
 	font-family: "Dosis";
 	color: rgb(121, 121, 121);

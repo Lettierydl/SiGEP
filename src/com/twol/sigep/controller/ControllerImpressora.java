@@ -29,19 +29,24 @@ public class ControllerImpressora {
 	}
 
 	public static void carregarDLL() {
-		try {
-			System.loadLibrary("DarumaFramework");
-			/*System.out.println("Biblioteca carregada!!!");
-			System.out.println("Comunicacao com Impressora:"
-					+ ECF.eBuscarPortaVelocidade_ECF_Daruma());*/
-			return;
-		} catch (Exception e) {
-			//System.err.println("Nao carragou no primeiro Teste");
-		}
+		try{            
+            System.loadLibrary("DarumaFramework");
+            return;
+        } catch(Exception e) {
+           // System.err.println("Nao carragou no primeiro Teste");
+        }
+    	String userdir = System.getProperty("user.dir");
+        String separator = System.getProperty("file.separator");
+        System.load(userdir + separator +"lib" +  separator + "DarumaFrameWork.dll");
+
+        //System.out.println("Comunicacao com Impressora:" + ECF.eBuscarPortaVelocidade_ECF_Daruma());
 	}
 
 	public boolean imprimirVenda(Venda v) {
-
+		
+		FindFuncionario ffunc = new FindFuncionario();
+		FindCliente fcli = new FindCliente();
+		
 		int iRGImprimirTexto = 0;
 		try{
 			carregarDLL();
@@ -104,14 +109,18 @@ public class ControllerImpressora {
 			texto += " TOTAL: R$ " + total + "  \n\n";
 
 			texto += " Operador: "
-					+ FindFuncionario
+					+ ffunc
 							.funcionarioComId(v.getFuncionario().getId())
 							.getNome().toUpperCase() + " \n";
 			
 			try {
-				Cliente c = FindCliente
+				Cliente c = fcli
 						.clienteComId(v.getCliente().getId());
 				texto += " Cliente: " + c.getNome().toUpperCase() + " \n";
+				
+				if(!v.getObservacao().isEmpty()){
+					texto += " Obs: " + v.getObservacao().toUpperCase() + " \n";
+				}
 
 				String debito = String.valueOf(
 						new BigDecimal(c.getDebito()).setScale(2,
@@ -178,12 +187,12 @@ public class ControllerImpressora {
 			texto += " TOTAL: R$ " + total + "  \n\n";
 
 			texto += " Operador: "
-					+ FindFuncionario
+					+ ffunc
 							.funcionarioComId(v.getFuncionario().getId())
 							.getNome().toUpperCase() + " \n";
 			
 			try {
-				Cliente c = FindCliente
+				Cliente c = fcli
 						.clienteComId(v.getCliente().getId());
 				texto += " Cliente: " + c.getNome().toUpperCase() + " \n";
 
@@ -195,7 +204,7 @@ public class ControllerImpressora {
 			} catch (Exception e2) {}
 			
 			texto += " ---------------------------------------------- \n";
-			System.out.println(texto);
+			//System.out.println(texto);
 			return false;
 		}
 		if (1 == iRGImprimirTexto) {

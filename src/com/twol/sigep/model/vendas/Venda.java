@@ -81,7 +81,7 @@ public class Venda implements Comparable<Venda>, Pagavel{
     
     /**
      */
-    @OneToMany(orphanRemoval = true, mappedBy = "venda" , cascade={CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.DETACH,CascadeType.REFRESH}, fetch=FetchType.EAGER)
+    @OneToMany( mappedBy = "venda" , cascade={CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.DETACH,CascadeType.REFRESH}, fetch=FetchType.EAGER)
     @ForeignKey(name = "itens_da_venda")
 	@OnDelete(action=OnDeleteAction.CASCADE)
     @Fetch(FetchMode.SUBSELECT)
@@ -94,6 +94,10 @@ public class Venda implements Comparable<Venda>, Pagavel{
     @ForeignKey(name = "cliente_da_venda")
     @OnDelete(action=OnDeleteAction.NO_ACTION)
     private Cliente cliente;
+
+    
+    @Column
+	private String observacao;
     
     
     public int getId() {
@@ -196,7 +200,7 @@ public class Venda implements Comparable<Venda>, Pagavel{
 	}
 	
 	public void recalcularTotal(){
-		int custo = 0;
+		double custo = 0;
 		for(ItemDeVenda it : getItensDeVenda()){
 			custo += it.getTotal();
 		}
@@ -207,8 +211,10 @@ public class Venda implements Comparable<Venda>, Pagavel{
 		if(itensDeVenda == null){
 			itensDeVenda = new ArrayList<ItemDeVenda>();
 		}
+		//Hibernate.initialize(itensDeVenda);
 		return itensDeVenda;
 	}
+	
 	
 	static int in = 0;
 	int getNewIndex() {
@@ -255,7 +261,7 @@ public class Venda implements Comparable<Venda>, Pagavel{
 	public void removeItemDeVendaJaDeletado(ItemDeVenda item){
 			this.desconto -= item.getDesconto();
 			this.total -= item.getTotal();
-			total = new BigDecimal(total).setScale(5, RoundingMode.HALF_UP).doubleValue();
+			total = new BigDecimal(total).setScale(3, RoundingMode.HALF_UP).doubleValue();
 	}
 	
 	/**
@@ -314,6 +320,19 @@ public class Venda implements Comparable<Venda>, Pagavel{
 	@Override
 	public String toString() {
 		return "Venda [id=" + id + ", total=" + total + "]";
+	}
+
+	@Override
+	public String getDescricao() {
+		return toString();
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+	
+	public String getObservacao(){
+		return this.observacao;
 	}
 	
 	

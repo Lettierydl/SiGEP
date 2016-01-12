@@ -114,7 +114,7 @@ public class GeradorPDF {
 
 	private PdfPTable getTableDeItens(List<ItemDeVenda> itens) throws DocumentException {
 			
-			PdfPTable table = new PdfPTable(5);
+			PdfPTable table = new PdfPTable(4);
 			table.setWidths(new int[] { 5, 1, 1, 1 });
 			table.setWidthPercentage(100f);
 			table.setSpacingBefore(10f);

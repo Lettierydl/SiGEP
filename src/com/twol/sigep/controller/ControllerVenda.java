@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,6 +15,7 @@ import com.twol.sigep.controller.find.FindVenda;
 import com.twol.sigep.model.configuracoes.ConfiguracaoDeVenda;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.EstadoInvalidoDaVendaAtualException;
 import com.twol.sigep.model.exception.ProdutoABaixoDoEstoqueException;
 import com.twol.sigep.model.exception.VariasVendasPendentesException;
 import com.twol.sigep.model.exception.VendaPendenteException;
@@ -29,20 +29,11 @@ import com.twol.sigep.model.vendas.Pagavel;
 import com.twol.sigep.model.vendas.Venda;
 import com.twol.sigep.util.SessionUtil;
 
-public class ControllerVenda {
+public class ControllerVenda extends Controller{
 
-	private EntityManagerFactory emf = null;
 	private Venda atual;
 	private Funcionario logado;
-
-	public ControllerVenda(EntityManagerFactory emf) {
-		this.emf = emf;
-	}
-
-	private EntityManager getEntityManager() {
-		return emf.createEntityManager();
-	}
-
+		
 	/*
 	 * Venda
 	 */
@@ -56,7 +47,7 @@ public class ControllerVenda {
 			// embutidos
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -73,7 +64,7 @@ public class ControllerVenda {
 			em.persist(divida);
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -105,7 +96,7 @@ public class ControllerVenda {
 			}
 			throw ex;
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -128,7 +119,7 @@ public class ControllerVenda {
 			}
 			throw ex;
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -154,7 +145,7 @@ public class ControllerVenda {
 			}
 			throw ex;
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -177,7 +168,7 @@ public class ControllerVenda {
 			em.remove(Venda);
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -199,7 +190,7 @@ public class ControllerVenda {
 			em.remove(divida);
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -219,14 +210,18 @@ public class ControllerVenda {
 			}
 
 			try {
-
-				item = em.getReference(ItemDeVenda.class, item.getId());
-				em.remove(item);
-				em.getTransaction().commit();
+				
+				em.remove(em.getReference(ItemDeVenda.class, item.getId()));
+				/*Query q = em.createNativeQuery("DELETE FROM item_de_venda WHERE id = :idItem ", ItemDeVenda.class);
+				q.setParameter("idItem", item.getId());
+				*/em.getTransaction().commit();
 			} catch (EntityNotFoundException en) {
+				en.printStackTrace();
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -240,7 +235,7 @@ public class ControllerVenda {
 			em.persist(item);
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -255,7 +250,7 @@ public class ControllerVenda {
 					.executeUpdate();
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}
@@ -271,7 +266,9 @@ public class ControllerVenda {
 			Query q = em.createQuery(cq);
 			return ((Long) q.getSingleResult()).intValue();
 		} finally {
-			em.close();
+			if (em != null && em.isOpen()) {
+				em.close();
+			}
 		}
 	}
 
@@ -300,8 +297,10 @@ public class ControllerVenda {
 		Cliente c = p.getCliente();
 		double valorRestante = p.getValor();
 		List<Pagavel> pagaveis = new ArrayList<Pagavel>();
-		pagaveis.addAll(FindVenda.vendasNaoPagaDoCliente(c));
-		pagaveis.addAll(FindVenda.dividasNaoPagaDoCliente(c));
+		FindVenda fv = new FindVenda();
+		pagaveis.addAll(fv.dividasNaoPagaDoCliente(c));
+		pagaveis.addAll(fv.vendasNaoPagaDoCliente(c));
+		
 
 		for (Pagavel pag : pagaveis) {
 			if (valorRestante == 0) {// ja pagou a venda
@@ -353,6 +352,9 @@ public class ControllerVenda {
 	 */
 	public void finalizarVendaAVista(Venda v)
 			throws EntidadeNaoExistenteException, Exception {
+		if(v.getFormaDePagamento() !=null){
+			throw new EstadoInvalidoDaVendaAtualException("Venda já finalizada anteriormente, inicie uma nova venda");
+		}
 		v.setFormaDePagamento(FormaDePagamento.A_Vista);
 		v.setPaga(true);
 		v.setPartePaga(v.getTotal());
@@ -366,7 +368,10 @@ public class ControllerVenda {
 
 	// retorna o que deve ser acrecentado a conta do cliente
 	public synchronized double finalizarVendaAPrazo(Venda v, Cliente c,
-			double partePaga) throws EntidadeNaoExistenteException, Exception {
+			double partePaga) throws EntidadeNaoExistenteException, EstadoInvalidoDaVendaAtualException ,Exception{
+		if(v.getFormaDePagamento() !=null){
+			throw new EstadoInvalidoDaVendaAtualException("Venda já finalizada anteriormente, inicie uma nova venda");
+		}
 		v.setFormaDePagamento(FormaDePagamento.A_Prazo);
 		v.setPaga(false);
 		v.setPartePaga(partePaga);
@@ -389,7 +394,7 @@ public class ControllerVenda {
 	private synchronized double retirarItensDoEstoque(Venda atual)
 			throws EntidadeNaoExistenteException, Exception {
 		double valor = 0;
-		ControllerEstoque ce = new ControllerEstoque(emf);
+		ControllerEstoque ce = new ControllerEstoque();
 		for (ItemDeVenda it : atual.getItensDeVenda()) {
 			try {
 				valor += it.getTotal();
@@ -480,6 +485,7 @@ public class ControllerVenda {
 	}
 
 	public Venda getAtual() {
+		this.refreshAtual();
 		return this.atual;
 	}
 
@@ -491,6 +497,13 @@ public class ControllerVenda {
 
 	public void addItem(ItemDeVenda it) throws EntidadeNaoExistenteException,
 			Exception {
+		EntityManager em = getEntityManager();
+		try{
+			em.refresh(atual);
+		}catch(Exception e){
+			
+		}
+
 		atual.addItemDeVenda(it);
 		this.edit(atual);
 	}
@@ -505,6 +518,7 @@ public class ControllerVenda {
 			try{
 				destroy(it);
 			}catch(Exception ee){
+				ee.printStackTrace();
 				// item perdido
 			}
 		}catch(Exception e){
@@ -526,12 +540,22 @@ public class ControllerVenda {
 	private void refreshAtual() {
 		EntityManager em = null;
 		em = getEntityManager();
-		em.getTransaction().begin();
+		
 		try {
-			atual = em.getReference(Venda.class, atual.getId());
+			try{
+				em.getTransaction().begin();
+			}catch(Exception e){}
+			atual = em.find(Venda.class, atual.getId());
+			em.refresh(atual);
+			em.getTransaction().commit();
 		} catch (EntityNotFoundException enfe) {
+		}catch (Exception e) {
+		}finally{
+			if (em != null && em.isOpen()) {
+				em.close();
+			}
 		}
-		em.getTransaction().commit();
+
 
 	}
 
@@ -549,7 +573,7 @@ public class ControllerVenda {
 			q.executeUpdate();
 			em.getTransaction().commit();
 		} finally {
-			if (em != null) {
+			if (em != null && em.isOpen()) {
 				em.close();
 			}
 		}

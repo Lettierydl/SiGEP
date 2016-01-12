@@ -13,7 +13,6 @@ import com.twol.sigep.controller.find.FindFuncionario;
 import com.twol.sigep.model.pessoas.Funcionario;
 import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 import com.twol.sigep.util.OperacaoStringUtil;
-import com.twol.sigep.util.Persistencia;
 import com.twol.sigep.util.SessionUtil;
 
 @ViewScoped
@@ -29,10 +28,12 @@ public class ConfigSysManagedBean {
 	private List<Funcionario> listAtualDeFuncionarios;
 	private boolean liberado = false;
 	private boolean criptografar = false;
+	private FindFuncionario ffunc;
 
 	public ConfigSysManagedBean() {
 		newFuncionario = new Funcionario();
-		listAtualDeFuncionarios = FindFuncionario.listFuncionarios();
+		ffunc = new FindFuncionario();
+		listAtualDeFuncionarios = ffunc.listFuncionarios();
 		criptografar = (Math.random()*100)%2 == 0;
 		RequestContext.getCurrentInstance().execute(
 				"abrirModa('modalSenha');");
@@ -51,7 +52,7 @@ public class ConfigSysManagedBean {
 		try {
 			newFuncionario.setSenha(OperacaoStringUtil.criptografar(senha));
 			newFuncionario.setTipoDeFuncionario(tipoDoFuncionario);
-			ControllerPessoa pes = new ControllerPessoa(Persistencia.emf);
+			ControllerPessoa pes = new ControllerPessoa();
 			pes.create(newFuncionario);
 		} catch (Exception e) {
 			SessionUtil
@@ -65,13 +66,13 @@ public class ConfigSysManagedBean {
 				FacesMessage.SEVERITY_WARN, "Funcionário" +newFuncionario.getNome()+" cadastrado", 
 				"Funcionário" +newFuncionario.getNome()+" cadastrado"));
 		newFuncionario = new Funcionario();
-		listAtualDeFuncionarios = FindFuncionario.listFuncionarios();
+		listAtualDeFuncionarios = ffunc.listFuncionarios();
 	}
 	
 	public void removerFuncionario(int id_funcionario) {
 		try {
-			ControllerPessoa pes = new ControllerPessoa(Persistencia.emf);
-			Funcionario remove = FindFuncionario.funcionarioComId(id_funcionario);
+			ControllerPessoa pes = new ControllerPessoa();
+			Funcionario remove = ffunc.funcionarioComId(id_funcionario);
 			pes.destroy(remove);
 			SessionUtil
 			.exibirMensagem(new FacesMessage(
@@ -86,7 +87,7 @@ public class ConfigSysManagedBean {
 			return;
 		}
 		
-		listAtualDeFuncionarios = FindFuncionario.listFuncionarios();
+		listAtualDeFuncionarios = ffunc.listFuncionarios();
 	}
 
 	public TipoDeFuncionario[] getTiposFuncionario() {
@@ -99,7 +100,7 @@ public class ConfigSysManagedBean {
 	public List<Funcionario> getListAtualDeFuncionarios() {
 		if (listAtualDeFuncionarios == null
 				|| listAtualDeFuncionarios.isEmpty()) {
-			return FindFuncionario.listFuncionarios();
+			return ffunc.listFuncionarios();
 		}
 		return listAtualDeFuncionarios;
 	}

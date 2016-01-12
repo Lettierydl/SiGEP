@@ -13,17 +13,18 @@ import com.twol.sigep.controller.ControllerPessoa;
 import com.twol.sigep.controller.find.FindCliente;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
 import com.twol.sigep.model.pessoas.Cliente;
-import com.twol.sigep.util.Persistencia;
 
 public class ControllerClienteTest {
 	
 	ControllerPessoa pe;
+	FindCliente fcli; 
 	String nome = "Fulano de tal";
 	
 	@Before
 	public void setup(){
-		pe = new ControllerPessoa(Persistencia.emf);
+		pe = new ControllerPessoa();
 		pe.removeAllClientes();
+		fcli = new FindCliente();
 	}
 
 	private Cliente iniciarClienteInformacoesAleatorias(String nome) {
@@ -48,24 +49,24 @@ public class ControllerClienteTest {
 	public void createClienteTest() {
 		Cliente p = iniciarClienteInformacoesAleatorias(nome);
 		pe.create(p);
-		assertEquals(FindCliente.clienteComNome(nome), p);
+		assertEquals(fcli.clienteComNome(nome), p);
 	}
 	
 	@Test
 	public void editClienteTest() throws EntidadeNaoExistenteException, Exception {
 		createClienteTest();
-		Cliente p = FindCliente.clienteComNome(nome);
+		Cliente p = fcli.clienteComNome(nome);
 		p.setNome("Cliente Alterado");
 		pe.edit(p);
-		assertEquals(FindCliente.clienteComId(p.getId()).getNome(), p.getNome());
+		assertEquals(fcli.clienteComId(p.getId()).getNome(), p.getNome());
 	}
 	
 	@Test(expected=NoResultException.class )
 	public void destroyClienteTest() throws EntidadeNaoExistenteException  {
 		createClienteTest();
-		Cliente p = FindCliente.clienteComNome(nome);
+		Cliente p = fcli.clienteComNome(nome);
 		pe.destroy(p);
-		FindCliente.clienteComNome(nome);
+		fcli.clienteComNome(nome);
 	}
 	
 	@Test

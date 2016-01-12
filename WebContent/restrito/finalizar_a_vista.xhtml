@@ -31,6 +31,7 @@
 <h:body >
 
 	<div class="top">
+		
 		<h:commandButton id="full" onclick="requestFullScreen();"
 			image="../imagens/fullscreen.svg" styleClass="br-fullscrean" />
 		<div class="dimensao">
@@ -78,23 +79,26 @@
 				</div>
 				
 				<div class="imprimir">
-					<h:outputLabel title="Imprimir copom de venda do cliente" >Imprimir copom</h:outputLabel>
-					<h:selectBooleanCheckbox value="#{finalBean.imprimir}" label="Imprimir copom" title="Imprimir copom de venda do cliente"/>
+					<h:outputLabel title="Imprimir copom de venda do cliente" >Imprimir cupom</h:outputLabel>
+					<h:selectBooleanCheckbox value="#{finalBean.imprimir}" label="Imprimir cupom" title="Imprimir cupom de venda do cliente"/>
 				</div>
 
-				<div class="finalizar">
-					<h:commandLink id="finalizarVenda" title="Finalizar Venda"
-						actionListener="#{finalBean.finalizarVendaAVista}">
-						<span>Finalizar</span>
-					</h:commandLink>
-				</div>
+				<h:commandButton id="finalizarVenda" title="Finalizar Venda"
+						actionListener="#{finalBean.finalizarVendaAVista}"
+						class="finalizar" 
+						value="FINALIZAR">
+				
+				</h:commandButton>
+				
+				
+				<h:commandButton id="cancelarVenda" title="Voltar para a venda"
+						actionListener="#{finalBean.voltarVenda}" class="finalizar"
+						value="VOLTAR">
+				</h:commandButton>
 
-				<div class="finalizar">
-					<h:commandLink id="cancelarVenda" title="Voltar para a venda"
-						actionListener="#{finalBean.voltarVenda}">
-						<span>Voltar</span>
-					</h:commandLink>
-				</div>
+
+
+
 
 				<pi:focus for="valorPago" minSeverity=""/>
 
@@ -173,9 +177,9 @@
 		$(document).foundation();
 		document.getElementById("valorPago").select();
 		document.getElementById("valorPago").focus();
-		document.getElementById("valorPago").onkeyup(function(event){
-			tabenter(event.getElementById('finalizarVenda'));
-		});
+		//document.getElementById("valorPago").onkeyup(function(event){
+		//	tabenter(event.getElementById('finalizarVenda'););
+		//});
 		
 		document.onkeydown = function(e) {
 			var keychar;
@@ -196,7 +200,30 @@
 			}
 		}
 		
+		$("#valorPago").on("keydown", function(e) {
+			if(e.keyCode == 13){
+				//$("#finalizarVenda").select();
+				$("#finalizarVenda").focus();
+			}
+		}
+		);
+		
 		maiusculo('input[type="text"]');
+		
+		var chamado = false;
+		
+		$('#finalizarVenda').on("keypress", function(e) {
+	        /* ENTER PRESSED*/
+	        if (e.keyCode == 13) {
+	        	if(!chamado){
+	        		chamado = true;
+	        		this.keypress(e);
+	        	}
+	           //e.preventDefault(e);
+	           return false;
+	        }
+	    });
+		
 	</script>
 
 </h:body>

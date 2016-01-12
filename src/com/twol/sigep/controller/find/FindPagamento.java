@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.twol.sigep.model.pessoas.Cliente;
@@ -12,22 +13,35 @@ import com.twol.sigep.util.Persistencia;
 
 public class FindPagamento {
 	
+	private  EntityManager em;
+
+	private  EntityManager getEntityManager() {
+		/*if (em != null && em.isOpen()) {
+			em.close();
+		}*/
+		if(em == null || !em.isOpen()){
+			em = Persistencia.getEntityManager();
+		}
+		return em;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public static List<Pagamento> pagamentosDeHoje() {
+	public  List<Pagamento> pagamentosDeHoje() {
 		
 		String stringQuery = "select p FROM Pagamento as p ";
 		stringQuery += "WHERE day(p.data) = day(curdate()) and p.data >= curdate()"
 					+ " order by p.data DESC";
 		
-		Persistencia.restartConnection();
-		Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
+		
+		Query query = getEntityManager().createQuery(stringQuery, Pagamento.class);
 		
 		List<Pagamento> pagamentos = (List<Pagamento>) query.getResultList();
+
 		return pagamentos;
 	}
 	
 	
-	public static List<Pagamento> pagamentosDoCliente(Cliente cliente, Date diaInicio,
+	public  List<Pagamento> pagamentosDoCliente(Cliente cliente, Date diaInicio,
 			Date diaFim) {
 		
 		Calendar di = Calendar.getInstance();
@@ -46,8 +60,8 @@ public class FindPagamento {
 		String stringQuery = "select p FROM Pagamento as p ";
 		stringQuery += "WHERE p.cliente = :cli and p.data between :diaInicio and :diaFim"
 				+ " order by p.data DESC";
-		Persistencia.restartConnection();
-		Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
+		
+		Query query = getEntityManager().createQuery(stringQuery, Pagamento.class);
 		
 		query.setParameter("cli", cliente);
 		query.setParameter("diaInicio", di);
@@ -56,28 +70,30 @@ public class FindPagamento {
 		
 		@SuppressWarnings("unchecked")
 		List<Pagamento> pagamentos = (List<Pagamento>) query.getResultList();
+
 		return pagamentos;
 	}
 	
-	public static List<Pagamento> pagamentosDoCliente(Cliente cliente) {
+	public  List<Pagamento> pagamentosDoCliente(Cliente cliente) {
 			
 		String stringQuery = "select p FROM Pagamento as p ";
 		stringQuery += "WHERE p.cliente = :cli"
 				+ " order by p.data DESC";
-		Persistencia.restartConnection();
-		Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
+		
+		Query query = getEntityManager().createQuery(stringQuery, Pagamento.class);
 		
 		query.setParameter("cli", cliente);
 		
 		
 		@SuppressWarnings("unchecked")
 		List<Pagamento> pagamentos = (List<Pagamento>) query.getResultList();
+
 		return pagamentos;
 	}
 	
 
 
-	public static List<Pagamento> pagamentosDosClientes(List<Cliente> clientes) {
+	public  List<Pagamento> pagamentosDosClientes(List<Cliente> clientes) {
 		//vai rodando pelo cliente_id //for clientes cli{ p.cliente = cli or }
 			String stringQuery = "select p FROM Pagamento as p ";
 			stringQuery += "WHERE (p.cliente != NULL) ";
@@ -91,8 +107,8 @@ public class FindPagamento {
 				
 				stringQuery+= ") order by p.data DESC";
 				
-				Persistencia.restartConnection();
-				Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
+				
+				Query query = getEntityManager().createQuery(stringQuery, Pagamento.class);
 				
 				for(int i = 0; i< clientes.size(); i++){
 					query.setParameter("cli"+i, clientes.get(i));
@@ -100,19 +116,21 @@ public class FindPagamento {
 				
 				@SuppressWarnings("unchecked")
 				List<Pagamento> pagamentos = (List<Pagamento>) query.getResultList();
+
 				return pagamentos;
 	}
 	
 	
-	public static Pagamento pagamentoId(int id) {
+	public  Pagamento pagamentoId(int id) {
 		
 		String stringQuery = "select p FROM Pagamento as p where p.id = :id";
 		
-		Persistencia.restartConnection();
-		Query query = Persistencia.em.createQuery(stringQuery, Pagamento.class);
+		
+		Query query = getEntityManager().createQuery(stringQuery, Pagamento.class);
 		query.setParameter("id", id);
 		
 		Pagamento pagamento = (Pagamento) query.getSingleResult();
+
 		return pagamento;
 	}
 	

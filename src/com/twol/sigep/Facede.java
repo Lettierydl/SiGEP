@@ -2,6 +2,10 @@ package com.twol.sigep;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +27,7 @@ import com.twol.sigep.controller.gerador.GeradorPlanilha;
 import com.twol.sigep.model.configuracoes.PermissaoFuncionario;
 import com.twol.sigep.model.estoque.Produto;
 import com.twol.sigep.model.exception.EntidadeNaoExistenteException;
+import com.twol.sigep.model.exception.EstadoInvalidoDaVendaAtualException;
 import com.twol.sigep.model.exception.FuncionarioNaoAutorizadoException;
 import com.twol.sigep.model.exception.LoginIncorretoException;
 import com.twol.sigep.model.exception.ParametrosInvalidosException;
@@ -38,8 +43,8 @@ import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Pagavel;
 import com.twol.sigep.model.vendas.Venda;
-import com.twol.sigep.util.MySQLBackup;
-import com.twol.sigep.util.Persistencia;
+import com.twol.sigep.util.Backup;
+import com.twol.sigep.util.OperacaoStringUtil;
 import com.twol.sigep.util.SessionUtil;
 
 public class Facede {
@@ -53,20 +58,35 @@ public class Facede {
 	private GeradorPDF pdf;
 	private GeradorPlanilha pla;
 	private ControllerImpressora imp;
+	private ControllerConfiguracao config;
+	
+	private FindVenda fv;
+	private FindProduto fprod;
+	private FindPagamento fpag;
+	private FindFuncionario ffunc;
+	private FindCliente fcli;
 
 	public Facede() {
-		est = new ControllerEstoque(Persistencia.emf);
-		pes = new ControllerPessoa(Persistencia.emf);
-		pagam = new ControllerPagamento(Persistencia.emf);
-		vend = new ControllerVenda(Persistencia.emf);
-		new ControllerConfiguracao(Persistencia.emf);
+		est = new ControllerEstoque();
+		pes = new ControllerPessoa();
+		pagam = new ControllerPagamento();
+		vend = new ControllerVenda();
+		new ControllerConfiguracao();
 		rel = new ControllerRelatorios();
 		lg = new ControllerLogin();
 		pdf = new GeradorPDF(rel);
 		pla = new GeradorPlanilha(rel);
+		config = new ControllerConfiguracao();
+		
 		
 		Funcionario logado = SessionUtil.getFuncionarioLogado();
 		vend.setLogado(logado);
+		
+		fv = new FindVenda();
+		fprod = new FindProduto();
+		fpag = new FindPagamento();
+		ffunc = new FindFuncionario();
+		fcli = new FindCliente();
 		
 		try{
 			imp = ControllerImpressora.getInstance();
@@ -74,7 +94,7 @@ public class Facede {
 	}
 
 	public void adicionarCliente(Cliente c) throws FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.CADASTRAR_CLIENTES);
 		pes.create(c);
 	}
@@ -85,68 +105,99 @@ public class Facede {
 
 	public void atualizarCliente(Cliente c)
 			throws EntidadeNaoExistenteException, FuncionarioNaoAutorizadoException ,Exception {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CLIENTES);
 		pes.edit(c);
 	}
+	
+	public double recalcularDebitoDoCliente(Cliente c) throws EntidadeNaoExistenteException, Exception {
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CLIENTES);
+		return pes.recalcularDebitoDoCliente(c);	
+	}
 
 	public Cliente buscarClientePorId(int id) {
-		return FindCliente.clienteComId(id);
+		return fcli.clienteComId(id);
 	}
 
 	public List<Cliente> getListaClientes() {
-		return FindCliente.listCelientes();
+		return fcli.listCelientes();
 	}
 
 	public Cliente buscarClientePorCPFOuNomeIqualA(String cpfOuNome){
-		return FindCliente.clientesQueNomeOuCPFIqualA(cpfOuNome);
+		return fcli.clientesQueNomeOuCPFIqualA(cpfOuNome);
 	}
 	
 	public List<Cliente> buscarClientePorCPFOuNomeQueIniciam(String cpfOuNome) {
-		return FindCliente.clientesQueNomeOuCPFIniciam(cpfOuNome);
+		return fcli.clientesQueNomeOuCPFIniciam(cpfOuNome);
 	}
 	
 	public List<Cliente> buscarClientePorCPFOuNomeQueIniciam(String cpfOuNome, int maxResult) {
-		return FindCliente.clientesQueNomeOuCPFIniciam(cpfOuNome, maxResult);
+		return fcli.clientesQueNomeOuCPFIniciam(cpfOuNome, maxResult);
 	}
 
 	public List<String> buscarNomeClientePorNomeQueInicia(String nome) {
-		return FindCliente.nomeClientesQueNomeInicia(nome);
+		return fcli.nomeClientesQueNomeInicia(nome);
 	}
 	
 	public Cliente buscarClientePorNome(String nome) {
-		return FindCliente.clienteComNome(nome);
+		return fcli.clienteComNome(nome);
 	}
 
 	// Verificar necessidade
 	public Cliente buscarClientePorCPF(String cpf) {
-		return FindCliente.clienteComCPF(cpf);
+		return fcli.clienteComCPF(cpf);
 	}
 
-	public void adicionarDependente(Dependente d) {
-		Dependente.salvar(d);
+	/*Dependente*/
+	
+	public void adicionarDependente(Dependente d, Cliente c) throws FuncionarioNaoAutorizadoException {
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.CADASTRAR_CLIENTES);
+		d.setCliente(c);
+		pes.create(d);
 	}
 
-	public void removerDependendte(Dependente d) {
-		Dependente.remover(d);
-
+	public void removerDependente(Dependente d) throws EntidadeNaoExistenteException {
+		pes.destroy(d);
 	}
 
-	public List<Dependente> getListaDependentes() {
-		return Dependente.recuperarLista();
+	public void atualizarDependente(Dependente d)
+			throws EntidadeNaoExistenteException, FuncionarioNaoAutorizadoException ,Exception {
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CLIENTES);
+		pes.edit(d);
 	}
 
+	public Dependente buscarDependentePorId(int id) {
+		return fcli.dependenteComId(id);
+	}
+	
+	public Dependente buscarDependenteNomeECliente(String nomeDependente,
+			Cliente c) {
+		return fcli.dependenteComNomeClietne(nomeDependente, c);
+	}
+
+	public List<Dependente> getListaDependentes(Cliente c) {
+		return fcli.listDependentes(c);
+	}
+	
+	public List<String> getListaNomeDependentes(int idCliente) {
+		return fcli.listNomeDependentes(idCliente);
+	}
+	
+	
 	/*-------------------------
 	 * Metodos do Usu��rio/Funcionario
 	 --------------------------*/
 
 	public List<Funcionario> getListaFuncionarios() {
-		return FindFuncionario.listFuncionarios();
+		return ffunc.listFuncionarios();
 	}
 
 	public void adicionarFuncionario(Funcionario f, String senha,
 			TipoDeFuncionario tipoDeFuncionario) throws SenhaIncorretaException, FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.CADASTRAR_FUNCIONARIO);
 		lg.atribuirSenhaETipoAoFuncionario(f, senha, tipoDeFuncionario);
 		pes.create(f);
@@ -158,23 +209,23 @@ public class Facede {
 	}
 	
 	public List<Funcionario> buscarFuncionarioPorNomeQueInicia(String nome) {
-		return FindFuncionario.funcionariosQueNomeInicia(nome);
+		return ffunc.funcionariosQueNomeInicia(nome);
 	}
 	
 	public Funcionario buscarFuncionarioPorNome(String nome) {
-		return FindFuncionario.funcionarioComNome(nome);
+		return ffunc.funcionarioComNome(nome);
 	}
 	
 	public Funcionario buscarFuncionarioPorCPF(String cpf) {
-		return FindFuncionario.funcionarioComCPF(cpf);
+		return ffunc.funcionarioComCPF(cpf);
 	}
 	
 	public Funcionario buscarFuncionarioPorLogin(String login) {
-		return FindFuncionario.funcionarioComLogin(login);
+		return ffunc.funcionarioComLogin(login);
 	}
 	
 	public Funcionario buscarFuncionarioPorId(int id) {
-		return FindFuncionario.funcionarioComId(id);
+		return ffunc.funcionarioComId(id);
 	}
 
 	public void removerFuncionario(Funcionario u)
@@ -184,25 +235,25 @@ public class Facede {
 
 	public Funcionario buscarFuncionarioPeloLoginESenha(String login,
 			String senha) {
-		return FindFuncionario.funcionarioComLoginESenha(login, senha);
+		return ffunc.funcionarioComLoginESenha(login, senha);
 	}
 
 	public void atualizarFuncionario(Funcionario f)
 			throws EntidadeNaoExistenteException, FuncionarioNaoAutorizadoException,Exception {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_FUNCIONARIO);
 		pes.edit(f);
 	}
 
 	public Funcionario buscarUsuarioPorNome(String nome) {
-		return FindFuncionario.funcionarioComNome(nome);
+		return ffunc.funcionarioComNome(nome);
 	}
 
 	/*
 	 * Metodos de produto
 	 */
 	public void adicionarProduto(Produto p) throws FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.CADASTRAR_PRODUTO);
 		est.create(p);
 	}
@@ -213,53 +264,65 @@ public class Facede {
 
 	public void atualizarProduto(Produto p)
 			throws EntidadeNaoExistenteException, FuncionarioNaoAutorizadoException,Exception {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_PRODUTO);
 		est.edit(p);
 	}
 
 	public List<Produto> getListaProdutos() {
-		return FindProduto.todosProdutos();
+		return fprod.todosProdutos();
+	}
+	
+	public List<Object[]> getInformacaoProdutos(){
+		return fprod.informacaoTodosProdutos();
 	}
 
 	public List<Produto> buscarProdutoPorDescricaoQueInicia(String descricao) {
-		return FindProduto.produtosQueDescricaoLike(descricao);
+		return fprod.produtosQueDescricaoLike(descricao);
 	}
 	
 	public List<Produto> buscarProdutoPorDescricaoOuCodigoQueInicia(String descricaoOuCodigo){
-		return FindProduto.produtosQueDescricaoOuCodigoDeBarrasIniciam(descricaoOuCodigo);
+		return fprod.produtosQueDescricaoOuCodigoDeBarrasIniciam(descricaoOuCodigo);
 	}
 	
 	public List<String> buscarDescricaoProdutoPorDescricaoQueInicia(String descricao){
-		return FindProduto.drecricaoProdutoQueIniciam(descricao);
+		return fprod.drecricaoProdutoQueIniciam(descricao);
 	}
 	
 	public List<String> buscarDescricaoProdutoPorDescricaoQueInicia(String descricao, int maxReult){
-		return FindProduto.drecricaoProdutoQueIniciam(descricao, maxReult);
+		return fprod.drecricaoProdutoQueIniciam(descricao, maxReult);
 	}
 	
 	public List<String> buscarCodigoProdutoPorCodigoQueInicia(String codigo){
-		return FindProduto.codigoProdutoQueIniciam(codigo);
+		return fprod.codigoProdutoQueIniciam(codigo);
+	}
+	
+	public List<String> buscarDescricaoEPrecoProdutoPorDescricaoQueInicia(String descricao, int maxReult){
+		return fprod.drecricaoEPrecoProdutoQueIniciam(descricao, maxReult);
+	}
+	
+	public List<String> buscarDescricaoEPrecoProdutoPorDescricaoQueInicia(String descricao){
+		return fprod.drecricaoEPrecoProdutoQueIniciam(descricao);
 	}
 
 	public Produto buscarProdutoPorId(int idProduto) {
-		return FindProduto.produtoComId(idProduto);
+		return fprod.produtoComId(idProduto);
 	}
 
 	public Produto buscarProdutoPorCodigo(String codigo) {
-		return FindProduto.produtoComCodigoDeBarras(codigo);
+		return fprod.produtoComCodigoDeBarras(codigo);
 	}
 	
 	public Produto buscarProdutoPorDescricao(String descricao){
-		return FindProduto.produtoComDescricao(descricao);
+		return fprod.produtoComDescricao(descricao);
 	}
 	
 	public Produto buscarProdutoPorDescricaoOuCodigo(String nomeOuCodigo) {
-		return  FindProduto.produtoComCodigoEDescricao(nomeOuCodigo);
+		return  fprod.produtoComCodigoEDescricao(nomeOuCodigo);
 	}
 	
 	public List<Produto> buscarListaProdutoPorDescricaoOuCodigo(String nomeOuCodigo) {
-		return  FindProduto.produtosQueDescricaoOuCodigoDeBarrasIniciam(nomeOuCodigo);
+		return  fprod.produtosQueDescricaoOuCodigoDeBarrasIniciam(nomeOuCodigo);
 	}
 	
 	/*
@@ -299,7 +362,7 @@ public class Facede {
 	}
 
 	public List<Funcionario> getFuncionarios() {
-		return FindFuncionario.listFuncionarios();
+		return ffunc.listFuncionarios();
 	}
 
 	/*
@@ -349,12 +412,60 @@ public class Facede {
 	 * @param Venda e Valor que o cliente pagou
 	 * @throws Exception
 	 * @throws EntidadeNaoExistenteException
+	 * @throws ParametrosInvalidosException 
 	 */
-	public double finalizarVendaAprazo(Venda v, Cliente c, double partePaga)
-			throws EntidadeNaoExistenteException, Exception {
-		c.acrecentarDebito(vend.finalizarVendaAPrazo(v, c, partePaga));
-		pes.edit(c);
-		return c.getDebito();
+	public synchronized double finalizarVendaAprazo(Venda v, Cliente c, double partePaga)
+			throws ParametrosInvalidosException, EstadoInvalidoDaVendaAtualException {
+		double deb = 0;
+		
+		try{
+			deb = vend.finalizarVendaAPrazo(v, c, partePaga);
+			
+			double oud_deb = c.getDebito();
+			
+			try {
+				c.acrecentarDebito(deb);
+				pes.edit(c);
+				if(this.buscarClientePorId(c.getId()).getDebito() != oud_deb + deb){
+					throw new ParametrosInvalidosException("Falha na conexão com o banco de dados \nDebito não atualizado!");
+				}
+			} catch (Exception e) {
+				if(this.buscarClientePorId(c.getId()).getDebito() != oud_deb + deb){
+					List<Pagavel> di_ve = fv.pagavelNaoPagoDoCliente(c);
+					double deb_real = 0;
+					boolean existe = false;
+					for(Pagavel p : di_ve){
+						deb_real += p.getValorNaoPago();
+						if(p instanceof Venda && p.getDia().equals(v.getDia()) && p.getTotal() == v.getTotal() ){
+							existe = true;
+						}
+					}
+					if(!existe){
+						//venda não salva tentar salvar de novo
+						deb = vend.finalizarVendaAPrazo(v, c, partePaga);
+					}
+					
+					try {
+						c.acrecentarDebito(c.getDebito() - deb_real);
+						pes.edit(c);
+						if(this.buscarClientePorId(c.getId()).getDebito() != deb_real){
+							throw new ParametrosInvalidosException("Falha na conexão com o banco de dados \nDebito não atualizado!");
+						}
+					}catch (Exception e2) {
+						e2.printStackTrace();
+						throw new ParametrosInvalidosException("Falha na conexão com o banco de dados \nDebito não atualizado!");
+					}
+					
+				}
+			}
+			
+			
+		}catch(EstadoInvalidoDaVendaAtualException ei){
+			throw ei;
+		}catch(Exception e){
+			throw new EstadoInvalidoDaVendaAtualException("Venda não salva, verifique na tela de pagamentos!");
+		}
+		return this.buscarClientePorId(c.getId()).getDebito();
 	}
 	
 	
@@ -382,23 +493,23 @@ public class Facede {
 	}
 	
 	public List<Pagamento> getListaPagamentoHoje() {
-		return FindPagamento.pagamentosDeHoje();
+		return fpag.pagamentosDeHoje();
 	}
 
 	public List<Pagamento> getListaPagamentoDoCliente(Cliente c) {
-		return FindPagamento.pagamentosDoCliente(c);
+		return fpag.pagamentosDoCliente(c);
 	}
 	public List<Pagamento> getListaPagamentoDoCliente(Cliente c, Date diaInicio, Date diaFim) {
-		return FindPagamento.pagamentosDoCliente(c,  diaInicio,  diaFim);
+		return fpag.pagamentosDoCliente(c,  diaInicio,  diaFim);
 	}
 
 	public List<Pagamento> getListaPagamentoDosClientes(List<Cliente> clientes) {
-		return FindPagamento.pagamentosDosClientes(clientes);
+		return fpag.pagamentosDosClientes(clientes);
 	}
 
 	public double adicionarPagamento(Pagamento pagamento)
 			throws EntidadeNaoExistenteException, ParametrosInvalidosException, Exception {
-		Cliente c = FindCliente.clienteComId(pagamento.getCliente().getId());
+		Cliente c = fcli.clienteComId(pagamento.getCliente().getId());
 		double troco= 0;
 		if(c.getDebito() < pagamento.getValor()){
 			troco = c.getDebito() - pagamento.getValor();
@@ -414,46 +525,45 @@ public class Facede {
 	
 	
 	public List<Venda> getListaVendasNaoPagasDeHoje() {
-		return FindVenda.vendasNaoPagaDeHoje();
+		return fv.vendasNaoPagaDeHoje();
 	}
 
 	public List<Venda> buscarVendasNaoPagasDosClientes(List<Cliente> clientes) {
-		return FindVenda.vendasNaoPagasDosClientes(clientes);
+		return fv.vendasNaoPagasDosClientes(clientes);
 	}
 
 	public List<Venda> buscarVendaNaoPagaDoCliente(Cliente cliente) {
-		return FindVenda.vendasNaoPagaDoCliente(cliente);
+		return fv.vendasNaoPagaDoCliente(cliente);
 	}
 	
 	public List<ItemDeVenda> buscarItensDaVendaPorIdDaVenda(int id) {
-		return FindVenda.itemDeVendaIdDaVenda(id);
+		return fv.itemDeVendaIdDaVenda(id);
 	}
 	
 	public List<Pagavel> buscarPagaveisDoCliente(Cliente cliente,Date diaInicio, Date diaFim) {
-		return FindVenda.pagavelCliente(cliente, diaInicio, diaFim);
+		return fv.pagavelCliente(cliente, diaInicio, diaFim);
 	}
 	
 	
 	public List<Pagavel> buscarPagaveisNaoPagosDosClientes(List<Cliente> clientes) {
-		return FindVenda.pagavelNaoPagoDosClientes(clientes);
+		return fv.pagavelNaoPagoDosClientes(clientes);
 	}
 
 	public List<Pagavel> buscarPagaveisNaoPagoDoCliente(Cliente cliente) {
-		return FindVenda.pagavelNaoPagoDoCliente(cliente);
-
+		return fv.pagavelNaoPagoDoCliente(cliente);
 	}
 	
-	
-	
-	
+	public Venda buscarVendaPeloId(int id_venda) {
+		return fv.vendaId(id_venda);
+	}
 	
 	public boolean getValor(String chave, TipoDeFuncionario tipo){
-		return ControllerConfiguracao.getValor(chave, tipo);
+		return config.getValor(chave, tipo);
 	}
 	
 	public void putValor(String chave, boolean valor,
 			TipoDeFuncionario tipo){
-		ControllerConfiguracao.putValor(chave, valor, tipo);
+		config.putValor(chave, valor, tipo);
 	}
 	
 	public void permissoesDeFuncionariosDefalt(){
@@ -467,19 +577,19 @@ public class Facede {
 	
 	 public double[] getRelatorioDeEntradaDeCaixa(Date diaInicio,
 				Date diaFim) throws FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
 		return rel.getRelatorioDeEntradaDeCaixa(diaInicio, diaFim);
 	 }
 
 	public double[] getRelatorioDeVendas(Date diaInicio, Date diaFim) throws FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
 		return rel.getRelatorioDeVendas(diaInicio, diaFim);
 	}
 
 	public double[] getRelatorioDeProduto(Date diaInicio, Date diaFim) throws FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
 		return rel.getRelatorioProduto(diaInicio, diaFim);
 	}
@@ -489,37 +599,72 @@ public class Facede {
 	}
 	
 	public String gerarPdfRelatorioBalancoProdutos(Date inicio, Date fim) throws FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
 		return pdf.gerarPdfRelatorioBalancoProdutos(inicio, fim);
 	}
 
 	public String gerarPdfDaVendaVenda(Venda v, List<ItemDeVenda> itens) throws FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
 		return pdf.gerarPdfDaVenda(v, itens);
 	}
 
 	
 	public String gerarPlanilhaRelatorioBalancoProdutos(Date inicio, Date fim) throws FuncionarioNaoAutorizadoException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.GERAR_RELATORIOS);
 		return pla.gerarPlanilhaRelatorioBalancoProdutos(inicio, fim);
 	}
 
-	public void resteurarBancoDeDados(File tempFile) throws FuncionarioNaoAutorizadoException, IOException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+	public boolean resteurarBancoDeDados(File tempFile) throws FuncionarioNaoAutorizadoException, IOException {
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CONFIGURACOES);
-		MySQLBackup my = new MySQLBackup();
-		my.restore(tempFile);
+		Backup bac = new Backup();
+		return bac.restoreBanco(tempFile);
 	}
 	
 	
-	public String realizarBackupBancoDeDados(File file) throws FuncionarioNaoAutorizadoException, IOException {
-		Funcionario logado = FindFuncionario.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
+	public String realizarBackupBancoDeDados() throws FuncionarioNaoAutorizadoException, IOException {
+		Funcionario logado = ffunc.funcionarioComId(SessionUtil.getFuncionarioLogado().getId());
 		PermissaoFuncionario.isAutorizado(logado, PermissaoFuncionario.ALTERAR_CONFIGURACOES);
-		MySQLBackup my = new MySQLBackup();
-		return my.dump(file);
+		Backup bac = new Backup();
+		return bac.criarBackup();
+	}
+	
+	public void salvarConfiguracoesDeBackup(String nomeArquivoDestinoDefalt, boolean compactarBackup) throws IOException{
+		Backup bac = new Backup();
+		bac.salvarConfiguracoes(nomeArquivoDestinoDefalt, compactarBackup);
+	}
+	
+	
+	//Operacao de Risco
+	public List<String> dividaSistemaAntigo() throws EntidadeNaoExistenteException, Exception{
+		List<Cliente> clientes = fcli.listCelientes();
+		List<String> msg = new ArrayList<String>();
+		for(Cliente c : clientes){
+			double deb = c.getDebito();
+			List<Pagavel> di_ve = fv.pagavelNaoPagoDoCliente(c);
+			double consta = 0;
+			for(Pagavel p : di_ve){
+				consta += p.getValorNaoPago();
+			}
+			if(deb > (consta + 0.09)){
+				double dif = new BigDecimal(deb - consta).setScale(2,
+								RoundingMode.HALF_UP).doubleValue();;
+				Divida d = new Divida();
+				d.setTotal(dif);
+				d.setDescricao(OperacaoStringUtil.DESCRICAO_DIVIDA_ANTIGO_SISTEMA);
+				d.setDia(Calendar.getInstance());
+				d.getDia().set(2015, 8, 1);
+				d.setCliente(c);
+				vend.create(d);
+				//System.out.println("Divida adicionada no cliente "+c.getNome()+" no valor de "+OperacaoStringUtil.formatarStringValorMoedaComDescricao(d.getValorNaoPago()));
+				msg.add("Divida adicionada no cliente "+c.getNome()+" no valor de "+OperacaoStringUtil.formatarStringValorMoedaComDescricao(d.getValorNaoPago()));
+			}
+		}
+		//System.out.println(msg.size() +" clientes do antigo sistema com debito.");
+		return msg;
 	}
 	
 	/* Apaga todas as vendas já pagas antes do dia informado 
@@ -531,6 +676,12 @@ public class Facede {
 	
 	
 	public boolean imprimirVenda(Venda v){
-		return imp.imprimirVenda(v);
+		try{
+			return imp.imprimirVenda(v);
+		}catch(NullPointerException ne){
+			return false;
+		}
 	}
+
+	
 }

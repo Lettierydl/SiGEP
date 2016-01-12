@@ -31,13 +31,22 @@
 </h:head>
 
 <h:body>
-
-
-
-	<ui:include src="restrito/componentes/menu.xhtml" />
-	<script>
-		ativarMenuBotoes("configuracao");
-	</script>
+	
+	<div id="menu" class = "menu">
+		<div class="barra_superior">
+				<div>
+					<a href="login.jsf" title="Login"><img
+						src="imagens/logo.png" class="logo" /></a>
+						
+				</div>
+			</div>
+			<div class="barra_inferior">
+				<div>
+					<span class="ajuda">#{msgs.ajuda}</span>
+				</div>
+			</div>
+	</div>
+	
 
 	<div class="content">
 
@@ -55,6 +64,9 @@
 					<div class="container" align="center">
 						<div class="subtabela">
 							<h:form id="formAdicionar" prependId="false">
+							<pi:remoteCommand name= "ir_login" 
+								actionListener="#{logoffBean.mudarDeTela('login.jsf')}" />
+								
 								<h2>Criar Funcionário</h2>
 								<div class="formulario">
 									<div class="row">
@@ -186,13 +198,12 @@
 
 
 
-				<!-- Tab historico -->
+				<!-- Tab banco -->
 				<div class="content" id="Cong2">
 					<pi:focus for="formSis" />
 
 					<div class="container" align="center">
 						<div class="subtabela">
-
 
 
 							<h:form prependId="false" styleClass="formulario" id="formSis">
@@ -214,7 +225,29 @@
 										actionListener="#{confBean.abrirMoralLimparBanco()}"
 										title="Limpar Banco de Dados" />
 								</div>
-
+								
+								<div class="row" style="margin-top: 20px;">
+								
+									<h:panelGrid columns="2">
+										<h:outputLabel value="Arquivo de Backup:"/>
+										<h:inputText value="#{confBean.localPadraoBackup}" 
+										immediate="true"
+										title="Nome de arquivos onde serão realizados os backups /nSeparar arquivos distintos por ; "
+										/>
+										
+										<h:outputLabel value="Compactar Backup:"/>
+										<h:selectBooleanCheckbox value="#{confBean.compactarBanco}"
+										immediate="true"
+										title="Compactar backup ao exportar arquivo"
+										/>
+										
+										<h:outputLabel/>
+										<h:commandButton value="Salvar" title="Salvar configurações padrão de backup"
+										actionListener="#{confBean.salvarConfiguracoesBanco()}"
+										/>
+									</h:panelGrid>
+									
+								</div>
 
 
 
@@ -247,12 +280,27 @@
 									</pi:commandButton>
 
 								</div>
+								
+								
+								<div class="row" style="margin-top: 20px;"
+									title="Criar Dividas do Saldo Restante de Outro Sistema">
+
+
+									<pi:commandButton actionListener="#{confBean.dividaSistemaAntigo}"
+										ajax="false" value="Criar Dividas" styleClass="botao left"
+										update="@all"
+										title="Criar Dividas do Saldo Restante de Outro Sistema"/>
+
+								</div>
 
 
 							</h:form>
 
 						</div>
 					</div>
+					
+					
+					
 
 				</div>
 				<!-- fim div historico -->
@@ -385,8 +433,26 @@
 				scale : 2
 			});
 		});
-		maiusculo('.maiusculo');
-		pular_enter();
+		
+		document.onkeydown = function(e) {
+			var keychar;
+			
+			// Internet Explorer
+			try {
+				keychar = String.fromCharCode(event.keyCode);
+				e = event;
+			}
+
+			// Firefox, Opera, Chrome, etc...
+			catch (err) {
+				keychar = String.fromCharCode(e.keyCode);
+			}
+
+			if (e.keyCode == 27) {
+				ir_login();
+			}
+		}
+		
 	</script>
 
 </h:body>

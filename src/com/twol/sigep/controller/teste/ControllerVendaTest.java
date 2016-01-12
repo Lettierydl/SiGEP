@@ -29,7 +29,6 @@ import com.twol.sigep.model.pessoas.TipoDeFuncionario;
 import com.twol.sigep.model.vendas.ItemDeVenda;
 import com.twol.sigep.model.vendas.Pagamento;
 import com.twol.sigep.model.vendas.Venda;
-import com.twol.sigep.util.Persistencia;
 
 public class ControllerVendaTest {
 	
@@ -38,17 +37,24 @@ public class ControllerVendaTest {
 	ControllerEstoque ce;
 	String nome = "Fulano de tal";
 	double valor = 50;
+	FindFuncionario ffunc;
+	FindCliente fcli;
+	FindVenda fv;
 	
 	@Before
 	public void setup(){
-		ve = new ControllerVenda(Persistencia.emf);
-		pe = new ControllerPessoa(Persistencia.emf);
-		ce = new ControllerEstoque(Persistencia.emf);
+		ve = new ControllerVenda();
+		pe = new ControllerPessoa();
+		ce = new ControllerEstoque();
 		ve.removeAllVendas();
 		pe.removeAllClientes();
 		pe.removeAllFuncionarios();
 		ce.removeAllProdutos();
 		ce.removeAllPromocoes();
+		
+		ffunc = new FindFuncionario();
+		fcli = new FindCliente();
+		fv = new FindVenda();
 	}
 	
 	@After
@@ -79,12 +85,13 @@ public class ControllerVendaTest {
 		i.setProduto(p);
 		return i;
 	}
+	private int id_produto = 0;
 	private Produto iniciarProdutoESalvarNoBanco() {
-		int num = (int) (Math.random() * 100);
+		int num = ++id_produto;
 		Produto p = new Produto();
-		p.setCodigoDeBarras("1234"+ ((int) (Math.random() * 1000000000)));
+		p.setCodigoDeBarras(num+"1234"+ ((int) (Math.random() * 10000000)));
 		p.setCategoria(CategoriaProduto.Outra);
-		p.setDescricao("Produto Teste " + num);
+		p.setDescricao("Produto Teste " + id_produto);
 		p.setDescricaoUnidade(UnidadeProduto.UND);
 		p.setLimiteMinimoEmEstoque(num);
 		p.setQuantidadeEmEstoque(num*2);
@@ -93,8 +100,9 @@ public class ControllerVendaTest {
 		ce.create(p);
 		return p;
 	}
+	private int id_func = 0;
 	private Funcionario iniciarFuncionarioInformacoesAleatorias(String nome) {
-		int num = (int) (Math.random() * 100);
+		int num = ++id_func;
 		Funcionario f = new Funcionario();
 		f.setCpf("00000000" + num);
 		f.setNome(nome);
@@ -103,8 +111,9 @@ public class ControllerVendaTest {
 		f.setTipoDeFuncionario(TipoDeFuncionario.Supervisor);
 		return f;
 	}
+	private int id_cli = 0;
 	private Cliente iniciarClienteInformacoesAleatorias(String nome) {
-		int num = (int) (Math.random() * 100);
+		int num = ++id_cli;
 		Cliente c = new Cliente();
 		c.setCpf("00000000"+num);
 		Calendar dia = Calendar.getInstance();
@@ -128,7 +137,7 @@ public class ControllerVendaTest {
 	public void createVendaTest() {
 		Venda p = iniciarVendaInformacoesAleatorias();
 		ve.create(p);
-		assertEquals(FindVenda.vendaId(p.getId()), p);
+		assertEquals(fv.vendaId(p.getId()), p);
 	}
 	
 	@Test
@@ -137,14 +146,14 @@ public class ControllerVendaTest {
 		Venda v = iniciarVendaESalvarNoBanco();
 		v.setPartePaga(20);
 		ve.edit(v);
-		assertEquals( FindVenda.vendaId(v.getId()).getPartePaga() , v.getPartePaga(),0);
+		assertEquals( fv.vendaId(v.getId()).getPartePaga() , v.getPartePaga(),0);
 	}
 	
 	@Test(expected=NoResultException.class )
 	public void destroyVendaTest() throws EntidadeNaoExistenteException  {
 		Venda p = iniciarVendaESalvarNoBanco();
 		ve.destroy(p);
-		FindVenda.vendaId(p.getId());
+		fv.vendaId(p.getId());
 	}
 	
 	@Test
@@ -167,7 +176,7 @@ public class ControllerVendaTest {
 		Venda p = iniciarVendaInformacoesAleatorias();
 		p.setCliente(c);
 		ve.create(p);
-		assertEquals(FindVenda.vendaId(p.getId()).getCliente(), p.getCliente());	
+		assertEquals(fv.vendaId(p.getId()).getCliente(), p.getCliente());	
 	}
 	
 	@Test
@@ -179,7 +188,7 @@ public class ControllerVendaTest {
 		p.setCliente(c);
 		ve.edit(p);
 		
-		assertEquals(FindVenda.vendaId(p.getId()).getCliente(), p.getCliente());	
+		assertEquals(fv.vendaId(p.getId()).getCliente(), p.getCliente());	
 	}
 	
 	@Test(expected=NoResultException.class)
@@ -192,8 +201,8 @@ public class ControllerVendaTest {
 		ve.edit(p);
 		ve.destroy(p);
 		
-		assertEquals(FindCliente.clienteComId(c.getId()),c);
-		assertNull(FindVenda.vendaId(p.getId()));
+		assertEquals(fcli.clienteComId(c.getId()),c);
+		assertNull(fv.vendaId(p.getId()));
 	}
 	
 	
@@ -207,7 +216,7 @@ public class ControllerVendaTest {
 		Venda p = iniciarVendaInformacoesAleatorias();
 		p.setFuncionario(c);
 		ve.create(p);
-		assertEquals(FindVenda.vendaId(p.getId()).getFuncionario(), p.getFuncionario());	
+		assertEquals(fv.vendaId(p.getId()).getFuncionario(), p.getFuncionario());	
 	}
 	
 	@Test
@@ -219,7 +228,7 @@ public class ControllerVendaTest {
 		p.setFuncionario(c);
 		ve.edit(p);
 		
-		assertEquals(FindVenda.vendaId(p.getId()).getFuncionario(), p.getFuncionario());	
+		assertEquals(fv.vendaId(p.getId()).getFuncionario(), p.getFuncionario());	
 	}
 	
 	@Test(expected=NoResultException.class)
@@ -232,8 +241,8 @@ public class ControllerVendaTest {
 		ve.edit(p);
 		ve.destroy(p);
 		
-		assertEquals(FindFuncionario.funcionarioComId(c.getId()),c);
-		assertNull(FindVenda.vendaId(p.getId()));
+		assertEquals(ffunc.funcionarioComId(c.getId()),c);
+		assertNull(fv.vendaId(p.getId()));
 	}
 	
 	
@@ -249,7 +258,7 @@ public class ControllerVendaTest {
 		v.addItemDeVenda(i);
 		ve.create(v);
 		
-		assertEquals(FindVenda.vendaId(v.getId()).getItensDeVenda().get(0) , i);	
+		assertEquals(fv.vendaId(v.getId()).getItensDeVenda().get(0) , i);	
 	}
 	
 	@Test(expected=NullPointerException.class)
@@ -266,7 +275,7 @@ public class ControllerVendaTest {
 		v.addItemDeVenda(i);
 		ve.edit(v);
 		
-		assertEquals(FindVenda.vendaId(v.getId()).getItensDeVenda().get(0) , i);	
+		assertEquals(fv.vendaId(v.getId()).getItensDeVenda().get(0) , i);	
 	}
 	
 	@Test(expected=NoResultException.class)
@@ -277,8 +286,8 @@ public class ControllerVendaTest {
 		ve.edit(v);
 		
 		ve.destroy(v);
-		assertEquals(FindVenda.vendaId(v.getId()).getItensDeVenda().get(0) , i);	
-		assertNull(FindVenda.itemDeVendaId(i.getId()));
+		assertEquals(fv.vendaId(v.getId()).getItensDeVenda().get(0) , i);	
+		assertNull(fv.itemDeVendaId(i.getId()));
 	}
 	
 	
@@ -291,7 +300,7 @@ public class ControllerVendaTest {
 			v.addItemDeVenda(i);
 			ve.edit(v);
 		}
-		assertEquals(FindVenda.vendaId(v.getId()).getItensDeVenda().size() , n);	
+		assertEquals(fv.vendaId(v.getId()).getItensDeVenda().size() , n);	
 	}
 	
 	@Test
@@ -304,10 +313,10 @@ public class ControllerVendaTest {
 			v.addItemDeVenda(i);
 			ve.edit(v);
 		}
-		assertEquals(FindVenda.vendaId(v.getId()).getItensDeVenda().size() , n);
-		ItemDeVenda ir = FindVenda.vendaId(v.getId()).getItensDeVenda().get(0);
+		assertEquals(fv.vendaId(v.getId()).getItensDeVenda().size() , n);
+		ItemDeVenda ir = fv.vendaId(v.getId()).getItensDeVenda().get(0);
 		ve.removerItem(ir);
-		assertFalse(FindVenda.vendaId(v.getId()).getItensDeVenda().contains(ir) );
+		assertFalse(fv.vendaId(v.getId()).getItensDeVenda().contains(ir) );
 	}
 	
 	@Test
@@ -319,20 +328,20 @@ public class ControllerVendaTest {
 		double t = 0;
 		for(int j = 0 ; j<n ; j++){
 			ItemDeVenda i = iniciarItemDeVendaInformacoesAleatorias(iniciarProdutoESalvarNoBanco());
-			i.setDesconto(i.getProduto().getValorDeVenda()*0.25);
+			//i.setDesconto(i.getProduto().getValorDeVenda()*0.25);
 			v.addItemDeVenda(i);
 			ve.edit(v);
 			d+=i.getDesconto();
 			t+=i.getTotal();
 		}
-		assertEquals(FindVenda.vendaId(v.getId()).getItensDeVenda().size() , n);
+		assertEquals(fv.vendaId(v.getId()).getItensDeVenda().size() , n);
 		
-		ItemDeVenda ir = FindVenda.vendaId(v.getId()).getItensDeVenda().get(0);
+		ItemDeVenda ir = fv.vendaId(v.getId()).getItensDeVenda().get(0);
 		ve.removerItem(ir);
 		
-		assertFalse(FindVenda.vendaId(v.getId()).getItensDeVenda().contains(ir) );
-		assertEquals(FindVenda.vendaId(v.getId()).getDesconto() , d-ir.getDesconto(),0);	
-		assertEquals(FindVenda.vendaId(v.getId()).getTotal() , t-ir.getTotal(),0);	
+		assertFalse(fv.vendaId(v.getId()).getItensDeVenda().contains(ir) );
+		assertEquals(fv.vendaId(v.getId()).getDesconto() , d-ir.getDesconto(),0);	
+		assertEquals(fv.vendaId(v.getId()).getTotal() , t-ir.getTotal(),0);	
 	}
 	
 	@Test
@@ -345,7 +354,7 @@ public class ControllerVendaTest {
 			ve.edit(v);
 			t+=i.getTotal();
 		}
-		assertEquals(FindVenda.vendaId(v.getId()).getTotal() , t,0);	
+		assertEquals(fv.vendaId(v.getId()).getTotal() , t,0);	
 	}
 	
 	@Test
@@ -361,8 +370,8 @@ public class ControllerVendaTest {
 			d+=i.getDesconto();
 			t+=i.getTotalComDesconto();
 		}
-		assertEquals(FindVenda.vendaId(v.getId()).getDesconto() , d,0);	
-		assertEquals(FindVenda.vendaId(v.getId()).getTotalComDesconto() , t,0);	
+		assertEquals(fv.vendaId(v.getId()).getDesconto() , d,0);	
+		assertEquals(fv.vendaId(v.getId()).getTotalComDesconto() , t,0);	
 	}
 	
 	
@@ -383,8 +392,8 @@ public class ControllerVendaTest {
 		
 		ve.abaterValorDoPagamentoNaVenda(p);
 		
-		assertEquals(FindVenda.vendaId(v.getId()).getPartePaga() , v.getTotal(),0);
-		assertTrue(FindVenda.vendaId(v.getId()).isPaga());
+		assertEquals(fv.vendaId(v.getId()).getPartePaga() , v.getTotal(),0);
+		assertTrue(fv.vendaId(v.getId()).isPaga());
 	}
 	
 	@Test
@@ -393,7 +402,7 @@ public class ControllerVendaTest {
 		Cliente c = iniciarClienteInformacoesAleatorias("Cliente");
 		pe.create(c);
 		v.setCliente(c);
-		for(int j = 0 ; j<50 ; j++){
+		for(int j = 0 ; j<10 ; j++){
 			ItemDeVenda i = iniciarItemDeVendaInformacoesAleatorias(iniciarProdutoESalvarNoBanco());
 			v.addItemDeVenda(i);
 			ve.edit(v);
@@ -405,8 +414,8 @@ public class ControllerVendaTest {
 		
 		ve.abaterValorDoPagamentoNaVenda(p);
 		
-		assertEquals(FindVenda.vendaId(v.getId()).getPartePaga() , restante,0);
-		assertFalse(FindVenda.vendaId(v.getId()).isPaga());
+		assertEquals(fv.vendaId(v.getId()).getPartePaga() , restante,0);
+		assertFalse(fv.vendaId(v.getId()).isPaga());
 	}
 	
 	@Test//paga uma venda e parte de outra
@@ -432,11 +441,11 @@ public class ControllerVendaTest {
 		
 		ve.abaterValorDoPagamentoNaVenda(p);
 		
-		assertEquals(FindVenda.vendaId(vmenor.getId()).getPartePaga() , vmenor.getTotal(),0);
-		assertTrue(FindVenda.vendaId(vmenor.getId()).isPaga());
+		assertEquals(fv.vendaId(vmenor.getId()).getPartePaga() , vmenor.getTotal(),0);
+		assertTrue(fv.vendaId(vmenor.getId()).isPaga());
 		
-		assertEquals(FindVenda.vendaId(vmaior.getId()).getPartePaga() , vmaior.getTotal()*0.25,0);
-		assertFalse(FindVenda.vendaId(vmaior.getId()).isPaga());
+		assertEquals(fv.vendaId(vmaior.getId()).getPartePaga() , vmaior.getTotal()*0.25,0);
+		assertFalse(fv.vendaId(vmaior.getId()).isPaga());
 	}
 	
 

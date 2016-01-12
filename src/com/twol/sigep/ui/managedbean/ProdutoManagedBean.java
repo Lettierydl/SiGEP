@@ -27,6 +27,7 @@ public class ProdutoManagedBean {
 	private Produto editProduto;
 	private String descricaoPesquisa = "";
 	private List<Produto> listAtualDeProdutos;
+	
 
 	public ProdutoManagedBean() {
 		f = new Facede();
@@ -67,6 +68,10 @@ public class ProdutoManagedBean {
 		}
 		return listAtualDeProdutos;
 	}
+	
+	public List<Object[]> getListAtualDeProdutoInformacao(){
+		return f.getInformacaoProdutos();
+	}
 
 	public void modificarListaAtualDeProdutosPelaDescricao() {
 		if (descricaoPesquisa != null && descricaoPesquisa.length() != 0) {
@@ -84,8 +89,13 @@ public class ProdutoManagedBean {
 	}
 
 	public void openEditProduto(Produto p) {
+		if(p == null){
+			return;
+		}
 		this.setEditProduto(p);
 		RequestContext.getCurrentInstance().execute("abrirModa('modalEdit');");
+		RequestContext.getCurrentInstance().execute("$('#input_pesquisa').val('')");
+		RequestContext.getCurrentInstance().execute("$('#input_pesquisa').focus()");
 		/*
 		 * RequestContext.getCurrentInstance().update("formEdit");
 		 * RequestContext.getCurrentInstance().update("nomeEdit");
@@ -93,6 +103,14 @@ public class ProdutoManagedBean {
 		 * RequestContext.getCurrentInstance().openDialog("#modalEdit");
 		 */
 	}
+	
+	/*
+	public void openEditProduto(int id_produto ) {
+		this.setEditProduto(id_produto);
+		RequestContext.getCurrentInstance().execute("abrirModa('modalEdit');");
+		RequestContext.getCurrentInstance().execute("$('#input_pesquisa').val('')");
+		RequestContext.getCurrentInstance().execute("$('#input_pesquisa').focus()");
+	}*/
 
 	public void modific(ValueChangeEvent event) {
 		descricaoPesquisa = (String) event.getNewValue();
@@ -133,6 +151,7 @@ public class ProdutoManagedBean {
 				}// ok nao existe
 			}
 			f.atualizarProduto(editProduto);
+			this.descricaoPesquisa = "";
 		} catch (FuncionarioNaoAutorizadoException fe) {
 			SessionUtil.exibirMensagem(new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, fe.getMessage(), fe
@@ -193,6 +212,14 @@ public class ProdutoManagedBean {
 
 	public void setEditProduto(Produto editProduto) {
 		this.editProduto = editProduto;
+	}
+	
+	public void setEditProduto(int id_editProduto) {
+		try{
+			this.editProduto = f.buscarProdutoPorId(id_editProduto);	
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }

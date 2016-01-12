@@ -1,14 +1,20 @@
 package com.twol.sigep.model.pessoas;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -41,7 +47,7 @@ public class Cliente {
 	/**
 	 * sem a mascara
      */
-	@Column(nullable = true, length = 11, unique = true)
+	@Column(nullable = true, length = 11)
 	private String cpf;
 
 	/**
@@ -59,12 +65,12 @@ public class Cliente {
 	private String endereco;
 	
 	
-	/**
-     
 	@OneToMany(cascade = CascadeType.REMOVE , mappedBy = "cliente")
 	private List<Dependente> dependentes = new ArrayList<Dependente>();
 	
-	
+
+	/**
+     
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "cliente")
 	private List<Pagamento> pagamentos = new ArrayList<Pagamento>();
 	*/
@@ -112,6 +118,8 @@ public class Cliente {
 	}
 
 	public double getDebito() {
+		debito = new BigDecimal(this.debito).setScale(2,
+				RoundingMode.HALF_UP).doubleValue();
 		return debito;
 	}
 
@@ -146,7 +154,7 @@ public class Cliente {
 	}
 	
 	
-	/*
+	
 	public List<Dependente> getDependentes() {
 		return dependentes;
 	}
@@ -169,7 +177,7 @@ public class Cliente {
 			adicionarDependente(dependente);
 		}
 	}
-	
+	/*
 	public List<Pagamento> getPagamentos() {
 		return this.pagamentos;
 	}
@@ -180,8 +188,10 @@ public class Cliente {
 			throws ParametrosInvalidosException {
 		if (valor > 0) {
 			debito += valor;
+			debito = new BigDecimal(this.debito).setScale(2,
+					RoundingMode.HALF_UP).doubleValue();
 		} else {
-			throw new ParametrosInvalidosException("N��o pode ser acencentado um valor negativo ao debito do cliente");
+			throw new ParametrosInvalidosException("Não pode ser acencentado um valor negativo ao debito do cliente");
 		}
 	}
 
@@ -189,6 +199,8 @@ public class Cliente {
 			throws ParametrosInvalidosException {
 		if (valor > 0) {
 			debito -= valor;
+			debito = new BigDecimal(this.debito).setScale(2,
+					RoundingMode.HALF_UP).doubleValue();
 		} else {
 			throw new ParametrosInvalidosException("N��o pode ser retirado um valor negativo ao debito do cliente");
 		}
